@@ -1,293 +1,286 @@
- <!doctype html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#ffffff">
 <title>Ultra Goal | UG Chat</title>
 
 <style>
 :root {
-  --bg: #fff;
-  --side: #f5f6f8;
+  --bg: #ffffff;
+  --sidebar: #f6f7f9;
   --text: #202124;
-  --muted: #70757d;
-  --line: #e5e7eb;
-  --accent: #3568e8;
-  --bubble: #f1f3f5;
-  --card: #fff;
+  --muted: #777e89;
+  --border: #e5e7eb;
+  --accent: #5368e8;
+  --bubble: #f0f2f5;
 }
 
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
 
 body {
-  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
   background: var(--bg);
   color: var(--text);
-  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  height: 100dvh;
   overflow: hidden;
 }
 
-button, textarea { font: inherit; }
-button { cursor: pointer; }
+button, textarea {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
 
 .app {
-  display: flex;
   height: 100dvh;
-  width: 100%;
+  display: flex;
+  overflow: hidden;
 }
+
+/* SIDEBAR */
 
 .sidebar {
-  width: 265px;
-  background: var(--side);
-  padding: 17px 13px;
+  width: 260px;
+  flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  gap: 18px;
-  flex-shrink: 0;
-  transition: transform .2s;
+  gap: 17px;
+  padding: 18px 13px;
+  background: var(--sidebar);
+  border-right: 1px solid var(--border);
 }
 
-.brandrow {
+.brand {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 2px 7px 9px;
+  gap: 11px;
+  padding: 3px 6px 12px;
+  font-size: 17px;
+  font-weight: 800;
 }
 
 .logo {
-  height: 34px;
-  width: 34px;
+  width: 37px;
+  height: 37px;
   border-radius: 12px;
   display: grid;
   place-items: center;
   color: white;
+  font-size: 13px;
   font-weight: 900;
-  font-size: 12px;
-  letter-spacing: -.5px;
-  background: linear-gradient(135deg,#3278ee,#8c5ce9);
+  background: linear-gradient(135deg, #347cf3, #9662e8);
 }
 
-.brandname {
-  font-weight: 800;
-  letter-spacing: .2px;
-  font-size: 15px;
+.brand span {
+  color: var(--accent);
 }
 
-.brandname span { color: #5e68d8; }
-
-.newchat {
+.new-chat {
+  width: 100%;
+  min-height: 45px;
+  padding: 10px 13px;
   display: flex;
   align-items: center;
   gap: 10px;
-  border: 0;
-  border-radius: 25px;
-  padding: 12px 15px;
-  background: #e8ebf1;
-  color: #34383f;
-  font-size: 13px;
-  font-weight: 650;
+  border: 1px solid var(--border);
+  border-radius: 13px;
+  background: white;
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 600;
   text-align: left;
 }
 
-.newchat:hover { background: #dde2eb; }
+.new-chat:hover {
+  background: #eef1ff;
+  border-color: #d3d9ff;
+}
 
-.history-label {
+.plus {
+  display: grid;
+  place-items: center;
+  width: 25px;
+  height: 25px;
+  border-radius: 8px;
+  background: #edf0ff;
+  color: var(--accent);
+  font-size: 21px;
+}
+
+.section-title {
+  padding: 0 8px;
+  color: var(--muted);
   font-size: 11px;
-  color: #858b95;
-  font-weight: 700;
+  font-weight: bold;
+  letter-spacing: 1px;
   text-transform: uppercase;
-  letter-spacing: .8px;
-  padding: 0 9px;
 }
 
 .history {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  overflow: auto;
+  gap: 5px;
+  overflow-y: auto;
 }
 
 .history-item {
+  width: 100%;
+  padding: 11px;
   border: 0;
-  background: transparent;
-  text-align: left;
   border-radius: 10px;
-  padding: 10px 11px;
+  background: transparent;
+  color: #414650;
   font-size: 13px;
-  color: #434750;
-  overflow: hidden;
+  text-align: left;
   text-overflow: ellipsis;
+  overflow: hidden;
   white-space: nowrap;
 }
 
 .history-item:hover,
-.history-item.active { background: #e9ecf2; }
+.history-item.active {
+  background: #e8ebf1;
+}
 
-.sidebottom {
+.sidebar-bottom {
   margin-top: auto;
-  display: grid;
-  gap: 5px;
+  color: #8a9099;
+  font-size: 11px;
+  line-height: 1.6;
+  padding: 8px;
 }
 
-.sidefoot {
-  font-size: 11px;
-  color: #8a9099;
-  padding: 8px 9px;
-  line-height: 1.5;
-}
+/* MAIN AREA */
 
 .main {
-  flex: 1;
   min-width: 0;
+  height: 100dvh;
+  flex: 1;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
   position: relative;
 }
 
-.topbar {
-  height: 62px;
+/* Small, clean header */
+
+.header {
+  height: 44px;
+  min-height: 44px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 0 22px;
+  padding: 0 18px;
   border-bottom: 1px solid #f0f1f3;
-  flex-shrink: 0;
+  background: white;
 }
 
-.top-left {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.menu {
+.menu-button {
   display: none;
   border: 0;
   background: transparent;
   font-size: 22px;
-  color: #525761;
-  padding: 5px;
+  padding: 4px 8px 4px 0;
 }
 
-.modelname {
-  font-weight: 700;
-  font-size: 15px;
-}
+/* ONLY THE CHAT CONTENT SCROLLS */
 
-.modeltag {
-  font-size: 11px;
-  color: #6b7280;
-  background: #f3f4f6;
-  padding: 5px 8px;
-  border-radius: 7px;
-  margin-left: 7px;
-}
-
-.top-actions {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-}
-
-.avatar {
-  height: 30px;
-  width: 30px;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  background: #e8eaff;
-  color: #5452a2;
-  font-weight: 800;
-  font-size: 12px;
-}
-
-.chatarea {
-  flex: 1;
+.chat-area {
+  flex: 1 1 auto;
+  min-height: 0;
   overflow-y: auto;
-  padding: 24px 20px 18px;
+  overscroll-behavior: contain;
+  padding: 25px 18px;
   scroll-behavior: smooth;
 }
 
+/* WELCOME SCREEN */
+
 .welcome {
-  max-width: 760px;
-  margin: 11vh auto 0;
+  max-width: 720px;
+  margin: 9vh auto 0;
   text-align: center;
 }
 
 .welcome-logo {
-  height: 58px;
-  width: 58px;
+  width: 59px;
+  height: 59px;
+  margin: 0 auto 21px;
   border-radius: 20px;
-  margin: 0 auto 20px;
   display: grid;
   place-items: center;
-  background: linear-gradient(135deg,#367df1,#a16be8);
+  background: linear-gradient(135deg, #347cf3, #9662e8);
   color: white;
   font-weight: 900;
-  font-size: 20px;
-  box-shadow: 0 10px 28px #5e78dc25;
+  font-size: 21px;
 }
 
 .welcome h1 {
-  font-size: clamp(28px,4vw,39px);
-  letter-spacing: -1.2px;
   margin: 0 0 12px;
-  font-weight: 650;
+  font-size: clamp(28px, 4vw, 39px);
+  letter-spacing: -1px;
 }
 
-.welcome h1 span {
-  background: linear-gradient(100deg,#3278ef,#9b66dc);
-  background-clip: text;
+.gradient-text {
+  background: linear-gradient(100deg, #347cf3, #9662e8);
   -webkit-background-clip: text;
+  background-clip: text;
   color: transparent;
 }
 
 .welcome p {
-  margin: 0 auto;
+  max-width: 480px;
+  margin: auto;
   color: var(--muted);
   font-size: 14px;
   line-height: 1.7;
-  max-width: 500px;
 }
 
 .suggestions {
   display: grid;
-  grid-template-columns: repeat(2,minmax(0,1fr));
-  gap: 11px;
-  margin: 32px auto 0;
-  max-width: 650px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 30px auto 0;
   text-align: left;
 }
 
 .suggestion {
-  border: 1px solid #e7e9ed;
-  background: #fff;
-  border-radius: 16px;
-  padding: 15px 16px;
-  min-height: 85px;
+  min-height: 84px;
+  padding: 15px;
+  border: 1px solid var(--border);
+  border-radius: 15px;
+  background: white;
   text-align: left;
-  color: #343941;
-  transition: border-color .15s,background .15s;
 }
 
 .suggestion:hover {
-  border-color: #bdc9f3;
+  border-color: #bfcaf8;
   background: #fbfcff;
 }
 
-.suggestion b {
+.suggestion strong {
   display: block;
   font-size: 13px;
-  margin-bottom: 6px;
+  margin-bottom: 7px;
 }
 
-.suggestion span {
+.suggestion small {
+  color: var(--muted);
   font-size: 12px;
-  color: #737983;
-  line-height: 1.45;
+  line-height: 1.5;
 }
+
+/* MESSAGES */
 
 .messages {
   max-width: 790px;
@@ -298,197 +291,222 @@ button { cursor: pointer; }
   padding-bottom: 15px;
 }
 
-.msg {
+.message {
   display: flex;
   gap: 12px;
   align-items: flex-start;
 }
 
-.msg.user { justify-content: flex-end; }
+.message.user {
+  justify-content: flex-end;
+}
 
-.msg .mini-logo {
-  width: 29px;
-  height: 29px;
+.message-logo {
   flex-shrink: 0;
+  width: 30px;
+  height: 30px;
   border-radius: 10px;
   display: grid;
   place-items: center;
-  background: linear-gradient(135deg,#367df1,#a16be8);
-  color: #fff;
-  font-weight: 900;
+  background: linear-gradient(135deg, #347cf3, #9662e8);
+  color: white;
   font-size: 10px;
+  font-weight: 900;
 }
 
-.msgbody {
-  max-width: min(680px,90%);
+.message-body {
+  max-width: min(680px, 90%);
   font-size: 14px;
   line-height: 1.75;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
 }
 
-.userbubble {
-  background: #f1f3f5;
-  border-radius: 20px;
-  padding: 11px 16px;
-  max-width: min(610px,85%);
+.user-bubble {
+  max-width: min(610px, 85%);
+  padding: 12px 16px;
+  border-radius: 19px;
+  background: var(--bubble);
   font-size: 14px;
   line-height: 1.65;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
 }
 
-.response-actions {
-  display: flex;
-  gap: 7px;
-  margin-top: 10px;
+.message-actions {
+  margin-top: 9px;
 }
 
-.response-actions button {
+.copy-button {
+  padding: 5px 8px;
   border: 0;
-  background: transparent;
-  color: #858b95;
-  padding: 5px 7px;
   border-radius: 7px;
+  background: transparent;
+  color: var(--muted);
   font-size: 12px;
 }
 
-.response-actions button:hover {
-  background: #f1f3f5;
-  color: #343941;
+.copy-button:hover {
+  background: #f0f2f5;
 }
 
 .typing {
-  color: #7a818b;
+  padding: 5px 0;
+  color: var(--muted);
   font-size: 13px;
-  padding: 6px 0;
 }
 
-.composer-wrap {
-  padding: 10px 20px 17px;
-  background: linear-gradient(to top,#fff 80%,#ffffffd9);
+/* FIXED CHAT INPUT */
+
+.composer-area {
+  flex: 0 0 auto;
+  position: relative;
+  z-index: 2;
+  padding: 11px 18px 13px;
+  background: white;
+  border-top: 1px solid #f0f1f3;
 }
 
 .composer {
   max-width: 790px;
-  margin: auto;
+  margin: 0 auto;
+  padding: 12px 13px 9px 17px;
   border: 1px solid #dfe2e7;
-  border-radius: 25px;
-  padding: 12px 13px 9px 18px;
-  box-shadow: 0 5px 20px #17223a0a;
-  background: #fff;
+  border-radius: 24px;
+  background: white;
+  box-shadow: 0 4px 18px #00000008;
 }
 
 .composer:focus-within {
-  border-color: #c3cce0;
-  box-shadow: 0 5px 24px #17223a0d;
+  border-color: #c2cbed;
 }
 
 .composer textarea {
   display: block;
   width: 100%;
+  min-height: 29px;
+  max-height: 140px;
   resize: none;
+  overflow-y: auto;
   border: 0;
   outline: 0;
   background: transparent;
-  color: #202124;
+  color: var(--text);
   font-size: 14px;
   line-height: 1.55;
-  min-height: 29px;
-  max-height: 150px;
 }
 
-.composer textarea::placeholder { color: #858b95; }
+.composer textarea::placeholder {
+  color: #858b95;
+}
 
 .composer-bottom {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
+  gap: 8px;
   margin-top: 8px;
 }
 
-.toolrow {
+.tools {
   display: flex;
+  gap: 6px;
   align-items: center;
-  gap: 7px;
 }
 
-.toolbtn {
+.tool-button {
+  padding: 7px 8px;
   border: 0;
+  border-radius: 8px;
   background: transparent;
   color: #6f7680;
-  border-radius: 9px;
-  padding: 7px 9px;
   font-size: 12px;
 }
 
-.toolbtn:hover { background: #f3f4f6; }
-
-.send {
-  height: 34px;
-  width: 36px;
-  border: 0;
-  border-radius: 50%;
-  background: #252a31;
-  color: white;
-  font-size: 18px;
-  display: grid;
-  place-items: center;
+.tool-button:hover {
+  background: #f2f4f7;
 }
 
-.send:disabled {
+.send-button {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: #242832;
+  color: white;
+  font-size: 21px;
+}
+
+.send-button:disabled {
   background: #c8cbd0;
   cursor: not-allowed;
 }
 
 .disclaimer {
-  text-align: center;
-  font-size: 10.5px;
-  color: #969ba3;
-  margin: 9px auto 0;
   max-width: 790px;
+  margin: 8px auto 0;
+  color: #969ba3;
+  text-align: center;
+  font-size: 10px;
   line-height: 1.5;
 }
 
-.mobile-overlay { display: none; }
-.hidden { display: none !important; }
+.hidden {
+  display: none !important;
+}
 
-@media(max-width:760px) {
+.overlay {
+  display: none;
+}
+
+@media (max-width: 760px) {
   .sidebar {
     position: fixed;
-    z-index: 20;
+    z-index: 30;
     inset: 0 auto 0 0;
     width: 275px;
     transform: translateX(-105%);
-    box-shadow: 10px 0 40px #0001;
+    transition: transform .2s;
+    box-shadow: 8px 0 30px #00000012;
   }
 
-  .sidebar.open { transform: translateX(0); }
+  .sidebar.open {
+    transform: translateX(0);
+  }
 
-  .mobile-overlay.show {
+  .overlay.show {
     display: block;
     position: fixed;
-    z-index: 19;
+    z-index: 29;
     inset: 0;
-    background: #11182755;
+    background: #00000055;
   }
 
-  .menu { display: block; }
-
-  .topbar {
-    height: 57px;
-    padding: 0 13px;
+  .menu-button {
+    display: block;
   }
 
-  .chatarea { padding: 18px 14px; }
-  .welcome { margin: 8vh auto 0; }
-  .welcome-logo { width: 51px; height: 51px; }
+  .header {
+    height: 42px;
+    min-height: 42px;
+    padding: 0 12px;
+  }
+
+  .chat-area {
+    padding: 18px 13px;
+  }
+
+  .welcome {
+    margin-top: 7vh;
+  }
 
   .suggestions {
     grid-template-columns: 1fr;
     gap: 8px;
-    margin-top: 25px;
+    margin-top: 24px;
   }
 
   .suggestion {
@@ -496,19 +514,17 @@ button { cursor: pointer; }
     padding: 12px 14px;
   }
 
-  .composer-wrap { padding: 8px 11px 12px; }
-
-  .composer {
-    border-radius: 22px;
-    padding: 11px 11px 8px 14px;
+  .composer-area {
+    padding: 8px 10px 10px;
   }
 
-  .toolbtn { padding: 7px 5px; }
-  .disclaimer { font-size: 10px; }
-  .modeltag { display: none; }
-  .messages { gap: 20px; }
-  .msgbody { font-size: 14px; }
-  .userbubble { max-width: 88%; }
+  .composer {
+    padding: 10px 10px 8px 13px;
+  }
+
+  .messages {
+    gap: 20px;
+  }
 }
 </style>
 </head>
@@ -517,85 +533,110 @@ button { cursor: pointer; }
 <div class="app">
 
   <aside class="sidebar" id="sidebar">
-    <div class="brandrow">
+
+    <div class="brand">
       <div class="logo">UG</div>
-      <div class="brandname">Ultra <span>Goal</span></div>
+      <div>Ultra <span>Goal</span></div>
     </div>
 
-    <button class="newchat" id="newChat" type="button">
-      <span style="font-size:18px">＋</span> New chat
+    <!-- The first New Chat button is always visible here -->
+    <button class="new-chat" id="newChat" type="button">
+      <span class="plus">＋</span>
+      <span>New Chat</span>
     </button>
 
-    <div class="history-label">Recent chats</div>
+    <div class="section-title">Recent chats</div>
+
     <div class="history" id="history"></div>
 
-    <div class="sidebottom">
-      <button class="history-item" id="aboutBtn" type="button">
-        ✦ About Ultra Goal
-      </button>
-      <div class="sidefoot">
-        UG AI Chat · Demo interface<br>
-        Dream big. Build smart.
-      </div>
+    <div class="sidebar-bottom">
+      Ultra Goal · Learning Demo<br>
+      Dream big. Build smart.
     </div>
+
   </aside>
 
-  <div class="mobile-overlay" id="overlay"></div>
+  <div class="overlay" id="overlay"></div>
 
   <main class="main">
-    <header class="topbar">
-      <div class="top-left">
-        <button class="menu" id="menuBtn" aria-label="Open menu" type="button">☰</button>
-        <div>
-          <span class="modelname">UG Chat</span>
-          <span class="modeltag">Preview</span>
-        </div>
-      </div>
 
-      <div class="top-actions">
-        <div class="avatar" aria-label="Ultra Goal">UG</div>
-      </div>
+    <!-- Clean header, no duplicate New Chat button -->
+    <header class="header">
+      <button
+        class="menu-button"
+        id="menuButton"
+        type="button"
+        aria-label="Open menu"
+      >☰</button>
     </header>
 
-    <section class="chatarea" id="chatarea">
+    <!-- Only this area scrolls -->
+    <section class="chat-area" id="chatArea">
+
       <div class="welcome" id="welcome">
+
         <div class="welcome-logo">UG</div>
 
-        <h1>What can I help you <span>build?</span></h1>
+        <h1>
+          What can I help you
+          <span class="gradient-text">build?</span>
+        </h1>
 
         <p>
-          Your space to explore AI, learn Python, and discover robotics.
+          Explore AI, learn Python, and discover robotics.
           Ask a question or choose a starter prompt below.
         </p>
 
         <div class="suggestions">
-          <button class="suggestion" data-prompt="Teach me Python basics with a simple example." type="button">
-            <b>💻 Learn Python</b>
-            <span>Understand a coding concept step by step</span>
+
+          <button
+            class="suggestion"
+            data-prompt="Teach me Python basics with a simple example."
+            type="button"
+          >
+            <strong>💻 Learn Python</strong>
+            <small>Understand coding step by step</small>
           </button>
 
-          <button class="suggestion" data-prompt="Explain artificial intelligence in simple Kannada and English." type="button">
-            <b>🧠 Explore AI</b>
-            <span>Learn how AI works in simple language</span>
+          <button
+            class="suggestion"
+            data-prompt="Explain artificial intelligence in simple Kannada and English."
+            type="button"
+          >
+            <strong>🧠 Explore AI</strong>
+            <small>Learn how artificial intelligence works</small>
           </button>
 
-          <button class="suggestion" data-prompt="Give me a beginner robotics project I can simulate for free." type="button">
-            <b>🤖 Start robotics</b>
-            <span>Try a beginner-friendly virtual robot project</span>
+          <button
+            class="suggestion"
+            data-prompt="Give me a beginner robotics project I can simulate for free."
+            type="button"
+          >
+            <strong>🤖 Start Robotics</strong>
+            <small>Explore a beginner-friendly project</small>
           </button>
 
-          <button class="suggestion" data-prompt="Help me plan a useful AI startup with a zero budget." type="button">
-            <b>🚀 Build a startup</b>
-            <span>Turn an idea into a practical first project</span>
+          <button
+            class="suggestion"
+            data-prompt="Help me plan a useful AI startup with a zero budget."
+            type="button"
+          >
+            <strong>🚀 Build a Startup</strong>
+            <small>Turn an idea into a practical project</small>
           </button>
+
         </div>
       </div>
 
       <div class="messages hidden" id="messages" aria-live="polite"></div>
+
     </section>
 
-    <div class="composer-wrap">
+    <!-- Composer stays in the same place while messages scroll -->
+    <footer class="composer-area">
+
       <form class="composer" id="chatForm">
+
         <textarea
           id="prompt"
           rows="1"
@@ -605,92 +646,116 @@ button { cursor: pointer; }
         ></textarea>
 
         <div class="composer-bottom">
-          <div class="toolrow">
-            <button type="button" class="toolbtn" id="topicBtn">✧ Learning mode</button>
-            <button type="button" class="toolbtn" id="clearInput">Clear</button>
+
+          <div class="tools">
+            <button
+              class="tool-button"
+              id="modeButton"
+              type="button"
+            >✧ Learning mode</button>
+
+            <button
+              class="tool-button"
+              id="clearButton"
+              type="button"
+            >Clear</button>
           </div>
 
           <button
-            class="send"
-            id="sendBtn"
+            class="send-button"
+            id="sendButton"
             type="submit"
             aria-label="Send message"
             title="Send message"
             disabled
           >↑</button>
+
         </div>
       </form>
 
       <div class="disclaimer">
-        UG Chat is a front-end demo and does not connect to a live AI model yet.
-        Responses are sample guidance, not generated by an online AI service.
+        Ultra Goal is currently a demo interface with sample responses.
       </div>
-    </div>
+
+    </footer>
+
   </main>
 </div>
 
 <script>
 const $ = id => document.getElementById(id);
 
-const textarea = $('prompt');
-const sendBtn = $('sendBtn');
-const STORAGE_KEY = 'ultraGoalChatsV2';
+const STORAGE_KEY = "ultraGoalChatsV3";
 
 let chats = [];
 let activeChatId = null;
 let learningMode = true;
 
-function activeChat() {
+const textarea = $("prompt");
+const sendButton = $("sendButton");
+
+function createId() {
+  return Date.now().toString(36) +
+    Math.random().toString(36).slice(2);
+}
+
+function getActiveChat() {
   return chats.find(chat => chat.id === activeChatId) || null;
 }
 
 function saveChats() {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(chats.slice(0, 30)));
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify(chats.slice(0, 40))
+    );
   } catch (error) {
-    console.warn('Could not save chat history:', error);
+    console.warn("Unable to save chat history.", error);
   }
 }
 
 function renderHistory() {
-  const history = $('history');
+  const history = $("history");
   history.replaceChildren();
 
-  if (!chats.length) {
-    const empty = document.createElement('div');
-    empty.className = 'sidefoot';
-    empty.textContent = 'Your conversations will appear here.';
+  if (chats.length === 0) {
+    const empty = document.createElement("div");
+    empty.className = "sidebar-bottom";
+    empty.textContent = "Your chats will appear here.";
     history.appendChild(empty);
     return;
   }
 
-  chats.slice(0, 30).forEach(chat => {
-    const button = document.createElement('button');
+  chats.forEach(chat => {
+    const button = document.createElement("button");
 
+    button.type = "button";
     button.className =
-      'history-item' + (chat.id === activeChatId ? ' active' : '');
+      "history-item" +
+      (chat.id === activeChatId ? " active" : "");
 
-    button.type = 'button';
-    button.textContent = chat.title || 'New chat';
+    button.textContent = chat.title || "New Chat";
     button.title = button.textContent;
 
-    button.onclick = () => showChat(chat.id);
+    button.addEventListener("click", () => {
+      showChat(chat.id);
+    });
 
     history.appendChild(button);
   });
 }
 
 function showWelcome() {
-  $('welcome').classList.remove('hidden');
-  $('messages').classList.add('hidden');
-  $('messages').replaceChildren();
-  $('chatarea').scrollTop = 0;
+  $("welcome").classList.remove("hidden");
+  $("messages").classList.add("hidden");
+  $("messages").replaceChildren();
+  $("chatArea").scrollTop = 0;
 }
 
 function newChat() {
   const chat = {
-    id: String(Date.now()) + Math.random().toString(16).slice(2),
-    title: 'New chat',
+    id: createId(),
+    title: "New Chat",
     messages: []
   };
 
@@ -701,8 +766,8 @@ function newChat() {
   renderHistory();
   showWelcome();
 
-  textarea.value = '';
-  resizeInput();
+  textarea.value = "";
+  resizeTextarea();
   closeSidebar();
   textarea.focus();
 }
@@ -713,98 +778,98 @@ function showChat(id) {
 
   activeChatId = id;
 
-  $('welcome').classList.add('hidden');
-  $('messages').classList.remove('hidden');
-  $('messages').replaceChildren();
+  $("welcome").classList.add("hidden");
+  $("messages").classList.remove("hidden");
+  $("messages").replaceChildren();
 
   chat.messages.forEach(message => {
     appendMessage(
       message.role,
       message.text,
-      message.role === 'assistant'
+      message.role === "assistant"
     );
   });
 
   renderHistory();
-  scrollBottom();
+  scrollToBottom();
   closeSidebar();
 }
 
-function appendMessage(role, text, addActions = true) {
-  const row = document.createElement('div');
-  row.className = 'msg ' + (role === 'user' ? 'user' : 'assistant');
+function appendMessage(role, text, showCopy = false) {
+  const row = document.createElement("div");
+  row.className = "message " + role;
 
-  if (role === 'user') {
-    const bubble = document.createElement('div');
-    bubble.className = 'userbubble';
+  if (role === "user") {
+    const bubble = document.createElement("div");
+    bubble.className = "user-bubble";
     bubble.textContent = text;
     row.appendChild(bubble);
   } else {
-    const logo = document.createElement('div');
-    logo.className = 'mini-logo';
-    logo.textContent = 'UG';
+    const logo = document.createElement("div");
+    logo.className = "message-logo";
+    logo.textContent = "UG";
 
-    const content = document.createElement('div');
-    content.className = 'msgbody';
+    const body = document.createElement("div");
+    body.className = "message-body";
 
-    const answer = document.createElement('div');
+    const answer = document.createElement("div");
     answer.textContent = text;
-    content.appendChild(answer);
+    body.appendChild(answer);
 
-    row.append(logo, content);
+    if (showCopy) {
+      const actions = document.createElement("div");
+      actions.className = "message-actions";
 
-    if (addActions) {
-      const actions = document.createElement('div');
-      actions.className = 'response-actions';
+      const copy = document.createElement("button");
+      copy.className = "copy-button";
+      copy.type = "button";
+      copy.textContent = "Copy";
 
-      const copy = document.createElement('button');
-      copy.type = 'button';
-      copy.textContent = 'Copy';
-
-      copy.onclick = async () => {
+      copy.addEventListener("click", async () => {
         try {
           if (navigator.clipboard && window.isSecureContext) {
             await navigator.clipboard.writeText(text);
           } else {
-            const temp = document.createElement('textarea');
+            const temp = document.createElement("textarea");
             temp.value = text;
-            temp.style.position = 'fixed';
-            temp.style.opacity = '0';
-
+            temp.style.position = "fixed";
+            temp.style.opacity = "0";
             document.body.appendChild(temp);
             temp.select();
-            document.execCommand('copy');
+            document.execCommand("copy");
             temp.remove();
           }
 
-          copy.textContent = 'Copied';
+          copy.textContent = "Copied";
         } catch (error) {
-          copy.textContent = 'Copy failed';
+          copy.textContent = "Copy failed";
         }
-      };
+      });
 
       actions.appendChild(copy);
-      content.appendChild(actions);
+      body.appendChild(actions);
     }
+
+    row.append(logo, body);
   }
 
-  $('messages').appendChild(row);
+  $("messages").appendChild(row);
 }
 
-function send(text) {
-  const value = (text ?? textarea.value).trim();
+function sendMessage(messageText) {
+  const text = (messageText ?? textarea.value).trim();
 
-  if (!value) {
+  if (!text) {
     textarea.focus();
     return;
   }
 
-  let chat = activeChat();
+  let chat = getActiveChat();
 
   if (!chat) {
     chat = {
-      id: String(Date.now()) + Math.random().toString(16).slice(2),
-      title: value.slice(0, 34),
+      id: createId(),
+      title: text.slice(0, 36),
       messages: []
     };
 
@@ -812,245 +877,257 @@ function send(text) {
     activeChatId = chat.id;
   }
 
-  if (!chat.messages.length || chat.title === 'New chat') {
-    chat.title = value.slice(0, 34);
+  if (
+    chat.messages.length === 0 ||
+    chat.title === "New Chat"
+  ) {
+    chat.title = text.slice(0, 36);
   }
 
-  chat.messages.push({ role: 'user', text: value });
+  chat.messages.push({
+    role: "user",
+    text
+  });
 
   saveChats();
   renderHistory();
 
-  $('welcome').classList.add('hidden');
-  $('messages').classList.remove('hidden');
-  $('messages').replaceChildren();
+  $("welcome").classList.add("hidden");
+  $("messages").classList.remove("hidden");
+  $("messages").replaceChildren();
 
   chat.messages.forEach(message => {
     appendMessage(
       message.role,
       message.text,
-      message.role === 'assistant'
+      message.role === "assistant"
     );
   });
 
-  textarea.value = '';
-  resizeInput();
+  textarea.value = "";
+  resizeTextarea();
 
   const chatId = chat.id;
 
-  const typing = document.createElement('div');
-  typing.className = 'msg assistant';
-  typing.dataset.typingFor = chatId;
+  const typingRow = document.createElement("div");
+  typingRow.className = "message assistant";
+  typingRow.dataset.typingFor = chatId;
 
-  const logo = document.createElement('div');
-  logo.className = 'mini-logo';
-  logo.textContent = 'UG';
+  const logo = document.createElement("div");
+  logo.className = "message-logo";
+  logo.textContent = "UG";
 
-  const label = document.createElement('div');
-  label.className = 'typing';
-  label.textContent = 'UG is preparing a demo response…';
+  const typingText = document.createElement("div");
+  typingText.className = "typing";
+  typingText.textContent = "UG is preparing a demo response...";
 
-  typing.append(logo, label);
-  $('messages').appendChild(typing);
+  typingRow.append(logo, typingText);
+  $("messages").appendChild(typingRow);
 
-  scrollBottom();
+  scrollToBottom();
 
   setTimeout(() => {
-    const current = chats.find(item => item.id === chatId);
-    if (!current) return;
+    const targetChat = chats.find(item => item.id === chatId);
+    if (!targetChat) return;
 
-    const answer = sampleAnswer(value);
+    const answer = getSampleAnswer(text);
 
-    current.messages.push({
-      role: 'assistant',
+    targetChat.messages.push({
+      role: "assistant",
       text: answer
     });
 
     saveChats();
 
     if (activeChatId === chatId) {
-      const indicator = $('messages').querySelector(
+      const indicator = $("messages").querySelector(
         '[data-typing-for="' + chatId + '"]'
       );
 
       if (indicator) indicator.remove();
 
-      appendMessage('assistant', answer, true);
-      scrollBottom();
+      appendMessage("assistant", answer, true);
+      scrollToBottom();
     }
   }, 450);
 }
 
-function scrollBottom() {
-  $('chatarea').scrollTop = $('chatarea').scrollHeight;
+function getSampleAnswer(text) {
+  const query = text.toLowerCase();
+
+  if (/python|coding|program|code/.test(query)) {
+    return `Let's learn Python step by step.
+
+Example:
+
+name = input("Enter your name: ")
+print("Welcome to Ultra Goal,", name)
+
+Explanation:
+1. input() asks the user to enter information.
+2. name stores the entered text.
+3. print() displays the welcome message.
+
+Try changing the message and running the code in a Python editor.
+
+This is a demo response, not a live AI-generated answer.`;
+  }
+
+  if (/robot|sensor|motor|simulation/.test(query)) {
+    return `Beginner robotics project: Virtual obstacle-avoiding robot.
+
+Steps:
+1. Create a simple robot in a simulator.
+2. Give it forward, left, right and stop actions.
+3. Add a simulated obstacle.
+4. Make the robot turn when its path is blocked.
+5. Test it with obstacles in different positions.
+
+You can begin by simulating the logic before buying any hardware.`;
+  }
+
+  if (/startup|business|company|budget|₹0/.test(query)) {
+    return `A practical first startup project is a beginner learning assistant.
+
+Problem:
+Students often struggle to understand programming concepts.
+
+Possible first version:
+1. Choose one Python topic.
+2. Explain it in simple language.
+3. Show a short example.
+4. Give the learner a small practice task.
+5. Ask a few students to test it and share feedback.
+
+Start small and use free tools. Check the terms and limits of any services you use.
+
+This demo is not connected to a live AI service.`;
+  }
+
+  if (/kannada|ಕನ್ನಡ/.test(query)) {
+    return `Artificial Intelligence (AI) ಅಂದರೆ computers ಮೂಲಕ learning, patterns ಗುರುತಿಸುವುದು ಮತ್ತು language ಅರ್ಥಮಾಡಿಕೊಳ್ಳುವಂತಹ ಕೆಲಸಗಳನ್ನು ಮಾಡಲು ಬಳಸುವ technology.
+
+ಉದಾಹರಣೆ:
+Machine Learning ನಲ್ಲಿ computer examples ಮೂಲಕ patterns ಕಲಿಯಬಹುದು.
+
+Robotics ಎಂದರೆ software, sensors ಮತ್ತು machines ಅನ್ನು ಸೇರಿಸಿ ಕೆಲಸ ಮಾಡಿಸುವ ಕ್ಷೇತ್ರ.
+
+ನೀವು ಯಾವ topic ಕಲಿಯಲು ಬಯಸುತ್ತೀರಿ ಎಂದು ಹೇಳಿ. ಈ website ಈಗ demo mode‌ನಲ್ಲಿದೆ.`;
+  }
+
+  if (/hello|hi|hey|namaste/.test(query)) {
+    return `Hello! Welcome to Ultra Goal (UG).
+
+You can explore:
+• Python programming
+• Artificial Intelligence
+• Machine Learning
+• Beginner robotics
+• Technology startup ideas
+
+What would you like to learn today?`;
+  }
+
+  return `Thanks for your question!
+
+Ultra Goal is currently a front-end chat demo. It can show sample guidance about Python, AI, robotics and startup planning, but it is not connected to a live AI model yet.
+
+To generate real AI responses, this project needs an AI service and a secure backend.`;
 }
 
-function resizeInput() {
-  textarea.style.height = 'auto';
-  textarea.style.height = Math.min(textarea.scrollHeight, 150) + 'px';
-  sendBtn.disabled = !textarea.value.trim();
+function resizeTextarea() {
+  textarea.style.height = "auto";
+  textarea.style.height =
+    Math.min(textarea.scrollHeight, 140) + "px";
+
+  sendButton.disabled = !textarea.value.trim();
+}
+
+function scrollToBottom() {
+  $("chatArea").scrollTop = $("chatArea").scrollHeight;
 }
 
 function closeSidebar() {
-  $('sidebar').classList.remove('open');
-  $('overlay').classList.remove('show');
+  $("sidebar").classList.remove("open");
+  $("overlay").classList.remove("show");
 }
-
-function sampleAnswer(prompt) {
-  const p = prompt.toLowerCase();
-
-  if (/python|code|program|coding/.test(p)) {
-    return `Let’s build this step by step.
-
-Try this beginner Python example:
-
-name = input("What is your name? ")
-print("Welcome to Ultra Goal,", name)
-
-What it teaches:
-• input() collects text from the user.
-• A variable stores that text.
-• print() displays a message.
-
-Mini-challenge: change the program so it also asks which topic you want to learn.
-
-Note: UG Chat is currently a demo and does not execute code or connect to a live AI model.`;
-  }
-
-  if (/robot|sensor|motor|simulation/.test(p)) {
-    return `A good first robotics project is a virtual obstacle-avoiding robot.
-
-Beginner plan:
-1. Represent the robot with a simple shape on a screen.
-2. Give it forward, left, right and stop actions.
-3. Add a simulated obstacle.
-4. If the path is blocked, turn; otherwise move forward.
-5. Test different obstacle positions.
-
-You can prototype the movement logic in Python first, then explore a free simulator such as Webots. You do not need to buy a physical robot for the first version.`;
-  }
-
-  if (/startup|business|company|zero budget|₹0|budget/.test(p)) {
-    return `For a ₹0 AI startup, start with a small problem rather than expensive hardware.
-
-A practical first idea: Ultra Goal Learning Assistant — a beginner tool that helps students learn Python and basic robotics in simple language.
-
-First steps:
-1. Talk to 5 students and ask what coding topic confuses them.
-2. Build a small Python prototype for one topic.
-3. Let them try it and ask what was useful or confusing.
-4. Improve the prototype before adding AI or hardware.
-
-Free prototypes are possible, but live AI APIs and public hosting may have limits or costs later.`;
-  }
-
-  if (/kannada|ಕನ್ನಡ|english/.test(p)) {
-    return `Artificial Intelligence (AI) ಅಂದರೆ computers ಬಳಸಿ learning, pattern recognition, language understanding ಮತ್ತು decision-support ಹೀಗೆ tasks ಮಾಡಿಸುವ technology.
-
-Example: A program can learn from examples to classify pictures. Machine Learning is one area of AI. Robotics combines software with sensors and physical or simulated machines.
-
-ನಿನಗೆ ಬೇಕಾದ topic ಹೇಳು — ನಾವು simple Kannada + Englishನಲ್ಲಿ step by step ಕಲಿಯೋಣ.`;
-  }
-
-  if (/hello|hi|hey|namaste/.test(p)) {
-    return `Hello! Welcome to Ultra Goal (UG) 👋
-
-I can help you practise Python, explore AI concepts, plan beginner robotics simulations, and shape your startup ideas.
-
-What would you like to learn first?`;
-  }
-
-  return `Thanks for your question! I’m the Ultra Goal (UG) chat prototype.
-
-I can currently show sample guidance about:
-• Python basics and small coding projects
-• AI and machine learning fundamentals
-• Beginner robotics and virtual simulations
-• Planning a low-budget technology startup
-
-This demo does not connect to a live AI model, so I can’t generate a true AI answer to every question yet. A later version can connect to an AI service.`;
-}
-
-$('chatForm').addEventListener('submit', event => {
-  event.preventDefault();
-  send();
-});
-
-textarea.addEventListener('input', resizeInput);
-
-textarea.addEventListener('keydown', event => {
-  if (
-    event.key === 'Enter' &&
-    !event.shiftKey &&
-    !event.isComposing
-  ) {
-    event.preventDefault();
-    send();
-  }
-});
-
-$('newChat').addEventListener('click', newChat);
-
-$('clearInput').addEventListener('click', () => {
-  textarea.value = '';
-  resizeInput();
-  textarea.focus();
-});
-
-document.querySelectorAll('[data-prompt]').forEach(button => {
-  button.addEventListener('click', () => {
-    textarea.value = button.dataset.prompt;
-    resizeInput();
-    send();
-  });
-});
-
-$('menuBtn').addEventListener('click', () => {
-  $('sidebar').classList.add('open');
-  $('overlay').classList.add('show');
-});
-
-$('overlay').addEventListener('click', closeSidebar);
-
-$('aboutBtn').addEventListener('click', () => {
-  alert(
-    'Ultra Goal (UG) is a learning project for AI, Python and robotics. This page is a demo UI, not a live AI service.'
-  );
-});
-
-$('topicBtn').addEventListener('click', () => {
-  learningMode = !learningMode;
-
-  $('topicBtn').textContent = learningMode
-    ? '✧ Learning mode'
-    : '✧ General mode';
-
-  textarea.placeholder = learningMode
-    ? 'Ask about AI, Python or robotics...'
-    : 'Message Ultra Goal...';
-});
 
 function loadChats() {
   try {
-    const saved = JSON.parse(
-      localStorage.getItem(STORAGE_KEY) || '[]'
+    const stored = JSON.parse(
+      localStorage.getItem(STORAGE_KEY) || "[]"
     );
 
-    chats = Array.isArray(saved) ? saved : [];
+    chats = Array.isArray(stored) ? stored : [];
   } catch (error) {
     chats = [];
   }
 
-  if (chats.length) {
+  if (chats.length > 0) {
     showChat(chats[0].id);
   } else {
+    activeChatId = null;
     showWelcome();
     renderHistory();
   }
 }
 
+/* EVENTS */
+
+$("chatForm").addEventListener("submit", event => {
+  event.preventDefault();
+  sendMessage();
+});
+
+textarea.addEventListener("input", resizeTextarea);
+
+textarea.addEventListener("keydown", event => {
+  if (
+    event.key === "Enter" &&
+    !event.shiftKey &&
+    !event.isComposing
+  ) {
+    event.preventDefault();
+    sendMessage();
+  }
+});
+
+$("newChat").addEventListener("click", newChat);
+
+$("clearButton").addEventListener("click", () => {
+  textarea.value = "";
+  resizeTextarea();
+  textarea.focus();
+});
+
+document.querySelectorAll("[data-prompt]").forEach(button => {
+  button.addEventListener("click", () => {
+    sendMessage(button.dataset.prompt);
+  });
+});
+
+$("menuButton").addEventListener("click", () => {
+  $("sidebar").classList.add("open");
+  $("overlay").classList.add("show");
+});
+
+$("overlay").addEventListener("click", closeSidebar);
+
+$("modeButton").addEventListener("click", () => {
+  learningMode = !learningMode;
+
+  $("modeButton").textContent = learningMode
+    ? "✧ Learning mode"
+    : "✧ General mode";
+
+  textarea.placeholder = learningMode
+    ? "Ask about AI, Python or robotics..."
+    : "Message Ultra Goal...";
+});
+
 loadChats();
-resizeInput();
+resizeTextarea();
 </script>
+
 </body>
 </html>
