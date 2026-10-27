@@ -1,5 +1,4 @@
- [Ultra_Goal_UG_Chat_Enhanced_Updated.html](https://github.com/user-attachments/files/34035449/Ultra_Goal_UG_Chat_Enhanced_Updated.html)
-<!DOCTYPE html>
+
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -95,6 +94,10 @@ button:disabled { opacity:.45; cursor:not-allowed }
   overflow:hidden; text-overflow:clip; white-space:nowrap;
 }
 #micBtn.listening { background:var(--danger); color:white; border-color:var(--danger) }
+.composer-input-row { display:flex; align-items:flex-end; gap:8px; }
+.composer-input-row textarea { flex:1; min-width:0; }
+.composer-mic { flex:0 0 38px; width:38px; height:38px; border-radius:50%; border:1px solid var(--line); background:var(--panel); color:var(--text); display:grid; place-items:center; font-size:17px; cursor:pointer; }
+.composer-mic:hover { border-color:var(--accent); }
 
 .chatarea { flex:1; overflow-y:auto; padding:22px 20px 18px; scroll-behavior:smooth }
 .welcome {
@@ -233,7 +236,6 @@ button:disabled { opacity:.45; cursor:not-allowed }
       </div>
       <div class="top-actions">
         <button class="iconbtn" id="themeTop" type="button" title="Toggle light/dark theme" aria-label="Toggle theme">☾</button>
-        <button class="iconbtn" id="micBtn" type="button" title="Voice input" aria-label="Start voice input">🎙️</button>
         <button class="profilebtn" id="profileBtn" type="button" aria-label="Open profile">UG</button>
       </div>
     </header>
@@ -255,7 +257,10 @@ button:disabled { opacity:.45; cursor:not-allowed }
 
     <div class="composer-wrap">
       <form class="composer" id="chatForm">
-        <textarea id="prompt" rows="1" maxlength="8000" placeholder="Message Ultra Goal..." aria-label="Message Ultra Goal"></textarea>
+        <div class="composer-input-row">
+          <textarea id="prompt" rows="1" maxlength="8000" placeholder="Message Ultra Goal..." aria-label="Message Ultra Goal"></textarea>
+          <button class="composer-mic" id="micBtn" type="button" title="Voice input" aria-label="Start voice input">🎙️</button>
+        </div>
         <div class="composer-bottom">
           <div class="toolrow">
             <button type="button" class="toolbtn" id="topicBtn">✧ Learning mode</button>
