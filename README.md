@@ -356,7 +356,11 @@ async function send(text){
     }
 
     if(!response.ok){
-      throw new Error(data.error || data.message || ('HTTP ' + response.status));
+       throw new Error(
+  [data.error, data.details, data.message, 'HTTP ' + response.status]
+    .filter(Boolean)
+    .join(' — ')
+);
     }
 
     const answer = typeof data === 'string' ? data :
