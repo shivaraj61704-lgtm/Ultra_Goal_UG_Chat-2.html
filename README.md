@@ -200,6 +200,107 @@ button:disabled { opacity:.45; cursor:not-allowed }
 @media(prefers-reduced-motion:reduce) {
   *,*::before,*::after { scroll-behavior:auto!important; animation:none!important; transition:none!important }
 }
+
+
+/* Responsive polish: touch-friendly controls, safe areas, and compact mobile layout. */
+:root { --safe-bottom: env(safe-area-inset-bottom, 0px); }
+html { -webkit-text-size-adjust:100%; text-size-adjust:100%; }
+body { overscroll-behavior:none; }
+button { -webkit-tap-highlight-color:transparent; touch-action:manipulation; }
+.app { min-height:0; min-height:100dvh; }
+.main,.chatarea,.messages,.sidebar { min-height:0; }
+.chatarea { overscroll-behavior:contain; scrollbar-gutter:stable; }
+.composer-wrap { flex-shrink:0; padding-bottom:calc(15px + var(--safe-bottom)); }
+.composer { transition:border-color .18s, box-shadow .18s; }
+.composer:focus-within { border-color:color-mix(in srgb,var(--accent) 55%,var(--line)); box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 10%,transparent),var(--shadow); }
+.composer-input-row textarea { overflow-y:auto; }
+.composer-mic,.send { touch-action:manipulation; }
+.composer-mic { transition:background .15s,border-color .15s,transform .15s; }
+.composer-mic:active,.send:active,.iconbtn:active,.profilebtn:active { transform:scale(.96); }
+.suggestion,.sidebutton,.newchat,.history-item,.toolbtn,.iconbtn,.profilebtn { transition:background .15s,border-color .15s,transform .15s; }
+.message-content img,.message-content video { max-width:100%; height:auto; }
+.message-content pre { -webkit-overflow-scrolling:touch; }
+
+@media (max-width:760px) {
+  html,body { width:100%; height:100%; height:100dvh; overflow:hidden; }
+  .app { height:100%; height:100dvh; width:100%; overflow:hidden; }
+  .sidebar { width:min(320px,86vw); max-width:86vw; padding:calc(14px + env(safe-area-inset-top,0px)) 12px calc(12px + var(--safe-bottom)); gap:12px; }
+  .brandrow { padding-bottom:5px; }
+  .newchat,.sidebutton { min-height:44px; font-size:14px; }
+  .history-item { min-height:42px; font-size:14px; }
+  .topbar { min-height:56px; padding:calc(5px + env(safe-area-inset-top,0px)) 12px 5px; gap:8px; }
+  .top-left { gap:8px; }
+  .menu { width:40px; height:40px; display:grid; place-items:center; border-radius:11px; flex-shrink:0; }
+  .menu:hover { background:var(--panel2); }
+  .modelname { font-size:15px; }
+  .modeltag { font-size:10px; margin-left:5px; }
+  .iconbtn,.profilebtn { width:40px; height:40px; min-width:40px; border-radius:13px; }
+  .profilebtn { border-radius:50%; }
+  .chatarea { padding:18px 14px 16px; scroll-padding-bottom:20px; }
+  .welcome { justify-content:center; padding:18px 0 28px; }
+  .welcome-logo { margin-bottom:17px; }
+  .welcome h1 { font-size:clamp(28px,7vw,38px); letter-spacing:-.7px; }
+  .welcome p { font-size:14px; line-height:1.65; padding:0 3px; }
+  .suggestions { grid-template-columns:repeat(2,minmax(0,1fr)); gap:9px; margin-top:22px; }
+  .suggestion { min-width:0; min-height:92px; padding:12px; border-radius:15px; }
+  .suggestion b { font-size:12px; line-height:1.35; }
+  .suggestion span { display:block; font-size:11px; line-height:1.45; }
+  .messages { gap:22px; padding-bottom:16px; }
+  .msg { gap:8px; }
+  .mini-logo { width:29px; height:29px; border-radius:10px; }
+  .msgbody { max-width:calc(100% - 37px); font-size:14px; line-height:1.75; }
+  .msg.user { padding-left:10%; }
+  .userbubble { max-width:100%; padding:11px 13px; border-radius:18px 18px 5px 18px; font-size:14px; }
+  .composer-wrap { padding:8px 10px calc(9px + var(--safe-bottom)); background:var(--bg); }
+  .composer { max-width:100%; border-radius:23px; padding:11px 10px 8px 13px; }
+  .composer-input-row { gap:7px; align-items:flex-end; }
+  .composer textarea { min-height:28px; max-height:130px; font-size:16px; line-height:1.45; padding:3px 0; }
+  .composer-mic { flex-basis:40px; width:40px; height:40px; font-size:17px; }
+  .composer-bottom { gap:5px; margin-top:6px; align-items:center; }
+  .toolrow { gap:2px; min-width:0; }
+  .toolbtn { min-height:36px; padding:7px 7px; font-size:11px; white-space:nowrap; }
+  .send { height:40px; width:42px; min-width:42px; font-size:20px; }
+  .disclaimer { font-size:10px; margin-top:7px; line-height:1.4; padding:0 5px; }
+  .modal-backdrop { padding:12px; padding-bottom:calc(12px + var(--safe-bottom)); }
+  .modal { max-height:calc(100dvh - 24px - var(--safe-bottom)); overflow-y:auto; padding:20px; border-radius:20px; }
+  .toast { bottom:calc(16px + var(--safe-bottom)); }
+}
+@media (max-width:430px) {
+  .topbar { padding-left:8px; padding-right:8px; }
+  .top-left { gap:5px; }
+  .menu { width:36px; height:38px; }
+  .modeltag { display:none; }
+  .top-actions { gap:5px; }
+  .iconbtn,.profilebtn { width:36px; height:36px; min-width:36px; }
+  .chatarea { padding-left:11px; padding-right:11px; }
+  .suggestions { gap:8px; }
+  .suggestion { min-height:88px; padding:10px; }
+  .composer-wrap { padding-left:7px; padding-right:7px; }
+  .composer { padding-left:11px; padding-right:8px; }
+  .toolbtn { padding-left:5px; padding-right:5px; font-size:10.5px; }
+  .composer-mic { width:38px; height:38px; flex-basis:38px; }
+  .send { width:39px; min-width:39px; height:39px; }
+}
+@media (max-width:350px) {
+  .suggestions { grid-template-columns:1fr; }
+  .suggestion { min-height:64px; }
+  .composer-bottom { align-items:flex-end; }
+  #topicBtn { max-width:116px; overflow:hidden; text-overflow:ellipsis; }
+  #clearInput { display:none; }
+}
+@media (max-height:560px) and (max-width:760px) {
+  .welcome { justify-content:flex-start; padding-top:10px; }
+  .welcome-logo { width:42px; height:42px; border-radius:15px; margin-bottom:10px; }
+  .welcome h1 { font-size:26px; margin-bottom:8px; }
+  .welcome p { font-size:12px; }
+  .suggestions { margin-top:14px; }
+  .suggestion { min-height:65px; }
+  .composer textarea { max-height:90px; }
+}
+@media (prefers-reduced-motion:reduce) {
+  .composer,.composer-mic,.suggestion,.sidebutton,.newchat,.history-item,.toolbtn,.iconbtn,.profilebtn { transition:none!important; }
+}
+
 </style>
 </head>
 
