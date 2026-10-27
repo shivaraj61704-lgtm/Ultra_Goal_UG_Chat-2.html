@@ -503,15 +503,29 @@ resizeInput();
 
 <!-- Render mathematical formulas -->
 <script>
-  window.MathJax = {
-    tex: {
-      inlineMath: [['\\(', '\\)']],
-      displayMath: [['\\[', '\\]']]
-    },
-    options: {
-      skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-    }
-  };
+   
+window.MathJax = {
+  tex: {
+    inlineMath: [
+      ['\\(', '\\)'],
+      ['$', '$']
+    ],
+    displayMath: [
+      ['\\[', '\\]'],
+      ['$$', '$$']
+    ]
+  },
+  options: {
+    skipHtmlTags: [
+      'script', 'noscript', 'style',
+      'textarea', 'pre', 'code'
+    ]
+  },
+  startup: {
+    typeset: false
+  }
+};
+
 </script>
 <script
   defer
