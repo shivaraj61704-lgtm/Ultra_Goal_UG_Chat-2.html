@@ -1,4 +1,4 @@
- <!doctype html>
+
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -494,5 +494,29 @@ function loadChats(){
 loadChats();
 resizeInput();
 </script>
+
+<!-- Markdown formatting -->
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+<!-- Sanitize AI-generated HTML for safer display -->
+<script src="https://cdn.jsdelivr.net/npm/dompurify/dist/purify.min.js"></script>
+
+<!-- Render mathematical formulas -->
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['\\(', '\\)']],
+      displayMath: [['\\[', '\\]']]
+    },
+    options: {
+      skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+  };
+</script>
+<script
+  defer
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+
 </body>
 </html>
