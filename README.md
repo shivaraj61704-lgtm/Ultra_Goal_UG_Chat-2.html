@@ -1,4 +1,5 @@
-
+ [Ultra_Goal_AI_Mobile_Responsive_Updated (1).html](https://github.com/user-attachments/files/34037170/Ultra_Goal_AI_Mobile_Responsive_Updated.1.html)
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -301,6 +302,22 @@ button { -webkit-tap-highlight-color:transparent; touch-action:manipulation; }
   .composer,.composer-mic,.suggestion,.sidebutton,.newchat,.history-item,.toolbtn,.iconbtn,.profilebtn { transition:none!important; }
 }
 
+
+/* Viewport/layout fix: keep the complete message composer visible at the bottom. */
+html, body { width:100%; height:100%; min-height:0; }
+.app { height:100vh; height:100dvh; min-height:0; overflow:hidden; }
+.main { height:100%; min-height:0; overflow:hidden; }
+.chatarea { flex:1 1 0%; min-height:0; min-width:0; }
+.composer-wrap { flex:0 0 auto; min-width:0; padding-bottom:calc(12px + var(--safe-bottom, 0px)); }
+.composer { width:100%; min-width:0; }
+@media (max-height:650px) and (min-width:761px) {
+  .topbar { min-height:48px; padding-top:3px; padding-bottom:3px; }
+  .composer-wrap { padding-top:5px; padding-bottom:7px; }
+  .composer { padding-top:8px; padding-bottom:6px; }
+  .composer-bottom { margin-top:4px; }
+  .disclaimer { margin-top:4px; }
+  .chatarea { padding-top:12px; padding-bottom:10px; }
+}
 </style>
 </head>
 
@@ -719,6 +736,112 @@ function makeTyping(id) {
   $('messages').appendChild(row);
 }
 
+
+/* Temporary assistant row for live word/chunk updates. */
+function makeLiveAnswerRow(chatId) {
+  const row = document.createElement('div');
+  row.className = 'msg assistant';
+  row.dataset.liveAnswerFor = chatId;
+  const logo = document.createElement('div');
+  logo.className = 'mini-logo';
+  logo.textContent = 'UG';
+  const content = document.createElement('div');
+  content.className = 'msgbody';
+  const answer = document.createElement('div');
+  answer.className = 'message-content live-answer';
+  answer.setAttribute('aria-live', 'polite');
+  content.appendChild(answer);
+  row.append(logo, content);
+  $('messages').appendChild(row);
+  return { row, answer };
+}
+
+function updateLiveAnswer(target, text) {
+  target.answer.textContent = text;
+  scrollBottom();
+}
+
+/* Supports SSE and plain-text streams, while retaining compatibility with JSON Workers. */
+async function readWorkerAnswer(response, onStreamText) {
+  const contentType = (response.headers.get('content-type') || '').toLowerCase();
+  const canReadStream = response.body && typeof response.body.getReader === 'function';
+  if (canReadStream && (contentType.includes('text/event-stream') || contentType.startsWith('text/plain'))) {
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = '';
+    let accumulated = '';
+    const isSSE = contentType.includes('text/event-stream');
+    const consumeSSE = chunk => {
+      buffer += chunk;
+      const events = buffer.split(/\r?\n\r?\n/);
+      buffer = events.pop() || '';
+      for (const block of events) {
+        const lines = block.split(/\r?\n/).filter(line => line.startsWith('data:'));
+        if (!lines.length) continue;
+        const payload = lines.map(line => line.slice(5).trimStart()).join('\n');
+        if (payload === '[DONE]') continue;
+        try {
+          const parsed = JSON.parse(payload);
+          const delta = parsed?.choices?.[0]?.delta?.content ?? parsed?.delta?.text ??
+            parsed?.delta ?? parsed?.token ?? parsed?.text ?? parsed?.response ?? parsed?.content;
+          if (typeof delta === 'string' && delta) {
+            accumulated += delta;
+            onStreamText(accumulated);
+          }
+        } catch (_) {
+          accumulated += payload;
+          onStreamText(accumulated);
+        }
+      }
+    };
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) break;
+      const chunk = decoder.decode(value, { stream: true });
+      if (isSSE) consumeSSE(chunk);
+      else { accumulated += chunk; onStreamText(accumulated); }
+    }
+    const tail = decoder.decode();
+    if (tail) {
+      if (isSSE) consumeSSE(tail);
+      else { accumulated += tail; onStreamText(accumulated); }
+    }
+    if (isSSE) {
+      if (!accumulated.trim()) throw new Error('The streaming Worker returned no answer text.');
+      return accumulated;
+    }
+    try {
+      const parsed = JSON.parse(accumulated);
+      const answer = extractAnswer(parsed);
+      if (answer) return answer;
+    } catch (_) { /* A plain-text stream is expected. */ }
+    return accumulated;
+  }
+  const raw = await response.text();
+  let data;
+  try { data = raw ? JSON.parse(raw) : {}; }
+  catch (_) { data = { error: raw || 'Server returned an unreadable response.' }; }
+  if (!response.ok) {
+    const detail = [data.error, data.details, data.message, 'HTTP ' + response.status].filter(Boolean).join(' — ');
+    throw new Error(detail || 'Worker request failed.');
+  }
+  const answer = extractAnswer(data);
+  if (!answer.trim()) throw new Error(data.error || 'The Worker returned no answer text. Check its API response format.');
+  return answer;
+}
+
+/* Existing Workers returning JSON get a smooth word-by-word reveal without backend changes. */
+async function revealAnswerWordByWord(target, text, signal) {
+  const words = text.match(/\S+\s*/g) || [text];
+  let visible = '';
+  for (let i = 0; i < words.length; i++) {
+    if (signal?.aborted) throw new DOMException('Generation stopped.', 'AbortError');
+    visible += words[i];
+    updateLiveAnswer(target, visible);
+    if (i % 3 === 2) await new Promise(resolve => setTimeout(resolve, 18));
+  }
+}
+
 /* Accept common response formats returned by different Worker implementations. */
 function extractAnswer(data) {
   if (typeof data === 'string') return data;
@@ -807,21 +930,30 @@ async function send(textOverride, options = {}) {
       signal: activeController.signal
     });
 
-    const raw = await response.text();
-    let data;
-    try { data = raw ? JSON.parse(raw) : {}; }
-    catch (_) { data = { error: raw || 'Server returned an unreadable response.' }; }
-
     if (!response.ok) {
-      const detail = [data.error, data.details, data.message, 'HTTP ' + response.status]
+      const rawError = await response.text();
+      let errorData = {};
+      try { errorData = rawError ? JSON.parse(rawError) : {}; }
+      catch (_) { errorData = { error: rawError }; }
+      const detail = [errorData.error, errorData.details, errorData.message, 'HTTP ' + response.status]
         .filter(Boolean).join(' — ');
       throw new Error(detail || 'Worker request failed.');
     }
 
-    const answer = extractAnswer(data);
-    if (!answer.trim()) {
-      throw new Error(data.error || 'The Worker returned no answer text. Check its API response format.');
+    const live = activeChatId === chatId ? makeLiveAnswerRow(chatId) : null;
+    $('messages').querySelector('[data-typing-for="' + chatId + '"]')?.remove();
+    const contentType = (response.headers.get('content-type') || '').toLowerCase();
+    let answer;
+    if (contentType.includes('text/event-stream') || contentType.startsWith('text/plain')) {
+      answer = await readWorkerAnswer(response, text => {
+        if (live && activeChatId === chatId) updateLiveAnswer(live, text);
+      });
+    } else {
+      answer = await readWorkerAnswer(response, () => {});
+      if (live && activeChatId === chatId) await revealAnswerWordByWord(live, answer, activeController?.signal);
     }
+    answer = answer.trim();
+    if (!answer) throw new Error('The Worker returned no answer text. Check its API response format.');
 
     const latestChat = chats.find(item => item.id === chatId);
     if (latestChat) {
@@ -830,15 +962,18 @@ async function send(textOverride, options = {}) {
     }
 
     if (activeChatId === chatId) {
-      $('messages').querySelector('[data-typing-for="' + chatId + '"]')?.remove();
-      appendMessage('assistant', answer.trim(), true, (activeChat()?.messages.length || 1) - 1);
+      $('messages').querySelector('[data-live-answer-for="' + chatId + '"]')?.remove();
+      appendMessage('assistant', answer, true, (activeChat()?.messages.length || 1) - 1);
       scrollBottom();
     }
   } catch (error) {
     if (error.name === 'AbortError') {
+      $('messages').querySelector('[data-live-answer-for="' + chatId + '"]')?.remove();
+      $('messages').querySelector('[data-typing-for="' + chatId + '"]')?.remove();
       showToast('Generation stopped.');
     } else if (activeChatId === chatId) {
       $('messages').querySelector('[data-typing-for="' + chatId + '"]')?.remove();
+      $('messages').querySelector('[data-live-answer-for="' + chatId + '"]')?.remove();
       const message = error?.message || 'Please try again.';
       appendMessage(
         'assistant',
