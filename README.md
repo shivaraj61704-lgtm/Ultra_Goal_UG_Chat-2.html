@@ -1,4 +1,4 @@
- [Ultra_Goal_AI_Mobile_Responsive_Updated (1).html](https://github.com/user-attachments/files/34037170/Ultra_Goal_AI_Mobile_Responsive_Updated.1.html)
+ [Ultra_Goal_AI_Mobile_Responsive_Updated (2).html](https://github.com/user-attachments/files/34037848/Ultra_Goal_AI_Mobile_Responsive_Updated.2.html)
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -318,6 +318,42 @@ html, body { width:100%; height:100%; min-height:0; }
   .disclaimer { margin-top:4px; }
   .chatarea { padding-top:12px; padding-bottom:10px; }
 }
+
+
+/* Table readability + full-viewport layout correction */
+.messages { max-width:none; width:100%; }
+.msgbody { max-width:calc(100% - 42px); }
+.composer { max-width:none; width:100%; }
+.disclaimer { max-width:none; width:100%; }
+.message-content { min-width:0; width:100%; }
+.message-content table {
+  width:max-content; min-width:100%; max-width:100%;
+  border-collapse:separate; border-spacing:0; display:block;
+  overflow-x:auto; overflow-y:hidden; border:1px solid var(--line);
+  border-radius:9px; background:var(--bg); color:var(--text);
+  -webkit-overflow-scrolling:touch;
+}
+.message-content thead { background:var(--panel2); color:var(--text); }
+.message-content th {
+  background:var(--panel2); color:var(--text); font-weight:750;
+  border-color:var(--line); white-space:normal;
+}
+.message-content td {
+  background:var(--bg); color:var(--text); border-color:var(--line);
+  vertical-align:top; min-width:72px;
+}
+.message-content tbody tr:nth-child(even) td { background:var(--panel); }
+.message-content tbody tr:hover td { background:var(--panel2); }
+.message-content th,.message-content td { padding:10px 12px; }
+@media (max-width:760px) {
+  .messages { max-width:none; width:100%; }
+  .msgbody { max-width:calc(100% - 37px); }
+  .composer-wrap { width:100%; }
+  .composer { width:100%; max-width:none; }
+  .message-content table { font-size:13px; }
+  .message-content th,.message-content td { padding:8px 10px; }
+}
+
 </style>
 </head>
 
