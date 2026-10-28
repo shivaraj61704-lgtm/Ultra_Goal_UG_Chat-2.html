@@ -1,4 +1,4 @@
- [Ultra_Goal_AI_Mobile_Responsive_Updated (2).html](https://github.com/user-attachments/files/34037848/Ultra_Goal_AI_Mobile_Responsive_Updated.2.html)
+ [Uploading Ultra_Goal_AI_Fixed.html…]()
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -97,6 +97,12 @@ button:disabled { opacity:.45; cursor:not-allowed }
 #micBtn.listening { background:var(--danger); color:white; border-color:var(--danger) }
 .composer-input-row { display:flex; align-items:flex-end; gap:8px; }
 .composer-input-row textarea { flex:1; min-width:0; }
+.file-upload-btn { flex:0 0 38px; width:38px; height:38px; border-radius:50%; border:1px solid var(--line); background:var(--panel); color:var(--text); display:grid; place-items:center; font-size:18px; cursor:pointer; }
+.file-upload-btn:hover { border-color:var(--accent); }
+.file-preview { display:flex; align-items:center; gap:8px; min-width:0; margin:8px 4px 2px; padding:8px 10px; border:1px solid var(--line); border-radius:12px; background:var(--panel); font-size:12px; color:var(--text); }
+.file-preview-name { min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; flex:1; }
+.file-preview-remove { border:0; background:transparent; color:var(--muted); font-size:18px; padding:0 4px; }
+.file-status { color:var(--muted); font-size:11px; padding:2px 5px; }
 .composer-mic { flex:0 0 38px; width:38px; height:38px; border-radius:50%; border:1px solid var(--line); background:var(--panel); color:var(--text); display:grid; place-items:center; font-size:17px; cursor:pointer; }
 .composer-mic:hover { border-color:var(--accent); }
 
@@ -354,6 +360,33 @@ html, body { width:100%; height:100%; min-height:0; }
   .message-content th,.message-content td { padding:8px 10px; }
 }
 
+
+/* Final welcome-screen layout: match the compact mobile reference and keep the composer visible. */
+html, body { margin:0; padding:0; width:100%; height:100%; overflow:hidden; }
+.app { width:100%; height:100vh; height:100dvh; min-height:0; }
+.main { flex:1 1 auto; width:100%; min-width:0; min-height:0; }
+.topbar { flex:0 0 auto; }
+.chatarea { flex:1 1 0%; min-height:0; overflow-x:hidden; overflow-y:auto; }
+.welcome { width:100%; max-width:850px; min-height:100%; margin:0 auto; }
+.composer-wrap { position:relative; z-index:2; flex:0 0 auto; width:100%; padding-left:clamp(7px,2vw,20px); padding-right:clamp(7px,2vw,20px); padding-bottom:calc(9px + env(safe-area-inset-bottom, 0px)); background:var(--bg); }
+.composer { width:100%; max-width:100%; margin:0 auto; }
+.disclaimer { text-align:center; }
+@media (max-width:760px) {
+  .topbar { min-height:44px; padding-top:4px; padding-bottom:4px; }
+  .chatarea { padding:12px 11px 12px; }
+  .welcome { justify-content:center; padding:12px 0 20px; }
+  .welcome-logo { width:54px; height:54px; border-radius:20px; margin-bottom:16px; }
+  .welcome h1 { font-size:clamp(27px,7vw,36px); line-height:1.15; margin-bottom:12px; }
+  .welcome p { font-size:14px; line-height:1.6; max-width:560px; }
+  .suggestions { margin-top:22px; width:100%; max-width:600px; grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .suggestion { min-width:0; }
+  .composer-wrap { padding-top:7px; }
+  .composer { border-radius:24px; }
+}
+@media (max-height:760px) and (max-width:760px) {
+  .welcome { justify-content:flex-start; }
+}
+
 </style>
 </head>
 
@@ -412,8 +445,15 @@ html, body { width:100%; height:100%; min-height:0; }
     <div class="composer-wrap">
       <form class="composer" id="chatForm">
         <div class="composer-input-row">
+          <button class="file-upload-btn" id="fileUploadBtn" type="button" title="Attach PDF or document" aria-label="Attach PDF or document">📎</button>
+          <input id="fileInput" type="file" accept=".pdf,.docx,.txt,.md,.csv,.json,.html,.xml,.log" hidden>
           <textarea id="prompt" rows="1" maxlength="8000" placeholder="Message Ultra Goal..." aria-label="Message Ultra Goal"></textarea>
           <button class="composer-mic" id="micBtn" type="button" title="Voice input" aria-label="Start voice input">🎙️</button>
+        </div>
+        <div id="filePreview" class="file-preview hidden" aria-live="polite">
+          <span aria-hidden="true">📄</span><span id="filePreviewName" class="file-preview-name"></span>
+          <span id="fileStatus" class="file-status">Ready</span>
+          <button id="removeFileBtn" class="file-preview-remove" type="button" aria-label="Remove attachment" title="Remove attachment">×</button>
         </div>
         <div class="composer-bottom">
           <div class="toolrow">
@@ -468,6 +508,8 @@ let activeController = null;
 let toastTimer = null;
 let recognition = null;
 let listening = false;
+let selectedDocument = null;
+let documentReadBusy = false;
 
 function activeChat() {
   return chats.find(c => c.id === activeChatId) || null;
@@ -747,7 +789,7 @@ function scrollBottom() {
 function resizeInput() {
   textarea.style.height = 'auto';
   textarea.style.height = Math.min(textarea.scrollHeight, 170) + 'px';
-  sendBtn.disabled = !textarea.value.trim() || !!activeController;
+  sendBtn.disabled = (!textarea.value.trim() && !selectedDocument) || !!activeController || documentReadBusy;
 }
 
 function closeSidebar() {
@@ -896,11 +938,103 @@ function extractAnswer(data) {
   return candidates.find(value => typeof value === 'string' && value.trim()) || '';
 }
 
+function loadExternalScript(src, test) {
+  if (test()) return Promise.resolve();
+  return new Promise((resolve, reject) => {
+    const existing = document.querySelector('script[data-dynamic-src="' + src + '"]');
+    if (existing) {
+      existing.addEventListener('load', resolve, { once: true });
+      existing.addEventListener('error', reject, { once: true });
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = src;
+    script.async = true;
+    script.dataset.dynamicSrc = src;
+    script.onload = resolve;
+    script.onerror = () => reject(new Error('Could not load the document reader library. Check your internet connection and try again.'));
+    document.head.appendChild(script);
+  });
+}
+
+async function extractDocumentText(file) {
+  const name = file.name || 'document';
+  const ext = name.includes('.') ? name.split('.').pop().toLowerCase() : '';
+  if (file.size > 15 * 1024 * 1024) throw new Error('Please choose a file smaller than 15 MB.');
+  if (['txt','md','csv','json','html','xml','log'].includes(ext) || file.type.startsWith('text/')) {
+    return await file.text();
+  }
+  if (ext === 'pdf' || file.type === 'application/pdf') {
+    await loadExternalScript('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js', () => !!window.pdfjsLib);
+    if (!window.pdfjsLib) throw new Error('PDF reader could not start.');
+    window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    const data = new Uint8Array(await file.arrayBuffer());
+    const pdf = await window.pdfjsLib.getDocument({ data }).promise;
+    const pages = [];
+    for (let n = 1; n <= pdf.numPages; n++) {
+      const page = await pdf.getPage(n);
+      const content = await page.getTextContent();
+      pages.push(content.items.map(item => item.str || '').join(' '));
+    }
+    return pages.map((text, i) => '[Page ' + (i + 1) + ']\n' + text).join('\n\n');
+  }
+  if (ext === 'docx' || file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+    await loadExternalScript('https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.8.0/mammoth.browser.min.js', () => !!window.mammoth);
+    if (!window.mammoth) throw new Error('Word document reader could not start.');
+    const result = await window.mammoth.extractRawText({ arrayBuffer: await file.arrayBuffer() });
+    return result.value || '';
+  }
+  throw new Error('Supported files: PDF, DOCX, TXT, Markdown, CSV, JSON, HTML, XML and LOG. Old .doc files are not supported; save them as .docx or PDF.');
+}
+
+function setDocumentPreview(name, status) {
+  $('filePreview').classList.remove('hidden');
+  $('filePreviewName').textContent = name;
+  $('fileStatus').textContent = status;
+}
+
+$('fileUploadBtn').addEventListener('click', () => $('fileInput').click());
+$('fileInput').addEventListener('change', async event => {
+  const file = event.target.files && event.target.files[0];
+  if (!file) return;
+  selectedDocument = null;
+  documentReadBusy = true;
+  $('sendBtn').disabled = true;
+  setDocumentPreview(file.name, 'Reading…');
+  try {
+    const extracted = (await extractDocumentText(file)).trim();
+    if (!extracted) throw new Error('No readable text was found. This may be a scanned PDF; use a text-based PDF or OCR it first.');
+    selectedDocument = { name: file.name, text: extracted.slice(0, 30000) };
+    setDocumentPreview(file.name, extracted.length > 30000 ? 'Ready · first 30,000 chars' : 'Ready');
+    showToast('Document ready. Ask a question or press Send to summarize it.');
+  } catch (error) {
+    selectedDocument = null;
+    $('filePreview').classList.add('hidden');
+    showToast(error.message || 'Could not read this file.');
+    event.target.value = '';
+  } finally {
+    documentReadBusy = false;
+    sendBtn.disabled = !textarea.value.trim() && !selectedDocument;
+  }
+});
+$('removeFileBtn').addEventListener('click', () => {
+  selectedDocument = null;
+  $('fileInput').value = '';
+  $('filePreview').classList.add('hidden');
+  sendBtn.disabled = (!textarea.value.trim() && !selectedDocument) || !!activeController || documentReadBusy;
+  textarea.focus();
+});
+
 async function send(textOverride, options = {}) {
   if (activeController) return;
 
-  const value = (textOverride ?? textarea.value).trim();
+  const typedValue = (textOverride ?? textarea.value).trim();
+  if (documentReadBusy) { showToast('Please wait until the document finishes reading.'); return; }
+  const value = typedValue || (selectedDocument ? 'Please summarize this document.' : '');
   if (!value && !options.regenerate) return;
+  const attached = !options.regenerate && selectedDocument ? selectedDocument : null;
+  const displayValue = attached ? '📎 ' + attached.name + '\n\n' + value : value;
+  const requestValue = attached ? 'Attached document: ' + attached.name + '\n\nDocument text:\n' + attached.text + '\n\nUser question: ' + value : value;
 
   let chat = activeChat();
   if (!chat) {
@@ -920,11 +1054,13 @@ async function send(textOverride, options = {}) {
   } else if (editingMessageIndex !== null) {
     const index = editingMessageIndex;
     chat.messages = chat.messages.slice(0, index);
-    chat.messages.push({ role: 'user', text: value });
+    chat.messages.push({ role: 'user', text: displayValue, context: requestValue });
     editingMessageIndex = null;
   } else {
-    chat.messages.push({ role: 'user', text: value });
+    chat.messages.push({ role: 'user', text: displayValue, context: requestValue });
   }
+
+  if (attached) { selectedDocument = null; $('fileInput').value = ''; $('filePreview').classList.add('hidden'); }
 
   if (chat.title === 'New chat') chat.title = value.slice(0, 34) || 'New chat';
   saveChats();
@@ -952,7 +1088,7 @@ async function send(textOverride, options = {}) {
     const messages = (current?.messages || [])
       .filter(message => message.role === 'user' || message.role === 'assistant')
       .slice(-30)
-      .map(message => ({ role: message.role, content: message.text }));
+      .map(message => ({ role: message.role, content: message.context || message.text }));
 
     const latestUser = [...messages].reverse().find(message => message.role === 'user');
     const response = await fetch(WORKER_URL, {
@@ -1042,6 +1178,7 @@ textarea.addEventListener('keydown', event => {
 $('newChat').addEventListener('click', newChat);
 $('clearInput').addEventListener('click', () => {
   textarea.value = '';
+  selectedDocument = null; $('fileInput').value = ''; $('filePreview').classList.add('hidden');
   editingMessageIndex = null;
   resizeInput();
   textarea.focus();
