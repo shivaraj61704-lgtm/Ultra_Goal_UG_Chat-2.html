@@ -1,4 +1,4 @@
- [Uploading Ultra_Goal_AI_Fixed.html…]()
+ [Ultra_Goal_AI_Fixed_Download.html](https://github.com/user-attachments/files/34056914/Ultra_Goal_AI_Fixed_Download.html)
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -326,6 +326,24 @@ html, body { width:100%; height:100%; min-height:0; }
 }
 
 
+/* Startup/mobile correction: keep the composer visible immediately and avoid a tall welcome panel pushing it below the screen. */
+html, body { margin:0; padding:0; width:100%; height:100%; overflow:hidden; }
+.app { display:flex; width:100%; height:100vh; height:100dvh; min-height:0; overflow:hidden; }
+.main { display:flex; flex:1 1 auto; flex-direction:column; min-width:0; min-height:0; height:100%; overflow:hidden; }
+.topbar { flex:0 0 auto; }
+.chatarea { flex:1 1 0%; min-height:0; overflow-y:auto; }
+.composer-wrap { position:relative; z-index:2; flex:0 0 auto; width:100%; padding-bottom:calc(10px + env(safe-area-inset-bottom, 0px)); background:var(--bg); }
+.composer { width:100%; max-width:none; }
+.welcome { min-height:0; }
+@media (max-width:760px) {
+  .app { height:100vh; height:100dvh; }
+  .main { height:100%; }
+  .chatarea { padding-bottom:12px; }
+  .welcome { min-height:0; justify-content:flex-start; padding-top:12px; padding-bottom:18px; }
+  .composer-wrap { padding-left:8px; padding-right:8px; padding-top:7px; }
+  .composer { max-width:none; }
+}
+
 /* Table readability + full-viewport layout correction */
 .messages { max-width:none; width:100%; }
 .msgbody { max-width:calc(100% - 42px); }
@@ -358,33 +376,6 @@ html, body { width:100%; height:100%; min-height:0; }
   .composer { width:100%; max-width:none; }
   .message-content table { font-size:13px; }
   .message-content th,.message-content td { padding:8px 10px; }
-}
-
-
-/* Final welcome-screen layout: match the compact mobile reference and keep the composer visible. */
-html, body { margin:0; padding:0; width:100%; height:100%; overflow:hidden; }
-.app { width:100%; height:100vh; height:100dvh; min-height:0; }
-.main { flex:1 1 auto; width:100%; min-width:0; min-height:0; }
-.topbar { flex:0 0 auto; }
-.chatarea { flex:1 1 0%; min-height:0; overflow-x:hidden; overflow-y:auto; }
-.welcome { width:100%; max-width:850px; min-height:100%; margin:0 auto; }
-.composer-wrap { position:relative; z-index:2; flex:0 0 auto; width:100%; padding-left:clamp(7px,2vw,20px); padding-right:clamp(7px,2vw,20px); padding-bottom:calc(9px + env(safe-area-inset-bottom, 0px)); background:var(--bg); }
-.composer { width:100%; max-width:100%; margin:0 auto; }
-.disclaimer { text-align:center; }
-@media (max-width:760px) {
-  .topbar { min-height:44px; padding-top:4px; padding-bottom:4px; }
-  .chatarea { padding:12px 11px 12px; }
-  .welcome { justify-content:center; padding:12px 0 20px; }
-  .welcome-logo { width:54px; height:54px; border-radius:20px; margin-bottom:16px; }
-  .welcome h1 { font-size:clamp(27px,7vw,36px); line-height:1.15; margin-bottom:12px; }
-  .welcome p { font-size:14px; line-height:1.6; max-width:560px; }
-  .suggestions { margin-top:22px; width:100%; max-width:600px; grid-template-columns:repeat(2,minmax(0,1fr)); }
-  .suggestion { min-width:0; }
-  .composer-wrap { padding-top:7px; }
-  .composer { border-radius:24px; }
-}
-@media (max-height:760px) and (max-width:760px) {
-  .welcome { justify-content:flex-start; }
 }
 
 </style>
