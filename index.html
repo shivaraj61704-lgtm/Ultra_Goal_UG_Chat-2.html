@@ -1,5 +1,4 @@
-
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -14,7 +13,9 @@
 window.MathJax = {
   tex: {
     inlineMath: [['\\(', '\\)'], ['$', '$']],
-    displayMath: [['\\[', '\\]'], ['$$', '$$']]
+    displayMath: [['\\[', '\\]'], ['$$', '$$']],
+    processEscapes: true,
+    processEnvironments: true
   },
   options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] },
   startup: { typeset: false }
@@ -95,14 +96,14 @@ button:disabled { opacity:.45; cursor:not-allowed }
   overflow:hidden; text-overflow:clip; white-space:nowrap;
 }
 #micBtn.listening { background:var(--danger); color:white; border-color:var(--danger) }
+.file-input-hidden { position:absolute!important; width:1px!important; height:1px!important; opacity:0!important; overflow:hidden!important; pointer-events:none!important }
+.file-chip { display:flex; align-items:center; gap:8px; max-width:100%; margin:8px 0 0; padding:7px 10px; border:1px solid var(--line); border-radius:10px; background:var(--panel); color:var(--muted); font-size:12px; overflow-wrap:anywhere }
+.file-chip button { border:0; background:transparent; color:var(--text); padding:2px 5px }
+.upload-btn { border:0; background:transparent; color:var(--muted); border-radius:9px; padding:7px 9px; font-size:12px }
+.upload-btn:hover { background:var(--panel); color:var(--text) }
+.speak-btn.speaking { color:var(--accent); font-weight:800 }
 .composer-input-row { display:flex; align-items:flex-end; gap:8px; }
 .composer-input-row textarea { flex:1; min-width:0; }
-.file-upload-btn { flex:0 0 38px; width:38px; height:38px; border-radius:50%; border:1px solid var(--line); background:var(--panel); color:var(--text); display:grid; place-items:center; font-size:18px; cursor:pointer; }
-.file-upload-btn:hover { border-color:var(--accent); }
-.file-preview { display:flex; align-items:center; gap:8px; min-width:0; margin:8px 4px 2px; padding:8px 10px; border:1px solid var(--line); border-radius:12px; background:var(--panel); font-size:12px; color:var(--text); }
-.file-preview-name { min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; flex:1; }
-.file-preview-remove { border:0; background:transparent; color:var(--muted); font-size:18px; padding:0 4px; }
-.file-status { color:var(--muted); font-size:11px; padding:2px 5px; }
 .composer-mic { flex:0 0 38px; width:38px; height:38px; border-radius:50%; border:1px solid var(--line); background:var(--panel); color:var(--text); display:grid; place-items:center; font-size:17px; cursor:pointer; }
 .composer-mic:hover { border-color:var(--accent); }
 
@@ -186,7 +187,12 @@ button:disabled { opacity:.45; cursor:not-allowed }
   .suggestions { grid-template-columns:1fr; gap:8px; margin-top:23px }
   .suggestion { min-height:68px; padding:12px 14px }
   .composer-wrap { padding:8px 10px 12px }
-  .composer { border-radius:22px; padding:11px 11px 8px 14px }
+  .composer { width:100%; border-radius:22px; padding:10px 10px 8px }
+  .composer textarea { font-size:16px; max-height:130px }
+  .composer-bottom { gap:4px }
+  .toolrow { min-width:0; gap:2px }
+  .upload-btn,.toolbtn { padding:7px 5px; font-size:11px }
+  .send { height:36px; width:36px }
   .toolbtn { padding:7px 5px }
   .disclaimer { font-size:10px }
   .messages { gap:20px }
@@ -207,177 +213,6 @@ button:disabled { opacity:.45; cursor:not-allowed }
 @media(prefers-reduced-motion:reduce) {
   *,*::before,*::after { scroll-behavior:auto!important; animation:none!important; transition:none!important }
 }
-
-
-/* Responsive polish: touch-friendly controls, safe areas, and compact mobile layout. */
-:root { --safe-bottom: env(safe-area-inset-bottom, 0px); }
-html { -webkit-text-size-adjust:100%; text-size-adjust:100%; }
-body { overscroll-behavior:none; }
-button { -webkit-tap-highlight-color:transparent; touch-action:manipulation; }
-.app { min-height:0; min-height:100dvh; }
-.main,.chatarea,.messages,.sidebar { min-height:0; }
-.chatarea { overscroll-behavior:contain; scrollbar-gutter:stable; }
-.composer-wrap { flex-shrink:0; padding-bottom:calc(15px + var(--safe-bottom)); }
-.composer { transition:border-color .18s, box-shadow .18s; }
-.composer:focus-within { border-color:color-mix(in srgb,var(--accent) 55%,var(--line)); box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 10%,transparent),var(--shadow); }
-.composer-input-row textarea { overflow-y:auto; }
-.composer-mic,.send { touch-action:manipulation; }
-.composer-mic { transition:background .15s,border-color .15s,transform .15s; }
-.composer-mic:active,.send:active,.iconbtn:active,.profilebtn:active { transform:scale(.96); }
-.suggestion,.sidebutton,.newchat,.history-item,.toolbtn,.iconbtn,.profilebtn { transition:background .15s,border-color .15s,transform .15s; }
-.message-content img,.message-content video { max-width:100%; height:auto; }
-.message-content pre { -webkit-overflow-scrolling:touch; }
-
-@media (max-width:760px) {
-  html,body { width:100%; height:100%; height:100dvh; overflow:hidden; }
-  .app { height:100%; height:100dvh; width:100%; overflow:hidden; }
-  .sidebar { width:min(320px,86vw); max-width:86vw; padding:calc(14px + env(safe-area-inset-top,0px)) 12px calc(12px + var(--safe-bottom)); gap:12px; }
-  .brandrow { padding-bottom:5px; }
-  .newchat,.sidebutton { min-height:44px; font-size:14px; }
-  .history-item { min-height:42px; font-size:14px; }
-  .topbar { min-height:56px; padding:calc(5px + env(safe-area-inset-top,0px)) 12px 5px; gap:8px; }
-  .top-left { gap:8px; }
-  .menu { width:40px; height:40px; display:grid; place-items:center; border-radius:11px; flex-shrink:0; }
-  .menu:hover { background:var(--panel2); }
-  .modelname { font-size:15px; }
-  .modeltag { font-size:10px; margin-left:5px; }
-  .iconbtn,.profilebtn { width:40px; height:40px; min-width:40px; border-radius:13px; }
-  .profilebtn { border-radius:50%; }
-  .chatarea { padding:18px 14px 16px; scroll-padding-bottom:20px; }
-  .welcome { justify-content:center; padding:18px 0 28px; }
-  .welcome-logo { margin-bottom:17px; }
-  .welcome h1 { font-size:clamp(28px,7vw,38px); letter-spacing:-.7px; }
-  .welcome p { font-size:14px; line-height:1.65; padding:0 3px; }
-  .suggestions { grid-template-columns:repeat(2,minmax(0,1fr)); gap:9px; margin-top:22px; }
-  .suggestion { min-width:0; min-height:92px; padding:12px; border-radius:15px; }
-  .suggestion b { font-size:12px; line-height:1.35; }
-  .suggestion span { display:block; font-size:11px; line-height:1.45; }
-  .messages { gap:22px; padding-bottom:16px; }
-  .msg { gap:8px; }
-  .mini-logo { width:29px; height:29px; border-radius:10px; }
-  .msgbody { max-width:calc(100% - 37px); font-size:14px; line-height:1.75; }
-  .msg.user { padding-left:10%; }
-  .userbubble { max-width:100%; padding:11px 13px; border-radius:18px 18px 5px 18px; font-size:14px; }
-  .composer-wrap { padding:8px 10px calc(9px + var(--safe-bottom)); background:var(--bg); }
-  .composer { max-width:100%; border-radius:23px; padding:11px 10px 8px 13px; }
-  .composer-input-row { gap:7px; align-items:flex-end; }
-  .composer textarea { min-height:28px; max-height:130px; font-size:16px; line-height:1.45; padding:3px 0; }
-  .composer-mic { flex-basis:40px; width:40px; height:40px; font-size:17px; }
-  .composer-bottom { gap:5px; margin-top:6px; align-items:center; }
-  .toolrow { gap:2px; min-width:0; }
-  .toolbtn { min-height:36px; padding:7px 7px; font-size:11px; white-space:nowrap; }
-  .send { height:40px; width:42px; min-width:42px; font-size:20px; }
-  .disclaimer { font-size:10px; margin-top:7px; line-height:1.4; padding:0 5px; }
-  .modal-backdrop { padding:12px; padding-bottom:calc(12px + var(--safe-bottom)); }
-  .modal { max-height:calc(100dvh - 24px - var(--safe-bottom)); overflow-y:auto; padding:20px; border-radius:20px; }
-  .toast { bottom:calc(16px + var(--safe-bottom)); }
-}
-@media (max-width:430px) {
-  .topbar { padding-left:8px; padding-right:8px; }
-  .top-left { gap:5px; }
-  .menu { width:36px; height:38px; }
-  .modeltag { display:none; }
-  .top-actions { gap:5px; }
-  .iconbtn,.profilebtn { width:36px; height:36px; min-width:36px; }
-  .chatarea { padding-left:11px; padding-right:11px; }
-  .suggestions { gap:8px; }
-  .suggestion { min-height:88px; padding:10px; }
-  .composer-wrap { padding-left:7px; padding-right:7px; }
-  .composer { padding-left:11px; padding-right:8px; }
-  .toolbtn { padding-left:5px; padding-right:5px; font-size:10.5px; }
-  .composer-mic { width:38px; height:38px; flex-basis:38px; }
-  .send { width:39px; min-width:39px; height:39px; }
-}
-@media (max-width:350px) {
-  .suggestions { grid-template-columns:1fr; }
-  .suggestion { min-height:64px; }
-  .composer-bottom { align-items:flex-end; }
-  #topicBtn { max-width:116px; overflow:hidden; text-overflow:ellipsis; }
-  #clearInput { display:none; }
-}
-@media (max-height:560px) and (max-width:760px) {
-  .welcome { justify-content:flex-start; padding-top:10px; }
-  .welcome-logo { width:42px; height:42px; border-radius:15px; margin-bottom:10px; }
-  .welcome h1 { font-size:26px; margin-bottom:8px; }
-  .welcome p { font-size:12px; }
-  .suggestions { margin-top:14px; }
-  .suggestion { min-height:65px; }
-  .composer textarea { max-height:90px; }
-}
-@media (prefers-reduced-motion:reduce) {
-  .composer,.composer-mic,.suggestion,.sidebutton,.newchat,.history-item,.toolbtn,.iconbtn,.profilebtn { transition:none!important; }
-}
-
-
-/* Viewport/layout fix: keep the complete message composer visible at the bottom. */
-html, body { width:100%; height:100%; min-height:0; }
-.app { height:100vh; height:100dvh; min-height:0; overflow:hidden; }
-.main { height:100%; min-height:0; overflow:hidden; }
-.chatarea { flex:1 1 0%; min-height:0; min-width:0; }
-.composer-wrap { flex:0 0 auto; min-width:0; padding-bottom:calc(12px + var(--safe-bottom, 0px)); }
-.composer { width:100%; min-width:0; }
-@media (max-height:650px) and (min-width:761px) {
-  .topbar { min-height:48px; padding-top:3px; padding-bottom:3px; }
-  .composer-wrap { padding-top:5px; padding-bottom:7px; }
-  .composer { padding-top:8px; padding-bottom:6px; }
-  .composer-bottom { margin-top:4px; }
-  .disclaimer { margin-top:4px; }
-  .chatarea { padding-top:12px; padding-bottom:10px; }
-}
-
-
-/* Startup/mobile correction: keep the composer visible immediately and avoid a tall welcome panel pushing it below the screen. */
-html, body { margin:0; padding:0; width:100%; height:100%; overflow:hidden; }
-.app { display:flex; width:100%; height:100vh; height:100dvh; min-height:0; overflow:hidden; }
-.main { display:flex; flex:1 1 auto; flex-direction:column; min-width:0; min-height:0; height:100%; overflow:hidden; }
-.topbar { flex:0 0 auto; }
-.chatarea { flex:1 1 0%; min-height:0; overflow-y:auto; }
-.composer-wrap { position:relative; z-index:2; flex:0 0 auto; width:100%; padding-bottom:calc(10px + env(safe-area-inset-bottom, 0px)); background:var(--bg); }
-.composer { width:100%; max-width:none; }
-.welcome { min-height:0; }
-@media (max-width:760px) {
-  .app { height:100vh; height:100dvh; }
-  .main { height:100%; }
-  .chatarea { padding-bottom:12px; }
-  .welcome { min-height:0; justify-content:flex-start; padding-top:12px; padding-bottom:18px; }
-  .composer-wrap { padding-left:8px; padding-right:8px; padding-top:7px; }
-  .composer { max-width:none; }
-}
-
-/* Table readability + full-viewport layout correction */
-.messages { max-width:none; width:100%; }
-.msgbody { max-width:calc(100% - 42px); }
-.composer { max-width:none; width:100%; }
-.disclaimer { max-width:none; width:100%; }
-.message-content { min-width:0; width:100%; }
-.message-content table {
-  width:max-content; min-width:100%; max-width:100%;
-  border-collapse:separate; border-spacing:0; display:block;
-  overflow-x:auto; overflow-y:hidden; border:1px solid var(--line);
-  border-radius:9px; background:var(--bg); color:var(--text);
-  -webkit-overflow-scrolling:touch;
-}
-.message-content thead { background:var(--panel2); color:var(--text); }
-.message-content th {
-  background:var(--panel2); color:var(--text); font-weight:750;
-  border-color:var(--line); white-space:normal;
-}
-.message-content td {
-  background:var(--bg); color:var(--text); border-color:var(--line);
-  vertical-align:top; min-width:72px;
-}
-.message-content tbody tr:nth-child(even) td { background:var(--panel); }
-.message-content tbody tr:hover td { background:var(--panel2); }
-.message-content th,.message-content td { padding:10px 12px; }
-@media (max-width:760px) {
-  .messages { max-width:none; width:100%; }
-  .msgbody { max-width:calc(100% - 37px); }
-  .composer-wrap { width:100%; }
-  .composer { width:100%; max-width:none; }
-  .message-content table { font-size:13px; }
-  .message-content th,.message-content td { padding:8px 10px; }
-}
-
 </style>
 </head>
 
@@ -436,18 +271,14 @@ html, body { margin:0; padding:0; width:100%; height:100%; overflow:hidden; }
     <div class="composer-wrap">
       <form class="composer" id="chatForm">
         <div class="composer-input-row">
-          <button class="file-upload-btn" id="fileUploadBtn" type="button" title="Attach PDF or document" aria-label="Attach PDF or document">📎</button>
-          <input id="fileInput" type="file" accept=".pdf,.docx,.txt,.md,.csv,.json,.html,.xml,.log" hidden>
-          <textarea id="prompt" rows="1" maxlength="8000" placeholder="Message Ultra Goal..." aria-label="Message Ultra Goal"></textarea>
+          <textarea id="prompt" rows="1" maxlength="40000" placeholder="Message Ultra Goal..." aria-label="Message Ultra Goal"></textarea>
           <button class="composer-mic" id="micBtn" type="button" title="Voice input" aria-label="Start voice input">🎙️</button>
         </div>
-        <div id="filePreview" class="file-preview hidden" aria-live="polite">
-          <span aria-hidden="true">📄</span><span id="filePreviewName" class="file-preview-name"></span>
-          <span id="fileStatus" class="file-status">Ready</span>
-          <button id="removeFileBtn" class="file-preview-remove" type="button" aria-label="Remove attachment" title="Remove attachment">×</button>
-        </div>
+        <div id="fileChip" class="file-chip hidden"><span id="fileStatus">📄 File ready</span><button type="button" id="removeFileBtn" aria-label="Remove attached file">✕</button></div>
+        <input id="fileInput" class="file-input-hidden" type="file" accept=".pdf,.txt,.md,.csv,.json,.html,.docx,.doc" aria-label="Upload a PDF or document">
         <div class="composer-bottom">
           <div class="toolrow">
+            <button type="button" class="upload-btn" id="uploadBtn" title="Upload PDF or document">📎 Attach</button>
             <button type="button" class="toolbtn" id="topicBtn">✧ Learning mode</button>
             <button type="button" class="toolbtn" id="clearInput">Clear</button>
             <button type="button" class="toolbtn" id="stopBtn" disabled>■ Stop</button>
@@ -499,8 +330,6 @@ let activeController = null;
 let toastTimer = null;
 let recognition = null;
 let listening = false;
-let selectedDocument = null;
-let documentReadBusy = false;
 
 function activeChat() {
   return chats.find(c => c.id === activeChatId) || null;
@@ -630,6 +459,10 @@ function newChat() {
   renderHistory();
   showWelcome();
   textarea.value = '';
+  attachedFileText = '';
+  attachedFileName = '';
+  $('fileInput').value = '';
+  $('fileChip').classList.add('hidden');
   resizeInput();
   closeSidebar();
   textarea.focus();
@@ -657,17 +490,52 @@ function showChat(id) {
 function formatMarkdown(text) {
   if (typeof marked === 'undefined' || typeof DOMPurify === 'undefined') return null;
   marked.setOptions({ gfm: true, breaks: true });
-  return DOMPurify.sanitize(marked.parse(String(text ?? '')));
+
+  // Protect TeX before Markdown parsing: Markdown treats the backslash in \[ and \( as an escape.
+  // Restore the delimiters only after Markdown has been parsed and sanitized, then MathJax renders them.
+  const formulas = [];
+  const stash = (tex, display) => {
+    const token = `UGMATHPLACEHOLDER${formulas.length}END`;
+    formulas.push({ token, tex: String(tex), display });
+    return token;
+  };
+  let source = String(text ?? '');
+  source = source
+    .replace(/\\\[([\s\S]*?)\\\]/g, (_, tex) => stash(tex, true))
+    .replace(/\\\(([\s\S]*?)\\\)/g, (_, tex) => stash(tex, false))
+    .replace(/\$\$([\s\S]*?)\$\$/g, (_, tex) => stash(tex, true))
+    .replace(/(^|[^\\$])\$([^\n$]+)\$(?!\$)/g, (_, before, tex) => before + stash(tex, false));
+
+  let html = DOMPurify.sanitize(marked.parse(source));
+  for (const formula of formulas) {
+    // Escape HTML characters while leaving TeX commands intact.
+    const safeTex = formula.tex.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    const delimiters = formula.display ? `\\[${safeTex}\\]` : `\\(${safeTex}\\)`;
+    html = html.replaceAll(formula.token, delimiters);
+  }
+  return html;
 }
 
 async function renderMath(element) {
-  if (window.MathJax?.typesetPromise) {
-    try {
+  try {
+    // The first reply can arrive before the deferred MathJax script has finished loading.
+    if (!window.MathJax?.typesetPromise) {
+      await new Promise(resolve => {
+        const started = Date.now();
+        const check = () => {
+          if (window.MathJax?.typesetPromise || Date.now() - started > 12000) resolve();
+          else setTimeout(check, 100);
+        };
+        check();
+      });
+    }
+    if (window.MathJax?.startup?.promise) await window.MathJax.startup.promise;
+    if (window.MathJax?.typesetPromise) {
       if (window.MathJax.typesetClear) window.MathJax.typesetClear([element]);
       await window.MathJax.typesetPromise([element]);
-    } catch (error) {
-      console.warn('MathJax render failed', error);
     }
+  } catch (error) {
+    console.warn('MathJax render failed', error);
   }
 }
 
@@ -750,6 +618,12 @@ function appendMessage(role, text, actions = true, index = -1) {
       copy.textContent = 'Copy';
       copy.addEventListener('click', () => copyText(text, copy));
 
+      const speak = document.createElement('button');
+      speak.type = 'button';
+      speak.className = 'speak-btn';
+      speak.textContent = '🔊 Read aloud';
+      speak.addEventListener('click', () => speakText(text, speak));
+
       const regenerate = document.createElement('button');
       regenerate.type = 'button';
       regenerate.textContent = '↻ Regenerate';
@@ -764,7 +638,7 @@ function appendMessage(role, text, actions = true, index = -1) {
         send(null, { regenerate: true });
       });
 
-      bar.append(copy, regenerate);
+      bar.append(copy, speak, regenerate);
       content.appendChild(bar);
     }
   }
@@ -780,7 +654,7 @@ function scrollBottom() {
 function resizeInput() {
   textarea.style.height = 'auto';
   textarea.style.height = Math.min(textarea.scrollHeight, 170) + 'px';
-  sendBtn.disabled = (!textarea.value.trim() && !selectedDocument) || !!activeController || documentReadBusy;
+  sendBtn.disabled = !textarea.value.trim() || !!activeController;
 }
 
 function closeSidebar() {
@@ -805,112 +679,6 @@ function makeTyping(id) {
   $('messages').appendChild(row);
 }
 
-
-/* Temporary assistant row for live word/chunk updates. */
-function makeLiveAnswerRow(chatId) {
-  const row = document.createElement('div');
-  row.className = 'msg assistant';
-  row.dataset.liveAnswerFor = chatId;
-  const logo = document.createElement('div');
-  logo.className = 'mini-logo';
-  logo.textContent = 'UG';
-  const content = document.createElement('div');
-  content.className = 'msgbody';
-  const answer = document.createElement('div');
-  answer.className = 'message-content live-answer';
-  answer.setAttribute('aria-live', 'polite');
-  content.appendChild(answer);
-  row.append(logo, content);
-  $('messages').appendChild(row);
-  return { row, answer };
-}
-
-function updateLiveAnswer(target, text) {
-  target.answer.textContent = text;
-  scrollBottom();
-}
-
-/* Supports SSE and plain-text streams, while retaining compatibility with JSON Workers. */
-async function readWorkerAnswer(response, onStreamText) {
-  const contentType = (response.headers.get('content-type') || '').toLowerCase();
-  const canReadStream = response.body && typeof response.body.getReader === 'function';
-  if (canReadStream && (contentType.includes('text/event-stream') || contentType.startsWith('text/plain'))) {
-    const reader = response.body.getReader();
-    const decoder = new TextDecoder();
-    let buffer = '';
-    let accumulated = '';
-    const isSSE = contentType.includes('text/event-stream');
-    const consumeSSE = chunk => {
-      buffer += chunk;
-      const events = buffer.split(/\r?\n\r?\n/);
-      buffer = events.pop() || '';
-      for (const block of events) {
-        const lines = block.split(/\r?\n/).filter(line => line.startsWith('data:'));
-        if (!lines.length) continue;
-        const payload = lines.map(line => line.slice(5).trimStart()).join('\n');
-        if (payload === '[DONE]') continue;
-        try {
-          const parsed = JSON.parse(payload);
-          const delta = parsed?.choices?.[0]?.delta?.content ?? parsed?.delta?.text ??
-            parsed?.delta ?? parsed?.token ?? parsed?.text ?? parsed?.response ?? parsed?.content;
-          if (typeof delta === 'string' && delta) {
-            accumulated += delta;
-            onStreamText(accumulated);
-          }
-        } catch (_) {
-          accumulated += payload;
-          onStreamText(accumulated);
-        }
-      }
-    };
-    while (true) {
-      const { value, done } = await reader.read();
-      if (done) break;
-      const chunk = decoder.decode(value, { stream: true });
-      if (isSSE) consumeSSE(chunk);
-      else { accumulated += chunk; onStreamText(accumulated); }
-    }
-    const tail = decoder.decode();
-    if (tail) {
-      if (isSSE) consumeSSE(tail);
-      else { accumulated += tail; onStreamText(accumulated); }
-    }
-    if (isSSE) {
-      if (!accumulated.trim()) throw new Error('The streaming Worker returned no answer text.');
-      return accumulated;
-    }
-    try {
-      const parsed = JSON.parse(accumulated);
-      const answer = extractAnswer(parsed);
-      if (answer) return answer;
-    } catch (_) { /* A plain-text stream is expected. */ }
-    return accumulated;
-  }
-  const raw = await response.text();
-  let data;
-  try { data = raw ? JSON.parse(raw) : {}; }
-  catch (_) { data = { error: raw || 'Server returned an unreadable response.' }; }
-  if (!response.ok) {
-    const detail = [data.error, data.details, data.message, 'HTTP ' + response.status].filter(Boolean).join(' — ');
-    throw new Error(detail || 'Worker request failed.');
-  }
-  const answer = extractAnswer(data);
-  if (!answer.trim()) throw new Error(data.error || 'The Worker returned no answer text. Check its API response format.');
-  return answer;
-}
-
-/* Existing Workers returning JSON get a smooth word-by-word reveal without backend changes. */
-async function revealAnswerWordByWord(target, text, signal) {
-  const words = text.match(/\S+\s*/g) || [text];
-  let visible = '';
-  for (let i = 0; i < words.length; i++) {
-    if (signal?.aborted) throw new DOMException('Generation stopped.', 'AbortError');
-    visible += words[i];
-    updateLiveAnswer(target, visible);
-    if (i % 3 === 2) await new Promise(resolve => setTimeout(resolve, 18));
-  }
-}
-
 /* Accept common response formats returned by different Worker implementations. */
 function extractAnswer(data) {
   if (typeof data === 'string') return data;
@@ -929,103 +697,11 @@ function extractAnswer(data) {
   return candidates.find(value => typeof value === 'string' && value.trim()) || '';
 }
 
-function loadExternalScript(src, test) {
-  if (test()) return Promise.resolve();
-  return new Promise((resolve, reject) => {
-    const existing = document.querySelector('script[data-dynamic-src="' + src + '"]');
-    if (existing) {
-      existing.addEventListener('load', resolve, { once: true });
-      existing.addEventListener('error', reject, { once: true });
-      return;
-    }
-    const script = document.createElement('script');
-    script.src = src;
-    script.async = true;
-    script.dataset.dynamicSrc = src;
-    script.onload = resolve;
-    script.onerror = () => reject(new Error('Could not load the document reader library. Check your internet connection and try again.'));
-    document.head.appendChild(script);
-  });
-}
-
-async function extractDocumentText(file) {
-  const name = file.name || 'document';
-  const ext = name.includes('.') ? name.split('.').pop().toLowerCase() : '';
-  if (file.size > 15 * 1024 * 1024) throw new Error('Please choose a file smaller than 15 MB.');
-  if (['txt','md','csv','json','html','xml','log'].includes(ext) || file.type.startsWith('text/')) {
-    return await file.text();
-  }
-  if (ext === 'pdf' || file.type === 'application/pdf') {
-    await loadExternalScript('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js', () => !!window.pdfjsLib);
-    if (!window.pdfjsLib) throw new Error('PDF reader could not start.');
-    window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-    const data = new Uint8Array(await file.arrayBuffer());
-    const pdf = await window.pdfjsLib.getDocument({ data }).promise;
-    const pages = [];
-    for (let n = 1; n <= pdf.numPages; n++) {
-      const page = await pdf.getPage(n);
-      const content = await page.getTextContent();
-      pages.push(content.items.map(item => item.str || '').join(' '));
-    }
-    return pages.map((text, i) => '[Page ' + (i + 1) + ']\n' + text).join('\n\n');
-  }
-  if (ext === 'docx' || file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
-    await loadExternalScript('https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.8.0/mammoth.browser.min.js', () => !!window.mammoth);
-    if (!window.mammoth) throw new Error('Word document reader could not start.');
-    const result = await window.mammoth.extractRawText({ arrayBuffer: await file.arrayBuffer() });
-    return result.value || '';
-  }
-  throw new Error('Supported files: PDF, DOCX, TXT, Markdown, CSV, JSON, HTML, XML and LOG. Old .doc files are not supported; save them as .docx or PDF.');
-}
-
-function setDocumentPreview(name, status) {
-  $('filePreview').classList.remove('hidden');
-  $('filePreviewName').textContent = name;
-  $('fileStatus').textContent = status;
-}
-
-$('fileUploadBtn').addEventListener('click', () => $('fileInput').click());
-$('fileInput').addEventListener('change', async event => {
-  const file = event.target.files && event.target.files[0];
-  if (!file) return;
-  selectedDocument = null;
-  documentReadBusy = true;
-  $('sendBtn').disabled = true;
-  setDocumentPreview(file.name, 'Reading…');
-  try {
-    const extracted = (await extractDocumentText(file)).trim();
-    if (!extracted) throw new Error('No readable text was found. This may be a scanned PDF; use a text-based PDF or OCR it first.');
-    selectedDocument = { name: file.name, text: extracted.slice(0, 30000) };
-    setDocumentPreview(file.name, extracted.length > 30000 ? 'Ready · first 30,000 chars' : 'Ready');
-    showToast('Document ready. Ask a question or press Send to summarize it.');
-  } catch (error) {
-    selectedDocument = null;
-    $('filePreview').classList.add('hidden');
-    showToast(error.message || 'Could not read this file.');
-    event.target.value = '';
-  } finally {
-    documentReadBusy = false;
-    sendBtn.disabled = !textarea.value.trim() && !selectedDocument;
-  }
-});
-$('removeFileBtn').addEventListener('click', () => {
-  selectedDocument = null;
-  $('fileInput').value = '';
-  $('filePreview').classList.add('hidden');
-  sendBtn.disabled = (!textarea.value.trim() && !selectedDocument) || !!activeController || documentReadBusy;
-  textarea.focus();
-});
-
 async function send(textOverride, options = {}) {
   if (activeController) return;
 
-  const typedValue = (textOverride ?? textarea.value).trim();
-  if (documentReadBusy) { showToast('Please wait until the document finishes reading.'); return; }
-  const value = typedValue || (selectedDocument ? 'Please summarize this document.' : '');
+  const value = (textOverride ?? textarea.value).trim();
   if (!value && !options.regenerate) return;
-  const attached = !options.regenerate && selectedDocument ? selectedDocument : null;
-  const displayValue = attached ? '📎 ' + attached.name + '\n\n' + value : value;
-  const requestValue = attached ? 'Attached document: ' + attached.name + '\n\nDocument text:\n' + attached.text + '\n\nUser question: ' + value : value;
 
   let chat = activeChat();
   if (!chat) {
@@ -1045,13 +721,11 @@ async function send(textOverride, options = {}) {
   } else if (editingMessageIndex !== null) {
     const index = editingMessageIndex;
     chat.messages = chat.messages.slice(0, index);
-    chat.messages.push({ role: 'user', text: displayValue, context: requestValue });
+    chat.messages.push({ role: 'user', text: value });
     editingMessageIndex = null;
   } else {
-    chat.messages.push({ role: 'user', text: displayValue, context: requestValue });
+    chat.messages.push({ role: 'user', text: value });
   }
-
-  if (attached) { selectedDocument = null; $('fileInput').value = ''; $('filePreview').classList.add('hidden'); }
 
   if (chat.title === 'New chat') chat.title = value.slice(0, 34) || 'New chat';
   saveChats();
@@ -1079,7 +753,7 @@ async function send(textOverride, options = {}) {
     const messages = (current?.messages || [])
       .filter(message => message.role === 'user' || message.role === 'assistant')
       .slice(-30)
-      .map(message => ({ role: message.role, content: message.context || message.text }));
+      .map(message => ({ role: message.role, content: message.text }));
 
     const latestUser = [...messages].reverse().find(message => message.role === 'user');
     const response = await fetch(WORKER_URL, {
@@ -1093,30 +767,21 @@ async function send(textOverride, options = {}) {
       signal: activeController.signal
     });
 
+    const raw = await response.text();
+    let data;
+    try { data = raw ? JSON.parse(raw) : {}; }
+    catch (_) { data = { error: raw || 'Server returned an unreadable response.' }; }
+
     if (!response.ok) {
-      const rawError = await response.text();
-      let errorData = {};
-      try { errorData = rawError ? JSON.parse(rawError) : {}; }
-      catch (_) { errorData = { error: rawError }; }
-      const detail = [errorData.error, errorData.details, errorData.message, 'HTTP ' + response.status]
+      const detail = [data.error, data.details, data.message, 'HTTP ' + response.status]
         .filter(Boolean).join(' — ');
       throw new Error(detail || 'Worker request failed.');
     }
 
-    const live = activeChatId === chatId ? makeLiveAnswerRow(chatId) : null;
-    $('messages').querySelector('[data-typing-for="' + chatId + '"]')?.remove();
-    const contentType = (response.headers.get('content-type') || '').toLowerCase();
-    let answer;
-    if (contentType.includes('text/event-stream') || contentType.startsWith('text/plain')) {
-      answer = await readWorkerAnswer(response, text => {
-        if (live && activeChatId === chatId) updateLiveAnswer(live, text);
-      });
-    } else {
-      answer = await readWorkerAnswer(response, () => {});
-      if (live && activeChatId === chatId) await revealAnswerWordByWord(live, answer, activeController?.signal);
+    const answer = extractAnswer(data);
+    if (!answer.trim()) {
+      throw new Error(data.error || 'The Worker returned no answer text. Check its API response format.');
     }
-    answer = answer.trim();
-    if (!answer) throw new Error('The Worker returned no answer text. Check its API response format.');
 
     const latestChat = chats.find(item => item.id === chatId);
     if (latestChat) {
@@ -1125,18 +790,15 @@ async function send(textOverride, options = {}) {
     }
 
     if (activeChatId === chatId) {
-      $('messages').querySelector('[data-live-answer-for="' + chatId + '"]')?.remove();
-      appendMessage('assistant', answer, true, (activeChat()?.messages.length || 1) - 1);
+      $('messages').querySelector('[data-typing-for="' + chatId + '"]')?.remove();
+      appendMessage('assistant', answer.trim(), true, (activeChat()?.messages.length || 1) - 1);
       scrollBottom();
     }
   } catch (error) {
     if (error.name === 'AbortError') {
-      $('messages').querySelector('[data-live-answer-for="' + chatId + '"]')?.remove();
-      $('messages').querySelector('[data-typing-for="' + chatId + '"]')?.remove();
       showToast('Generation stopped.');
     } else if (activeChatId === chatId) {
       $('messages').querySelector('[data-typing-for="' + chatId + '"]')?.remove();
-      $('messages').querySelector('[data-live-answer-for="' + chatId + '"]')?.remove();
       const message = error?.message || 'Please try again.';
       appendMessage(
         'assistant',
@@ -1169,7 +831,6 @@ textarea.addEventListener('keydown', event => {
 $('newChat').addEventListener('click', newChat);
 $('clearInput').addEventListener('click', () => {
   textarea.value = '';
-  selectedDocument = null; $('fileInput').value = ''; $('filePreview').classList.add('hidden');
   editingMessageIndex = null;
   resizeInput();
   textarea.focus();
@@ -1237,6 +898,8 @@ $('exportBtn').addEventListener('click', () => {
   showToast('Chat history export started.');
 });
 
+window.addEventListener('pagehide', () => { if ('speechSynthesis' in window) window.speechSynthesis.cancel(); });
+
 document.addEventListener('keydown', event => {
   if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
     event.preventDefault();
@@ -1249,7 +912,107 @@ document.addEventListener('keydown', event => {
   }
 });
 
-/* Browser speech recognition: voice-to-text only. HTTPS/localhost and permission may be required. */
+/* File upload: PDF, DOCX, TXT, Markdown, CSV, JSON and HTML text extraction. */
+let attachedFileText = '';
+let attachedFileName = '';
+let pdfJsPromise = null;
+let mammothPromise = null;
+function loadScriptOnce(src, globalName, currentPromise) {
+  if (window[globalName]) return Promise.resolve(window[globalName]);
+  if (currentPromise) return currentPromise;
+  return new Promise((resolve, reject) => {
+    const script = document.createElement('script');
+    script.src = src;
+    script.onload = () => window[globalName] ? resolve(window[globalName]) : reject(new Error('Library did not load.'));
+    script.onerror = () => reject(new Error('Could not load document reader. Check your internet connection.'));
+    document.head.appendChild(script);
+  });
+}
+async function extractFileText(file) {
+  const name = file.name.toLowerCase();
+  if (file.size > 12 * 1024 * 1024) throw new Error('Please choose a file smaller than 12 MB.');
+  if (name.endsWith('.pdf') || file.type === 'application/pdf') {
+    pdfJsPromise = loadScriptOnce('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js', 'pdfjsLib', pdfJsPromise);
+    const pdfjs = await pdfJsPromise;
+    pdfjs.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    const data = new Uint8Array(await file.arrayBuffer());
+    const pdf = await pdfjs.getDocument({ data }).promise;
+    const pages = [];
+    for (let n = 1; n <= pdf.numPages; n++) {
+      const page = await pdf.getPage(n);
+      const content = await page.getTextContent();
+      pages.push(content.items.map(item => item.str || '').join(' '));
+    }
+    const result = pages.join('\n\n');
+    if (!result.trim()) throw new Error('No selectable text found. This may be a scanned PDF; OCR is not included.');
+    return result;
+  }
+  if (name.endsWith('.docx') || file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+    mammothPromise = loadScriptOnce('https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.8.0/mammoth.browser.min.js', 'mammoth', mammothPromise);
+    const mammoth = await mammothPromise;
+    const result = await mammoth.extractRawText({ arrayBuffer: await file.arrayBuffer() });
+    return result.value || '';
+  }
+  if (name.endsWith('.doc')) throw new Error('Old .doc files are not supported. Please save it as .docx or PDF.');
+  return await file.text();
+}
+$('uploadBtn').addEventListener('click', () => $('fileInput').click());
+$('fileInput').addEventListener('change', async event => {
+  const file = event.target.files && event.target.files[0];
+  if (!file) return;
+  $('uploadBtn').disabled = true;
+  $('fileStatus').textContent = '⏳ Reading ' + file.name + '…';
+  $('fileChip').classList.remove('hidden');
+  try {
+    const text = await extractFileText(file);
+    if (!text.trim()) throw new Error('This file appears to be empty.');
+    attachedFileText = text.slice(0, 30000);
+    attachedFileName = file.name;
+    $('fileStatus').textContent = '📄 ' + file.name + ' — text extracted' + (text.length > 30000 ? ' (first 30,000 characters)' : '');
+    const instruction = textarea.value.trim();
+    textarea.value = (instruction ? instruction + '\n\n' : '') + 'Please use the attached document text below to answer my question.\n\n[Document: ' + file.name + ']\n' + attachedFileText;
+    resizeInput();
+    textarea.focus();
+    showToast('Document read. Add a question if needed, then tap Send.');
+  } catch (error) {
+    attachedFileText = '';
+    attachedFileName = '';
+    $('fileStatus').textContent = '⚠️ ' + (error.message || 'Could not read file.');
+    showToast(error.message || 'Could not read this file.');
+  } finally {
+    $('uploadBtn').disabled = false;
+  }
+});
+$('removeFileBtn').addEventListener('click', () => {
+  attachedFileText = '';
+  attachedFileName = '';
+  $('fileInput').value = '';
+  $('fileChip').classList.add('hidden');
+  showToast('Attachment removed from the upload status. Remove its text from the message too if already inserted.');
+});
+
+/* Text-to-speech for AI answers; uses the device/browser voice engine. */
+function speakText(text, button) {
+  if (!('speechSynthesis' in window)) {
+    showToast('Read aloud is not supported in this browser.');
+    return;
+  }
+  if (window.speechSynthesis.speaking) {
+    window.speechSynthesis.cancel();
+    document.querySelectorAll('.speak-btn').forEach(b => { b.classList.remove('speaking'); b.textContent = '🔊 Read aloud'; });
+    return;
+  }
+  const clean = String(text).replace(/```[\s\S]*?```/g, ' code block omitted ').replace(/https?:\/\/\S+/g, ' link ').replace(/[#*_`>]/g, ' ').slice(0, 12000);
+  const utterance = new SpeechSynthesisUtterance(clean);
+  utterance.lang = /[ಕ-೿]/.test(clean) ? 'kn-IN' : 'en-IN';
+  utterance.rate = 1;
+  utterance.onend = utterance.onerror = () => { button.classList.remove('speaking'); button.textContent = '🔊 Read aloud'; };
+  button.classList.add('speaking');
+  button.textContent = '⏹ Stop reading';
+  window.speechSynthesis.speak(utterance);
+}
+
+/* Browser speech recognition: voice-to-text. HTTPS/localhost and permission may be required. */
 function setupMicrophone() {
   const micButton = $('micBtn');
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
