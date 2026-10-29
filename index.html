@@ -213,12 +213,6 @@ button:disabled { opacity:.45; cursor:not-allowed }
 @media(prefers-reduced-motion:reduce) {
   *,*::before,*::after { scroll-behavior:auto!important; animation:none!important; transition:none!important }
 }
-
-/* Automatic graph panel for graph-based questions */
-.graph-panel{margin-top:14px;padding:12px;border:1px solid var(--line);border-radius:14px;background:var(--panel);max-width:720px;overflow:hidden}
-.graph-title{font-size:13px;font-weight:700;margin:0 0 8px;color:var(--text)}
-.ug-auto-graph{display:block;width:100%;height:auto;min-height:260px;background:#111827;border-radius:12px;box-shadow:inset 0 0 0 1px #334155}.graph-legend{display:flex;flex-wrap:wrap;gap:8px 14px;margin-top:10px}.graph-legend-item{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--text)}.graph-legend-item i{display:inline-block;width:18px;height:4px;border-radius:4px}.graph-note{font-size:11px;color:var(--muted);margin-top:9px;line-height:1.5}
-.graph-note{font-size:11px;color:var(--muted);margin-top:7px;line-height:1.5}
 </style>
 </head>
 
@@ -583,95 +577,6 @@ function addUserTools(wrap, text, index) {
   wrap.appendChild(tools);
 }
 
-function graphSeemsNeeded(question, answer) {
-  const q = String(question || '').toLowerCase();
-  const a = String(answer || '').toLowerCase();
-  const asksForGraph = /\b(graph|plot|draw|sketch|curve|feasible region|lpp|linear programming|velocity[- ]time|displacement[- ]time|distance[- ]time|force[- ]displacement|pv diagram|p-v diagram|circuit graph)\b/.test(q);
-  const answerSuggestsGraph = /\b(graph|plot|curve|feasible region|coordinate plane|x[- ]axis|y[- ]axis)\b/.test(a);
-  const hasEquation = /(?:y\s*=|f\s*\(\s*x\s*\)\s*=|\bx\s*[+−-]\s*\d+\s*=|\b\d*x\s*[+−-]\s*\d*y\s*[<>=≤≥])/i.test(question + '\n' + answer);
-  return (asksForGraph || answerSuggestsGraph) && hasEquation;
-}
-
-function makeAutoGraph(question, answer) {
-  if (!graphSeemsNeeded(question, answer)) return null;
-  const combined = String(question || '') + '\n' + String(answer || '');
-  const equations = [];
-  const seen = new Set();
-  const re = /(?:y\s*=\s*|f\s*\(\s*x\s*\)\s*=\s*)([^\n;]+)|((?:[-+]?\s*\d*\s*x\s*(?:\^\s*2)?\s*(?:[-+]\s*\d*\s*x)?\s*(?:[-+]\s*\d+(?:\.\d+)?)?)\s*=\s*y)/gi;
-  let m;
-  while ((m = re.exec(combined)) && equations.length < 5) {
-    let expr = (m[1] || m[2] || '').trim().replace(/[.,]$/, '').replace(/\\\(|\\\)|\$/g,'').replace(/−/g,'-').replace(/×/g,'*').replace(/²/g,'^2');
-    if (!expr || expr.length > 80) continue;
-    expr = expr.replace(/\s+/g,'');
-    if (!/[x]/i.test(expr) && !/sin|cos|tan/i.test(expr)) continue;
-    if (!/^[0-9xX+\-*/^().,a-z]+$/i.test(expr)) continue;
-    if (!seen.has(expr)) { seen.add(expr); equations.push(expr); }
-  }
-
-  // Convert common linear inequalities/equations into boundary lines y=(C-Ax)/B.
-  const lpp = /([-+]?\s*\d*\.?\d*\s*x\s*(?:[-+]\s*\d*\.?\d*\s*y)?(?:\s*[-+]\s*\d+(?:\.\d+)?)?)\s*(?:<=|>=|≤|≥|=)\s*([-+]?\s*\d+(?:\.\d+)?)/gi;
-  while ((m = lpp.exec(combined)) && equations.length < 5) {
-    const lhs = m[1].replace(/\s+/g,'').replace(/−/g,'-');
-    if (!/y/i.test(lhs)) continue;
-    const parsed = lhs.match(/^([+-]?\d*\.?\d*)x([+-]\d*\.?\d*)y$/i);
-    if (!parsed) continue;
-    const num = v => v === '' || v === '+' ? 1 : v === '-' ? -1 : Number(v);
-    const A=num(parsed[1]), B=num(parsed[2]), C=Number(m[2]);
-    if (!Number.isFinite(A)||!Number.isFinite(B)||!Number.isFinite(C)||!B) continue;
-    const expr = `(${C}-${A}*x)/(${B})`;
-    if (!seen.has(expr)) { seen.add(expr); equations.push(expr); }
-  }
-  if (!equations.length) return null;
-
-  const isLpp = /\b(lpp|linear programming|feasible region|maximi[sz]e|minimi[sz]e|subject to)\b/i.test(combined)
-    || /(?:<=|>=|≤|≥)/.test(combined);
-  const constants = (combined.match(/\d+(?:\.\d+)?/g) || []).map(Number).filter(n=>Number.isFinite(n)&&n>0);
-  let limit = isLpp ? Math.max(10, Math.min(100, Math.ceil(Math.max(10,...constants)/10)*10)) : 10;
-  // Keep normal function graphs focused even when an answer contains unrelated numbers.
-  if (!isLpp) limit = 10;
-  const xmin = isLpp ? 0 : -limit, xmax = limit, ymin = isLpp ? 0 : -limit, ymax = limit;
-  const W=720,H=390,L=58,R=22,T=22,B=48,pw=W-L-R,ph=H-T-B;
-  const X=x=>L+(x-xmin)/(xmax-xmin)*pw;
-  const Y=y=>T+(ymax-y)/(ymax-ymin)*ph;
-  const step = limit > 30 ? 10 : limit > 15 ? 5 : 2;
-  const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  let svg=`<svg class="ug-auto-graph" viewBox="0 0 ${W} ${H}" role="img" aria-label="Graph plotted from the equations"><defs><clipPath id="ugGraphClip"><rect x="${L}" y="${T}" width="${pw}" height="${ph}" rx="8"/></clipPath></defs><rect width="${W}" height="${H}" rx="12" fill="var(--graph-bg,#111827)"/>`;
-  for(let x=Math.ceil(xmin/step)*step;x<=xmax;x+=step){
-    svg+=`<line x1="${X(x)}" y1="${T}" x2="${X(x)}" y2="${T+ph}" stroke="#334155" stroke-width="1"/><text x="${X(x)}" y="${T+ph+21}" fill="#cbd5e1" font-size="11" text-anchor="middle">${x}</text>`;
-  }
-  for(let y=Math.ceil(ymin/step)*step;y<=ymax;y+=step){
-    svg+=`<line x1="${L}" y1="${Y(y)}" x2="${L+pw}" y2="${Y(y)}" stroke="#334155" stroke-width="1"/><text x="${L-10}" y="${Y(y)+4}" fill="#cbd5e1" font-size="11" text-anchor="end">${y}</text>`;
-  }
-  svg+=`<line x1="${X(0)}" y1="${T}" x2="${X(0)}" y2="${T+ph}" stroke="#e2e8f0" stroke-width="1.8"/><line x1="${L}" y1="${Y(0)}" x2="${L+pw}" y2="${Y(0)}" stroke="#e2e8f0" stroke-width="1.8"/><text x="${L+pw-3}" y="${Y(0)-9}" fill="#f8fafc" font-size="13" font-weight="700" text-anchor="end">x</text><text x="${X(0)+9}" y="${T+12}" fill="#f8fafc" font-size="13" font-weight="700">y</text>`;
-  const colors=['#fb7185','#60a5fa','#34d399','#c084fc','#fbbf24'];
-  function evaluate(expr,x){
-    let e=expr.toLowerCase().replace(/\^/g,'**').replace(/\b(x)\b/g,`(${x})`).replace(/\b(sin|cos|tan)\b/g,'Math.$1').replace(/\bpi\b/g,'Math.PI');
-    if(!/^[0-9()+\-*/.\s*a-zA-Z]+$/.test(e)) return NaN;
-    try { return Function('"use strict";return ('+e+')')(); } catch(_){return NaN;}
-  }
-  svg+='<g clip-path="url(#ugGraphClip)">';
-  equations.forEach((expr,idx)=>{
-    let d='',drawing=false;
-    for(let px=0;px<=pw;px+=1.5){
-      const x=xmin+px/pw*(xmax-xmin), y=evaluate(expr,x);
-      if(!Number.isFinite(y)||y<ymin-limit*2||y>ymax+limit*2){drawing=false;continue;}
-      const xx=L+px, yy=Y(y);
-      d+=(drawing?'L':'M')+xx.toFixed(2)+' '+yy.toFixed(2)+' '; drawing=true;
-    }
-    svg+=`<path d="${d}" fill="none" stroke="${colors[idx]}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>`;
-  });
-  svg+='</g></svg>';
-  const panel=document.createElement('section'); panel.className='graph-panel';
-  const title=document.createElement('div'); title.className='graph-title'; title.textContent=isLpp?'Graph of constraints':'Graph preview'; panel.appendChild(title);
-  panel.insertAdjacentHTML('beforeend',svg);
-  const legend=document.createElement('div'); legend.className='graph-legend';
-  equations.forEach((e,i)=>{const item=document.createElement('span');item.className='graph-legend-item';const swatch=document.createElement('i');swatch.style.background=colors[i];const label=document.createElement('span');label.textContent='y = '+e;item.append(swatch,label);legend.appendChild(item);});
-  panel.appendChild(legend);
-  const note=document.createElement('div');note.className='graph-note';note.textContent=isLpp?'Axes start at zero for this constraint graph. Check the original inequalities before using the graph as a final LPP solution.':'Automatically plotted from the equation detected in your question or answer.';
-  panel.appendChild(note);
-  return panel;
-}
-
 function appendMessage(role, text, actions = true, index = -1) {
   const row = document.createElement('div');
   row.className = 'msg ' + (role === 'user' ? 'user' : 'assistant');
@@ -703,14 +608,6 @@ function appendMessage(role, text, actions = true, index = -1) {
     content.appendChild(answer);
     row.append(logo, content);
     renderMath(answer);
-    if (actions) {
-      const chat = activeChat();
-      const userQuestion = chat && index >= 0
-        ? [...chat.messages.slice(0, index)].reverse().find(m => m.role === 'user')?.text || ''
-        : '';
-      const graph = makeAutoGraph(userQuestion, text);
-      if (graph) content.appendChild(graph);
-    }
 
     if (actions) {
       const bar = document.createElement('div');
@@ -780,6 +677,75 @@ function makeTyping(id) {
 
   row.append(logo, label);
   $('messages').appendChild(row);
+}
+
+
+/* Live weather helper: uses Open-Meteo (no API key required). */
+function isDateQuestion(text) {
+  return /\b(what day is it|what(?:'s| is) the date|current date|today(?:'s)? date|date today|what day.*today|do day date is)\b/i.test(String(text || ''));
+}
+function getLocalDateAnswer() {
+  const now = new Date();
+  const formatted = new Intl.DateTimeFormat('en-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(now);
+  return '**Today is ' + formatted + '.**\n\nThis date is taken from your device/browser clock.';
+}
+function isWeatherQuestion(text) {
+  return /\b(weather|forecast|temperature|rain today|will it rain|humidity|wind speed)\b/i.test(String(text || ''));
+}
+function weatherCodeText(code) {
+  if (code === 0) return 'Clear sky';
+  if ([1,2,3].includes(code)) return 'Mainly clear / partly cloudy / overcast';
+  if ([45,48].includes(code)) return 'Foggy';
+  if ([51,53,55,56,57].includes(code)) return 'Drizzle';
+  if ([61,63,65,66,67,80,81,82].includes(code)) return 'Rain / rain showers';
+  if ([71,73,75,77,85,86].includes(code)) return 'Snow / snow showers';
+  if ([95,96,99].includes(code)) return 'Thunderstorm';
+  return 'Conditions unavailable';
+}
+function extractWeatherPlace(text) {
+  const s = String(text || '').trim();
+  let m = s.match(/\b(?:weather|forecast|temperature)\b.*?\b(?:in|for|at)\s+([a-z][a-z .'-]{1,55}?)(?:\?|$|\b today\b|\b tomorrow\b|\b this week\b)/i);
+  if (!m) m = s.match(/^\s*(?:what(?:'s| is)\s+)?(?:the\s+)?weather\s+(?:like\s+)?(?:in|for|at)\s+([a-z][a-z .'-]{1,55})\s*\??$/i);
+  if (!m) m = s.match(/^\s*([a-z][a-z .'-]{1,45})\s+weather\s*\??$/i);
+  return m ? m[1].trim().replace(/[?.!,]+$/,'') : '';
+}
+async function getWeatherAnswer(question, signal) {
+  let latitude, longitude, placeName = '';
+  const place = extractWeatherPlace(question);
+  if (place) {
+    const geoUrl = 'https://geocoding-api.open-meteo.com/v1/search?name=' + encodeURIComponent(place) + '&count=1&language=en&format=json';
+    const geoResponse = await fetch(geoUrl, { signal });
+    if (!geoResponse.ok) throw new Error('Weather location lookup failed. Try a city name, for example: Weather in Hubballi.');
+    const geo = await geoResponse.json();
+    if (!geo.results || !geo.results.length) return 'I could not find that place. Please try a nearby city name, for example: **Weather in Hubballi**.';
+    const hit = geo.results[0]; latitude = hit.latitude; longitude = hit.longitude;
+    placeName = [hit.name, hit.admin1, hit.country].filter(Boolean).join(', ');
+  } else {
+    if (!navigator.geolocation) return 'To show local weather, allow location access or ask **Weather in Hubballi** (replace with your city).';
+    const position = await new Promise((resolve, reject) => navigator.geolocation.getCurrentPosition(resolve, reject, { enableHighAccuracy: false, timeout: 9000, maximumAge: 600000 }));
+    latitude = position.coords.latitude; longitude = position.coords.longitude;
+    placeName = 'your current location';
+  }
+  const params = new URLSearchParams({ latitude: String(latitude), longitude: String(longitude), current: 'temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,weather_code,wind_speed_10m', daily: 'weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max', timezone: 'auto', forecast_days: '3' });
+  const forecastResponse = await fetch('https://api.open-meteo.com/v1/forecast?' + params.toString(), { signal });
+  if (!forecastResponse.ok) throw new Error('The live weather service is unavailable right now. Please try again shortly.');
+  const data = await forecastResponse.json();
+  const c = data.current;
+  if (!c) throw new Error('The weather service did not return current conditions.');
+  const unit = data.current_units?.temperature_2m || '°C';
+  const lines = [
+    '## Live weather — ' + placeName,
+    '**Current conditions:** ' + weatherCodeText(c.weather_code),
+    '- **Temperature:** ' + c.temperature_2m + unit + ' (feels like ' + c.apparent_temperature + unit + ')',
+    '- **Humidity:** ' + c.relative_humidity_2m + '%',
+    '- **Wind:** ' + c.wind_speed_10m + ' ' + (data.current_units?.wind_speed_10m || 'km/h'),
+    '- **Precipitation now:** ' + c.precipitation + ' ' + (data.current_units?.precipitation || 'mm'),
+    '', '**3-day forecast:**'
+  ];
+  const d = data.daily;
+  if (d?.time) d.time.forEach((day, i) => lines.push('- **' + day + ':** ' + weatherCodeText(d.weather_code[i]) + ', low ' + d.temperature_2m_min[i] + unit + ', high ' + d.temperature_2m_max[i] + unit + (d.precipitation_probability_max?.[i] != null ? ', precipitation chance ' + d.precipitation_probability_max[i] + '%' : '')));
+  lines.push('', '_Live data from Open-Meteo. Forecasts can change._');
+  return lines.join('\n');
 }
 
 /* Accept common response formats returned by different Worker implementations. */
@@ -859,31 +825,50 @@ async function send(textOverride, options = {}) {
       .map(message => ({ role: message.role, content: message.text }));
 
     const latestUser = [...messages].reverse().find(message => message.role === 'user');
-    const response = await fetch(WORKER_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        message: latestUser?.content || value,
-        messages,
-        learningMode
-      }),
-      signal: activeController.signal
-    });
+    let answer = '';
 
-    const raw = await response.text();
-    let data;
-    try { data = raw ? JSON.parse(raw) : {}; }
-    catch (_) { data = { error: raw || 'Server returned an unreadable response.' }; }
+    // Date/time and weather use live browser/device data instead of relying on the AI model's memory.
+    if (isDateQuestion(latestUser?.content || value)) {
+      answer = getLocalDateAnswer();
+    } else if (isWeatherQuestion(latestUser?.content || value)) {
+      try {
+        answer = await getWeatherAnswer(latestUser?.content || value, activeController.signal);
+      } catch (weatherError) {
+        if (weatherError.name === 'AbortError') throw weatherError;
+        if (weatherError.code === 1 || weatherError.code === 2 || weatherError.code === 3) {
+          answer = 'I could not access your location. Please ask **Weather in [your city]**, for example **Weather in Hubballi**. You can also allow location access in your browser settings.';
+        } else {
+          throw weatherError;
+        }
+      }
+    } else {
+      const response = await fetch(WORKER_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: latestUser?.content || value,
+          messages,
+          learningMode,
+          currentDateTime: new Date().toISOString()
+        }),
+        signal: activeController.signal
+      });
 
-    if (!response.ok) {
-      const detail = [data.error, data.details, data.message, 'HTTP ' + response.status]
-        .filter(Boolean).join(' — ');
-      throw new Error(detail || 'Worker request failed.');
-    }
+      const raw = await response.text();
+      let data;
+      try { data = raw ? JSON.parse(raw) : {}; }
+      catch (_) { data = { error: raw || 'Server returned an unreadable response.' }; }
 
-    const answer = extractAnswer(data);
-    if (!answer.trim()) {
-      throw new Error(data.error || 'The Worker returned no answer text. Check its API response format.');
+      if (!response.ok) {
+        const detail = [data.error, data.details, data.message, 'HTTP ' + response.status]
+          .filter(Boolean).join(' — ');
+        throw new Error(detail || 'Worker request failed.');
+      }
+
+      answer = extractAnswer(data);
+      if (!answer.trim()) {
+        throw new Error(data.error || 'The Worker returned no answer text. Check its API response format.');
+      }
     }
 
     const latestChat = chats.find(item => item.id === chatId);
