@@ -51,6 +51,27 @@ body{background:radial-gradient(ellipse at 70% -20%,color-mix(in srgb,var(--acce
   font-size: 10px;
   line-height: 1.2;
 }
+/* ULTRA GOAL: FULL BLACK BACKGROUND */
+:root, :root[data-theme="dark"]{
+  color-scheme: dark;
+  --bg:#000000;
+  --panel:#000000;
+  --panel2:#101010;
+  --text:#f5f5f5;
+  --muted:#a3a3a3;
+  --line:#252525;
+  --user:#111111;
+  --shadow:0 10px 35px #000000;
+}
+html,body,.app,.sidebar,.main,.chatarea,.topbar,.composer-wrap,.composer,.modal{
+  background:#000000 !important;
+}
+body{background:#000000 !important;color:#f5f5f5}
+.composer-wrap{background:#000000 !important}
+.newchat,.sidebutton,.iconbtn,.suggestion,.modal input{background:#000000;color:#f5f5f5}
+.history-item.active,.history-item:hover,.newchat{background:#101010}
+.userbubble{background:#111111}
+.message-content pre{background:#080808}
 </style>
 </head>
 <body>
