@@ -217,7 +217,7 @@ button:disabled { opacity:.45; cursor:not-allowed }
 /* Automatic graph panel for graph-based questions */
 .graph-panel{margin-top:14px;padding:12px;border:1px solid var(--line);border-radius:14px;background:var(--panel);max-width:720px;overflow:hidden}
 .graph-title{font-size:13px;font-weight:700;margin:0 0 8px;color:var(--text)}
-.ug-auto-graph{display:block;width:100%;height:auto;min-height:220px;background:var(--bg);border-radius:10px}
+.ug-auto-graph{display:block;width:100%;height:auto;min-height:260px;background:#111827;border-radius:12px;box-shadow:inset 0 0 0 1px #334155}.graph-legend{display:flex;flex-wrap:wrap;gap:8px 14px;margin-top:10px}.graph-legend-item{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--text)}.graph-legend-item i{display:inline-block;width:18px;height:4px;border-radius:4px}.graph-note{font-size:11px;color:var(--muted);margin-top:9px;line-height:1.5}
 .graph-note{font-size:11px;color:var(--muted);margin-top:7px;line-height:1.5}
 </style>
 </head>
@@ -597,7 +597,6 @@ function makeAutoGraph(question, answer) {
   const combined = String(question || '') + '\n' + String(answer || '');
   const equations = [];
   const seen = new Set();
-  // Support common school-level explicit functions, linear equations, quadratics and trig functions.
   const re = /(?:y\s*=\s*|f\s*\(\s*x\s*\)\s*=\s*)([^\n;]+)|((?:[-+]?\s*\d*\s*x\s*(?:\^\s*2)?\s*(?:[-+]\s*\d*\s*x)?\s*(?:[-+]\s*\d+(?:\.\d+)?)?)\s*=\s*y)/gi;
   let m;
   while ((m = re.exec(combined)) && equations.length < 5) {
@@ -608,50 +607,68 @@ function makeAutoGraph(question, answer) {
     if (!/^[0-9xX+\-*/^().,a-z]+$/i.test(expr)) continue;
     if (!seen.has(expr)) { seen.add(expr); equations.push(expr); }
   }
-  // Handle standard inequality boundary lines from LPP prompts, e.g. x+3y<=60.
-  const lpp = /([-+]?\s*\d*\s*x\s*(?:[-+]\s*\d*\s*y)?\s*(?:[-+]\s*\d+(?:\.\d+)?)?)\s*(?:<=|>=|≤|≥|=)\s*([-+]?\s*\d+(?:\.\d+)?)/gi;
+
+  // Convert common linear inequalities/equations into boundary lines y=(C-Ax)/B.
+  const lpp = /([-+]?\s*\d*\.?\d*\s*x\s*(?:[-+]\s*\d*\.?\d*\s*y)?(?:\s*[-+]\s*\d+(?:\.\d+)?)?)\s*(?:<=|>=|≤|≥|=)\s*([-+]?\s*\d+(?:\.\d+)?)/gi;
   while ((m = lpp.exec(combined)) && equations.length < 5) {
-    let lhs=m[1].replace(/\s+/g,'').replace(/−/g,'-'), rhs=m[2].trim();
-    const expr = `(${rhs}-(${lhs.replace(/x/g,'(x)').replace(/y/g,'(y)')}))/1`;
-    // Convert only linear constraints containing y to y=f(x).
-    const parts = lhs.match(/^([+-]?\d*\.?\d*)x([+-]\d*\.?\d*)y?([+-]\d+(?:\.\d+)?)?$/i);
+    const lhs = m[1].replace(/\s+/g,'').replace(/−/g,'-');
     if (!/y/i.test(lhs)) continue;
     const parsed = lhs.match(/^([+-]?\d*\.?\d*)x([+-]\d*\.?\d*)y$/i);
     if (!parsed) continue;
-    const ax = parsed[1] || '1', by = parsed[2] || '1';
     const num = v => v === '' || v === '+' ? 1 : v === '-' ? -1 : Number(v);
-    const A=num(ax), B=num(by), C=Number(rhs);
-    if (!Number.isFinite(A)||!Number.isFinite(B)||!B) continue;
-    const fn = `(${C}-${A}*x)/(${B})`;
-    if (!seen.has(fn)) {seen.add(fn); equations.push(fn);}
+    const A=num(parsed[1]), B=num(parsed[2]), C=Number(m[2]);
+    if (!Number.isFinite(A)||!Number.isFinite(B)||!Number.isFinite(C)||!B) continue;
+    const expr = `(${C}-${A}*x)/(${B})`;
+    if (!seen.has(expr)) { seen.add(expr); equations.push(expr); }
   }
   if (!equations.length) return null;
-  const W=640,H=300,L=48,R=18,T=18,B=34, pw=W-L-R, ph=H-T-B;
-  const xmin=-10,xmax=10,ymin=-10,ymax=10;
+
+  const isLpp = /\b(lpp|linear programming|feasible region|maximi[sz]e|minimi[sz]e|subject to)\b/i.test(combined)
+    || /(?:<=|>=|≤|≥)/.test(combined);
+  const constants = (combined.match(/\d+(?:\.\d+)?/g) || []).map(Number).filter(n=>Number.isFinite(n)&&n>0);
+  let limit = isLpp ? Math.max(10, Math.min(100, Math.ceil(Math.max(10,...constants)/10)*10)) : 10;
+  // Keep normal function graphs focused even when an answer contains unrelated numbers.
+  if (!isLpp) limit = 10;
+  const xmin = isLpp ? 0 : -limit, xmax = limit, ymin = isLpp ? 0 : -limit, ymax = limit;
+  const W=720,H=390,L=58,R=22,T=22,B=48,pw=W-L-R,ph=H-T-B;
   const X=x=>L+(x-xmin)/(xmax-xmin)*pw;
   const Y=y=>T+(ymax-y)/(ymax-ymin)*ph;
+  const step = limit > 30 ? 10 : limit > 15 ? 5 : 2;
   const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  let svg=`<svg class="ug-auto-graph" viewBox="0 0 ${W} ${H}" role="img" aria-label="Automatically plotted graph"><rect width="${W}" height="${H}" fill="var(--bg)"/>`;
-  for(let x=-10;x<=10;x+=2) svg+=`<line x1="${X(x)}" y1="${T}" x2="${X(x)}" y2="${T+ph}" stroke="var(--line)" stroke-width="1"/><text x="${X(x)}" y="${T+ph+16}" fill="var(--muted)" font-size="10" text-anchor="middle">${x}</text>`;
-  for(let y=-10;y<=10;y+=2) svg+=`<line x1="${L}" y1="${Y(y)}" x2="${L+pw}" y2="${Y(y)}" stroke="var(--line)" stroke-width="1"/><text x="${L-8}" y="${Y(y)+3}" fill="var(--muted)" font-size="10" text-anchor="end">${y}</text>`;
-  svg+=`<line x1="${X(0)}" y1="${T}" x2="${X(0)}" y2="${T+ph}" stroke="var(--muted)" stroke-width="1.5"/><line x1="${L}" y1="${Y(0)}" x2="${L+pw}" y2="${Y(0)}" stroke="var(--muted)" stroke-width="1.5"/><text x="${L+pw-4}" y="${Y(0)-7}" fill="var(--text)" font-size="12">x</text><text x="${X(0)+7}" y="${T+10}" fill="var(--text)" font-size="12">y</text>`;
-  const colors=['#4169e1','#e05252','#14966b','#b36bdb','#d18a18'];
+  let svg=`<svg class="ug-auto-graph" viewBox="0 0 ${W} ${H}" role="img" aria-label="Graph plotted from the equations"><defs><clipPath id="ugGraphClip"><rect x="${L}" y="${T}" width="${pw}" height="${ph}" rx="8"/></clipPath></defs><rect width="${W}" height="${H}" rx="12" fill="var(--graph-bg,#111827)"/>`;
+  for(let x=Math.ceil(xmin/step)*step;x<=xmax;x+=step){
+    svg+=`<line x1="${X(x)}" y1="${T}" x2="${X(x)}" y2="${T+ph}" stroke="#334155" stroke-width="1"/><text x="${X(x)}" y="${T+ph+21}" fill="#cbd5e1" font-size="11" text-anchor="middle">${x}</text>`;
+  }
+  for(let y=Math.ceil(ymin/step)*step;y<=ymax;y+=step){
+    svg+=`<line x1="${L}" y1="${Y(y)}" x2="${L+pw}" y2="${Y(y)}" stroke="#334155" stroke-width="1"/><text x="${L-10}" y="${Y(y)+4}" fill="#cbd5e1" font-size="11" text-anchor="end">${y}</text>`;
+  }
+  svg+=`<line x1="${X(0)}" y1="${T}" x2="${X(0)}" y2="${T+ph}" stroke="#e2e8f0" stroke-width="1.8"/><line x1="${L}" y1="${Y(0)}" x2="${L+pw}" y2="${Y(0)}" stroke="#e2e8f0" stroke-width="1.8"/><text x="${L+pw-3}" y="${Y(0)-9}" fill="#f8fafc" font-size="13" font-weight="700" text-anchor="end">x</text><text x="${X(0)+9}" y="${T+12}" fill="#f8fafc" font-size="13" font-weight="700">y</text>`;
+  const colors=['#fb7185','#60a5fa','#34d399','#c084fc','#fbbf24'];
   function evaluate(expr,x){
     let e=expr.toLowerCase().replace(/\^/g,'**').replace(/\b(x)\b/g,`(${x})`).replace(/\b(sin|cos|tan)\b/g,'Math.$1').replace(/\bpi\b/g,'Math.PI');
     if(!/^[0-9()+\-*/.\s*a-zA-Z]+$/.test(e)) return NaN;
     try { return Function('"use strict";return ('+e+')')(); } catch(_){return NaN;}
   }
+  svg+='<g clip-path="url(#ugGraphClip)">';
   equations.forEach((expr,idx)=>{
-    let d=''; let drawing=false;
-    for(let px=0;px<=pw;px+=2){ const x=xmin+px/pw*(xmax-xmin); const y=evaluate(expr,x); if(!Number.isFinite(y)||Math.abs(y)>100){drawing=false;continue;} const xx=L+px, yy=Y(y); d+=(drawing?'L':'M')+xx.toFixed(2)+' '+yy.toFixed(2)+' '; drawing=true; }
-    svg+=`<path d="${d}" fill="none" stroke="${colors[idx]}" stroke-width="2.5" stroke-linejoin="round"/>`;
+    let d='',drawing=false;
+    for(let px=0;px<=pw;px+=1.5){
+      const x=xmin+px/pw*(xmax-xmin), y=evaluate(expr,x);
+      if(!Number.isFinite(y)||y<ymin-limit*2||y>ymax+limit*2){drawing=false;continue;}
+      const xx=L+px, yy=Y(y);
+      d+=(drawing?'L':'M')+xx.toFixed(2)+' '+yy.toFixed(2)+' '; drawing=true;
+    }
+    svg+=`<path d="${d}" fill="none" stroke="${colors[idx]}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>`;
   });
-  svg+='</svg>';
+  svg+='</g></svg>';
   const panel=document.createElement('section'); panel.className='graph-panel';
-  const title=document.createElement('div'); title.className='graph-title'; title.textContent='Graph (automatic preview)'; panel.appendChild(title);
+  const title=document.createElement('div'); title.className='graph-title'; title.textContent=isLpp?'Graph of constraints':'Graph preview'; panel.appendChild(title);
   panel.insertAdjacentHTML('beforeend',svg);
-  const legend=document.createElement('div'); legend.className='graph-note'; legend.textContent='Plotted from equations detected in the question/answer: '+equations.map((e,i)=>`${i+1}. y = ${e}`).join('  ·  ')+'. Scale shown: −10 to 10 on both axes. For equations outside this range, ask for a suitable scale.';
+  const legend=document.createElement('div'); legend.className='graph-legend';
+  equations.forEach((e,i)=>{const item=document.createElement('span');item.className='graph-legend-item';const swatch=document.createElement('i');swatch.style.background=colors[i];const label=document.createElement('span');label.textContent='y = '+e;item.append(swatch,label);legend.appendChild(item);});
   panel.appendChild(legend);
+  const note=document.createElement('div');note.className='graph-note';note.textContent=isLpp?'Axes start at zero for this constraint graph. Check the original inequalities before using the graph as a final LPP solution.':'Automatically plotted from the equation detected in your question or answer.';
+  panel.appendChild(note);
   return panel;
 }
 
