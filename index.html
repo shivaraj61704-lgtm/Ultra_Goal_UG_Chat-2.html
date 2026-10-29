@@ -87,6 +87,15 @@ button:not(:disabled):active{transform:scale(.97)}
 @keyframes ugLogoPulse{0%{transform:scale(.92);opacity:.55}75%,100%{transform:scale(1.22);opacity:0}}
 @media(prefers-reduced-motion:reduce){body,.msg,.logo,.welcome-logo,.logo::after,.welcome-logo::after{animation:none!important}.suggestion::after{display:none!important}button:not(:disabled),.suggestion{transition:none!important}}
 
+
+/* ULTRA GOAL rotating blue-red light border around the message composer */
+.composer{position:relative;isolation:isolate;z-index:0;border-color:transparent!important}
+.composer::before{content:"";position:absolute;inset:-2px;border-radius:26px;padding:2px;pointer-events:none;z-index:-1;background:conic-gradient(from var(--ug-border-angle,0deg),transparent 0deg 205deg,#168bff 235deg,#4b55ff 265deg,#ed315d 300deg,#ff526b 320deg,transparent 350deg 360deg);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;filter:drop-shadow(0 0 5px rgba(35,125,255,.28)) drop-shadow(0 0 7px rgba(235,45,90,.18));animation:ugBorderRotate 5s linear infinite}
+.composer:focus-within::before{filter:drop-shadow(0 0 7px rgba(35,125,255,.48)) drop-shadow(0 0 9px rgba(235,45,90,.35))}
+@keyframes ugBorderRotate{to{--ug-border-angle:360deg}}
+@property --ug-border-angle{syntax:"<angle>";initial-value:0deg;inherits:false}
+@media(prefers-reduced-motion:reduce){.composer::before{animation:none;background:linear-gradient(110deg,#168bff,#ed315d)}}
+
 </style>
 </head>
 <body>
