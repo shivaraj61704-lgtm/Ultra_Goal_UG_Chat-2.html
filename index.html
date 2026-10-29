@@ -3,7 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#ffffff">
+<meta name="theme-color" content="#111318">
+<script>/* Apply saved theme before first paint; new visitors start in dark mode. */(function(){try{var t=localStorage.getItem("ultraGoalTheme");document.documentElement.dataset.theme=(t==="light"?"light":"dark");}catch(e){document.documentElement.dataset.theme="dark";}})();</script>
 <title>Ultra Goal | UG Chat</title>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/dompurify/dist/purify.min.js"></script>
@@ -65,6 +66,26 @@ button:not(:disabled):active{transform:scale(.96)}
 .response-actions button:hover,.user-tools button:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(38,59,101,.1)}
 @keyframes ugSuggestionEnter{from{opacity:0;transform:translateY(18px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
 @media(prefers-reduced-motion:reduce){.suggestions .suggestion,button:not(:disabled){animation:none!important;transition:none!important}}
+
+
+/* ULTRA GOAL permanent visual layer — additive; does not alter chat or Worker logic */
+html{background:var(--bg)}
+body{animation:ugPageReveal .55s ease-out both}
+.logo,.welcome-logo{position:relative;isolation:isolate;animation:ugLogoFloat 3.4s ease-in-out infinite;will-change:transform}
+.logo::after,.welcome-logo::after{content:"";position:absolute;inset:-4px;border-radius:inherit;border:1px solid color-mix(in srgb,var(--accent) 55%,transparent);opacity:.55;z-index:-1;animation:ugLogoPulse 2.8s ease-out infinite}
+.msg{animation:ugMessageReveal .32s cubic-bezier(.2,.75,.25,1) both}
+.suggestion{position:relative;overflow:hidden;will-change:transform;}
+.suggestion::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(110deg,transparent 20%,rgba(145,169,255,.13) 48%,transparent 72%);transform:translateX(-130%);transition:transform .65s ease}
+.suggestion:hover::after,.suggestion:focus-visible::after{transform:translateX(130%)}
+button:not(:disabled){-webkit-tap-highlight-color:transparent;transition:transform .22s cubic-bezier(.2,.8,.2,1),box-shadow .22s ease,background-color .22s ease,border-color .22s ease,color .22s ease,filter .22s ease}
+button:not(:disabled):hover{filter:brightness(1.06)}
+button:not(:disabled):active{transform:scale(.97)}
+.iconbtn:hover,.newchat:hover,.sidebutton:hover,.primary:hover,.secondary:hover,.send:hover{box-shadow:0 7px 20px rgba(75,105,180,.18)}
+@keyframes ugPageReveal{from{opacity:0}to{opacity:1}}
+@keyframes ugMessageReveal{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:translateY(0)}}
+@keyframes ugLogoFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+@keyframes ugLogoPulse{0%{transform:scale(.92);opacity:.55}75%,100%{transform:scale(1.22);opacity:0}}
+@media(prefers-reduced-motion:reduce){body,.msg,.logo,.welcome-logo,.logo::after,.welcome-logo::after{animation:none!important}.suggestion::after{display:none!important}button:not(:disabled),.suggestion{transition:none!important}}
 
 </style>
 </head>
@@ -166,7 +187,7 @@ async function extractFileText(file){const name=file.name.toLowerCase();if(file.
 $('uploadBtn').addEventListener('click',()=>$('fileInput').click());$('fileInput').addEventListener('change',async e=>{const f=e.target.files?.[0];if(!f)return;$('uploadBtn').disabled=true;$('fileStatus').textContent='⏳ Reading '+f.name+'…';$('fileChip').classList.remove('hidden');try{const text=await extractFileText(f);if(!text.trim())throw Error('This file appears empty.');attachedFileText=text.slice(0,30000);attachedFileName=f.name;$('fileStatus').textContent='📄 '+f.name+' — text extracted'+(text.length>30000?' (first 30,000 characters)':'');const instruction=textarea.value.trim();textarea.value=(instruction?instruction+'\n\n':'')+'Please use the attached document text below to answer my question.\n\n[Document: '+f.name+']\n'+attachedFileText;resizeInput();textarea.focus();showToast('📄 Document ready! Add a question, then tap Send.')}catch(err){attachedFileText='';attachedFileName='';$('fileStatus').textContent='⚠️ '+(err.message||'Could not read file.');showToast(err.message||'Could not read file.')}finally{$('uploadBtn').disabled=false}});$('removeFileBtn').addEventListener('click',()=>{attachedFileText='';attachedFileName='';$('fileInput').value='';$('fileChip').classList.add('hidden');showToast('Attachment status removed. Remove its text from the message too if already inserted.')});
 function setupMicrophone(){const b=$('micBtn'),SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){b.addEventListener('click',()=>showToast('Voice input is not supported. Try a recent Chrome browser.'));return}recognition=new SR();recognition.lang='en-IN';recognition.continuous=false;recognition.interimResults=true;recognition.onstart=()=>{listening=true;b.classList.add('listening');b.textContent='⏹';showToast('🎙️ Listening… speak now!')};recognition.onresult=e=>{let t='';for(let i=0;i<e.results.length;i++)t+=e.results[i][0].transcript;textarea.value=t;resizeInput()};recognition.onerror=e=>showToast(e.error==='not-allowed'?'Allow microphone permission in browser settings.':'Voice input error: '+e.error);recognition.onend=()=>{listening=false;b.classList.remove('listening');b.textContent='🎙️'};b.addEventListener('click',()=>{if(listening){recognition.stop();return}try{recognition.start()}catch(e){showToast('Wait a moment and try again.')}})}
 function loadChats(){try{const saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]');chats=Array.isArray(saved)?saved.filter(c=>c&&typeof c.id==='string'&&Array.isArray(c.messages)):[]}catch(e){chats=[]}if(chats.length)showChat(chats[0].id);else{showWelcome();renderHistory()}}
-try{localStorage.setItem(THEME_KEY,'light');applyTheme('light')}catch(e){applyTheme('light')}updateProfileUI();loadChats();resizeInput();setupMicrophone();window.addEventListener('pagehide',()=>{if('speechSynthesis'in window)window.speechSynthesis.cancel()});document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();newChat()}if(e.key==='Escape'){closeProfile();closeSidebar();if(listening&&recognition)recognition.stop()}});
+let initialTheme='dark';try{const savedTheme=localStorage.getItem(THEME_KEY);if(savedTheme==='light'||savedTheme==='dark')initialTheme=savedTheme;}catch(e){}applyTheme(initialTheme);updateProfileUI();loadChats();resizeInput();setupMicrophone();window.addEventListener('pagehide',()=>{if('speechSynthesis'in window)window.speechSynthesis.cancel()});document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();newChat()}if(e.key==='Escape'){closeProfile();closeSidebar();if(listening&&recognition)recognition.stop()}});
 </script>
 </body>
 </html>
