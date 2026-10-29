@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+  <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -213,6 +213,12 @@ button:disabled { opacity:.45; cursor:not-allowed }
 @media(prefers-reduced-motion:reduce) {
   *,*::before,*::after { scroll-behavior:auto!important; animation:none!important; transition:none!important }
 }
+
+/* Automatic graph panel for graph-based questions */
+.graph-panel{margin-top:14px;padding:12px;border:1px solid var(--line);border-radius:14px;background:var(--panel);max-width:720px;overflow:hidden}
+.graph-title{font-size:13px;font-weight:700;margin:0 0 8px;color:var(--text)}
+.ug-auto-graph{display:block;width:100%;height:auto;min-height:220px;background:var(--bg);border-radius:10px}
+.graph-note{font-size:11px;color:var(--muted);margin-top:7px;line-height:1.5}
 </style>
 </head>
 
@@ -577,6 +583,78 @@ function addUserTools(wrap, text, index) {
   wrap.appendChild(tools);
 }
 
+function graphSeemsNeeded(question, answer) {
+  const q = String(question || '').toLowerCase();
+  const a = String(answer || '').toLowerCase();
+  const asksForGraph = /\b(graph|plot|draw|sketch|curve|feasible region|lpp|linear programming|velocity[- ]time|displacement[- ]time|distance[- ]time|force[- ]displacement|pv diagram|p-v diagram|circuit graph)\b/.test(q);
+  const answerSuggestsGraph = /\b(graph|plot|curve|feasible region|coordinate plane|x[- ]axis|y[- ]axis)\b/.test(a);
+  const hasEquation = /(?:y\s*=|f\s*\(\s*x\s*\)\s*=|\bx\s*[+−-]\s*\d+\s*=|\b\d*x\s*[+−-]\s*\d*y\s*[<>=≤≥])/i.test(question + '\n' + answer);
+  return (asksForGraph || answerSuggestsGraph) && hasEquation;
+}
+
+function makeAutoGraph(question, answer) {
+  if (!graphSeemsNeeded(question, answer)) return null;
+  const combined = String(question || '') + '\n' + String(answer || '');
+  const equations = [];
+  const seen = new Set();
+  // Support common school-level explicit functions, linear equations, quadratics and trig functions.
+  const re = /(?:y\s*=\s*|f\s*\(\s*x\s*\)\s*=\s*)([^\n;]+)|((?:[-+]?\s*\d*\s*x\s*(?:\^\s*2)?\s*(?:[-+]\s*\d*\s*x)?\s*(?:[-+]\s*\d+(?:\.\d+)?)?)\s*=\s*y)/gi;
+  let m;
+  while ((m = re.exec(combined)) && equations.length < 5) {
+    let expr = (m[1] || m[2] || '').trim().replace(/[.,]$/, '').replace(/\\\(|\\\)|\$/g,'').replace(/−/g,'-').replace(/×/g,'*').replace(/²/g,'^2');
+    if (!expr || expr.length > 80) continue;
+    expr = expr.replace(/\s+/g,'');
+    if (!/[x]/i.test(expr) && !/sin|cos|tan/i.test(expr)) continue;
+    if (!/^[0-9xX+\-*/^().,a-z]+$/i.test(expr)) continue;
+    if (!seen.has(expr)) { seen.add(expr); equations.push(expr); }
+  }
+  // Handle standard inequality boundary lines from LPP prompts, e.g. x+3y<=60.
+  const lpp = /([-+]?\s*\d*\s*x\s*(?:[-+]\s*\d*\s*y)?\s*(?:[-+]\s*\d+(?:\.\d+)?)?)\s*(?:<=|>=|≤|≥|=)\s*([-+]?\s*\d+(?:\.\d+)?)/gi;
+  while ((m = lpp.exec(combined)) && equations.length < 5) {
+    let lhs=m[1].replace(/\s+/g,'').replace(/−/g,'-'), rhs=m[2].trim();
+    const expr = `(${rhs}-(${lhs.replace(/x/g,'(x)').replace(/y/g,'(y)')}))/1`;
+    // Convert only linear constraints containing y to y=f(x).
+    const parts = lhs.match(/^([+-]?\d*\.?\d*)x([+-]\d*\.?\d*)y?([+-]\d+(?:\.\d+)?)?$/i);
+    if (!/y/i.test(lhs)) continue;
+    const parsed = lhs.match(/^([+-]?\d*\.?\d*)x([+-]\d*\.?\d*)y$/i);
+    if (!parsed) continue;
+    const ax = parsed[1] || '1', by = parsed[2] || '1';
+    const num = v => v === '' || v === '+' ? 1 : v === '-' ? -1 : Number(v);
+    const A=num(ax), B=num(by), C=Number(rhs);
+    if (!Number.isFinite(A)||!Number.isFinite(B)||!B) continue;
+    const fn = `(${C}-${A}*x)/(${B})`;
+    if (!seen.has(fn)) {seen.add(fn); equations.push(fn);}
+  }
+  if (!equations.length) return null;
+  const W=640,H=300,L=48,R=18,T=18,B=34, pw=W-L-R, ph=H-T-B;
+  const xmin=-10,xmax=10,ymin=-10,ymax=10;
+  const X=x=>L+(x-xmin)/(xmax-xmin)*pw;
+  const Y=y=>T+(ymax-y)/(ymax-ymin)*ph;
+  const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  let svg=`<svg class="ug-auto-graph" viewBox="0 0 ${W} ${H}" role="img" aria-label="Automatically plotted graph"><rect width="${W}" height="${H}" fill="var(--bg)"/>`;
+  for(let x=-10;x<=10;x+=2) svg+=`<line x1="${X(x)}" y1="${T}" x2="${X(x)}" y2="${T+ph}" stroke="var(--line)" stroke-width="1"/><text x="${X(x)}" y="${T+ph+16}" fill="var(--muted)" font-size="10" text-anchor="middle">${x}</text>`;
+  for(let y=-10;y<=10;y+=2) svg+=`<line x1="${L}" y1="${Y(y)}" x2="${L+pw}" y2="${Y(y)}" stroke="var(--line)" stroke-width="1"/><text x="${L-8}" y="${Y(y)+3}" fill="var(--muted)" font-size="10" text-anchor="end">${y}</text>`;
+  svg+=`<line x1="${X(0)}" y1="${T}" x2="${X(0)}" y2="${T+ph}" stroke="var(--muted)" stroke-width="1.5"/><line x1="${L}" y1="${Y(0)}" x2="${L+pw}" y2="${Y(0)}" stroke="var(--muted)" stroke-width="1.5"/><text x="${L+pw-4}" y="${Y(0)-7}" fill="var(--text)" font-size="12">x</text><text x="${X(0)+7}" y="${T+10}" fill="var(--text)" font-size="12">y</text>`;
+  const colors=['#4169e1','#e05252','#14966b','#b36bdb','#d18a18'];
+  function evaluate(expr,x){
+    let e=expr.toLowerCase().replace(/\^/g,'**').replace(/\b(x)\b/g,`(${x})`).replace(/\b(sin|cos|tan)\b/g,'Math.$1').replace(/\bpi\b/g,'Math.PI');
+    if(!/^[0-9()+\-*/.\s*a-zA-Z]+$/.test(e)) return NaN;
+    try { return Function('"use strict";return ('+e+')')(); } catch(_){return NaN;}
+  }
+  equations.forEach((expr,idx)=>{
+    let d=''; let drawing=false;
+    for(let px=0;px<=pw;px+=2){ const x=xmin+px/pw*(xmax-xmin); const y=evaluate(expr,x); if(!Number.isFinite(y)||Math.abs(y)>100){drawing=false;continue;} const xx=L+px, yy=Y(y); d+=(drawing?'L':'M')+xx.toFixed(2)+' '+yy.toFixed(2)+' '; drawing=true; }
+    svg+=`<path d="${d}" fill="none" stroke="${colors[idx]}" stroke-width="2.5" stroke-linejoin="round"/>`;
+  });
+  svg+='</svg>';
+  const panel=document.createElement('section'); panel.className='graph-panel';
+  const title=document.createElement('div'); title.className='graph-title'; title.textContent='Graph (automatic preview)'; panel.appendChild(title);
+  panel.insertAdjacentHTML('beforeend',svg);
+  const legend=document.createElement('div'); legend.className='graph-note'; legend.textContent='Plotted from equations detected in the question/answer: '+equations.map((e,i)=>`${i+1}. y = ${e}`).join('  ·  ')+'. Scale shown: −10 to 10 on both axes. For equations outside this range, ask for a suitable scale.';
+  panel.appendChild(legend);
+  return panel;
+}
+
 function appendMessage(role, text, actions = true, index = -1) {
   const row = document.createElement('div');
   row.className = 'msg ' + (role === 'user' ? 'user' : 'assistant');
@@ -608,6 +686,14 @@ function appendMessage(role, text, actions = true, index = -1) {
     content.appendChild(answer);
     row.append(logo, content);
     renderMath(answer);
+    if (actions) {
+      const chat = activeChat();
+      const userQuestion = chat && index >= 0
+        ? [...chat.messages.slice(0, index)].reverse().find(m => m.role === 'user')?.text || ''
+        : '';
+      const graph = makeAutoGraph(userQuestion, text);
+      if (graph) content.appendChild(graph);
+    }
 
     if (actions) {
       const bar = document.createElement('div');
