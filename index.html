@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#ffffff">
+<meta name="theme-color" content="#000000">
 <meta name="description" content="Ultra Goal AI Chat — learn, code, research, and build with AI. Supports Kannada, English, files, voice input, and live AI through Cloudflare Worker.">
 <title>Ultra Goal AI | Smart Chat Workspace</title>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
@@ -51,39 +51,143 @@ body{background:radial-gradient(ellipse at 70% -20%,color-mix(in srgb,var(--acce
   font-size: 10px;
   line-height: 1.2;
 }
-/* ULTRA GOAL PREMIUM UI — theme-aware: light mode can become white, dark mode stays black */
-:root{--accent:#6d4aff;--accent2:#2587f5;--glow:0 12px 40px #6d28d922}
-:root[data-theme="dark"]{--accent:#a59aff;--accent2:#69b7ff;--glow:0 12px 40px #0005}
-body{background:var(--bg);background-image:radial-gradient(ellipse at 50% -20%,color-mix(in srgb,var(--accent) 7%,transparent),transparent 55%)}
-.sidebar{background:color-mix(in srgb,var(--panel) 94%,var(--accent) 6%);backdrop-filter:blur(18px)}
-.topbar{background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(16px)}
-.logo,.welcome-logo,.mini-logo,.profilebtn{background:linear-gradient(135deg,#7c3aed,#2563eb 55%,#06b6d4);box-shadow:0 0 22px #7c3aed35}
+/* ULTRA GOAL: FULL BLACK BACKGROUND */
+:root, :root[data-theme="dark"]{
+  color-scheme: dark;
+  --bg:#000000;
+  --panel:#000000;
+  --panel2:#101010;
+  --text:#f5f5f5;
+  --muted:#a3a3a3;
+  --line:#252525;
+  --user:#111111;
+  --shadow:0 10px 35px #000000;
+}
+html,body,.app,.sidebar,.main,.chatarea,.topbar,.composer-wrap,.composer,.modal{
+  background:#000000 !important;
+}
+body{background:#000000 !important;color:#f5f5f5}
+.composer-wrap{background:#000000 !important}
+.newchat,.sidebutton,.iconbtn,.suggestion,.modal input{background:#000000;color:#f5f5f5}
+.history-item.active,.history-item:hover,.newchat{background:#101010}
+.userbubble{background:#111111}
+.message-content pre{background:#080808}
+
+/* ULTRA GOAL PREMIUM UI UPGRADE — black + neon glow */
+:root{--accent:#8b5cf6;--line:#242038;--panel2:#11101b;--user:#100d1c;--shadow:0 12px 40px #6d28d922}
+body{background:#000!important;background-image:radial-gradient(ellipse at 50% -20%,#21113d 0,transparent 55%)!important}
+.sidebar{background:rgba(0,0,0,.94)!important;border-right:1px solid #28203b;backdrop-filter:blur(18px)}
+.topbar{background:rgba(0,0,0,.86)!important;border-bottom:1px solid #29213d;backdrop-filter:blur(16px)}
+.logo,.welcome-logo,.mini-logo,.profilebtn{background:linear-gradient(135deg,#7c3aed,#2563eb 55%,#06b6d4);box-shadow:0 0 22px #7c3aed55;}
 .logo,.welcome-logo{animation:ugFloat 5s ease-in-out infinite}
-.brandname span,.welcome h1 span{background:linear-gradient(90deg,#8b5cf6,#3b82f6,#06b6d4,#8b5cf6);background-size:250% auto;background-clip:text;-webkit-background-clip:text;color:transparent;animation:ugGradient 7s linear infinite}
-.newchat,.sidebutton,.iconbtn,.suggestion,.composer,.modal,.file-chip{border-color:color-mix(in srgb,var(--line) 75%,var(--accent) 25%);transition:transform .22s ease,border-color .22s ease,box-shadow .22s ease,background .22s ease}
-.newchat{background:color-mix(in srgb,var(--panel2) 88%,var(--accent) 12%);box-shadow:inset 0 0 18px #7c3aed0b,0 0 14px #7c3aed12}
-.newchat:hover,.sidebutton:hover,.iconbtn:hover,.suggestion:hover{transform:translateY(-2px);border-color:var(--accent);box-shadow:0 0 18px #7c3aed25}
-.suggestion{position:relative;overflow:hidden}
+.brandname span,.welcome h1 span{background:linear-gradient(90deg,#a78bfa,#60a5fa,#67e8f9,#a78bfa);background-size:250% auto;background-clip:text;-webkit-background-clip:text;color:transparent;animation:ugGradient 7s linear infinite}
+.newchat,.sidebutton,.iconbtn,.suggestion,.composer,.modal,.file-chip{border-color:#28213c;transition:transform .22s ease,border-color .22s ease,box-shadow .22s ease,background .22s ease}
+.newchat{background:linear-gradient(110deg,#171027,#080810)!important;border-color:#6d28d9!important;box-shadow:inset 0 0 18px #7c3aed12,0 0 14px #7c3aed15}
+.newchat:hover,.sidebutton:hover,.iconbtn:hover,.suggestion:hover{transform:translateY(-2px);border-color:#8b5cf6!important;box-shadow:0 0 18px #7c3aed33;background:#0b0812!important}
+.suggestion{background:linear-gradient(145deg,#09090d,#050507)!important;position:relative;overflow:hidden}
 .suggestion:before{content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;background:linear-gradient(120deg,transparent 20%,#8b5cf610 50%,transparent 80%);transform:translateX(-110%);transition:transform .65s ease}
 .suggestion:hover:before{transform:translateX(110%)}
-.composer{background:var(--bg);box-shadow:var(--glow);backdrop-filter:blur(20px)}
-.composer:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 13%,transparent),var(--glow)}
-.send,.primary{background:linear-gradient(135deg,#7c3aed,#4f46e5 60%,#0891b2);color:#fff;box-shadow:0 0 18px #7c3aed35;transition:transform .18s ease,box-shadow .18s ease}
-.send:hover,.primary:hover{transform:translateY(-2px) scale(1.04);box-shadow:0 0 26px #8b5cf666}
-.composer-mic{transition:all .2s ease}.composer-mic:hover{border-color:var(--accent);box-shadow:0 0 16px #8b5cf633}
-.toolbtn:hover,.upload-btn:hover{color:var(--accent);background:color-mix(in srgb,var(--accent) 9%,transparent)}
-.userbubble{background:color-mix(in srgb,var(--user) 92%,var(--accent) 8%);border-color:var(--line);box-shadow:0 5px 20px #0000000a}
+.suggestion b{color:#f5f3ff}.suggestion span{color:#aaa4bd}
+.composer{background:rgba(5,5,8,.96)!important;border-color:#33264c;box-shadow:0 0 0 1px #8b5cf60b,0 12px 45px #000,0 0 28px #7c3aed12;backdrop-filter:blur(20px)}
+.composer:focus-within{border-color:#8b5cf6;box-shadow:0 0 0 3px #8b5cf61c,0 0 28px #7c3aed26}
+.send,.primary{background:linear-gradient(135deg,#7c3aed,#4f46e5 60%,#0891b2)!important;color:#fff!important;box-shadow:0 0 18px #7c3aed55;transition:transform .18s ease,box-shadow .18s ease}
+.send:hover,.primary:hover{transform:translateY(-2px) scale(1.04);box-shadow:0 0 26px #8b5cf699}
+.composer-mic{transition:all .2s ease}.composer-mic:hover{border-color:#8b5cf6;box-shadow:0 0 16px #8b5cf655}
+.toolbtn:hover,.upload-btn:hover{color:#c4b5fd!important;background:#8b5cf61a!important}
+.userbubble{background:linear-gradient(135deg,#171026,#0b1020)!important;border-color:#34274c;box-shadow:0 5px 20px #0008}
 .msg:not(.user){animation:ugFadeUp .32s ease both}.msg.user{animation:ugFadeUp .24s ease both}
-.response-actions button:hover,.user-tools button:hover{color:var(--accent);background:color-mix(in srgb,var(--accent) 9%,transparent)}
-.history-item{transition:background .18s ease,border-color .18s ease}.history-item.active{background:var(--panel2);border-color:var(--line)}
-.modal{background:var(--bg);box-shadow:var(--glow)}
-.modal input{background:var(--bg);border-color:var(--line)}
-.toast{box-shadow:var(--glow)}
-::selection{background:#7c3aed55;color:var(--text)}
+.response-actions button:hover,.user-tools button:hover{color:#c4b5fd;background:#8b5cf61a}
+.history-item{transition:background .18s ease,border-color .18s ease}.history-item.active{background:#100b1b;border-color:#49306d}.history-actions button:hover{color:#c4b5fd;box-shadow:0 0 12px #8b5cf644}
+.modal{background:#050507!important;border-color:#392650;box-shadow:0 0 45px #7c3aed22}
+.modal input{background:#08080b!important;border-color:#332641}
+.toast{box-shadow:0 0 22px #7c3aed35;border:1px solid #49306d}
+::selection{background:#7c3aed66;color:#fff}
 @keyframes ugFadeUp{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
 @keyframes ugFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
 @keyframes ugGradient{to{background-position:250% center}}
 @media(prefers-reduced-motion:reduce){.logo,.welcome-logo,.msg,.brandname span,.welcome h1 span{animation:none!important}}
+
+/* THEME FIX: true full-black dark mode and true full-white light mode */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg:#000000; --panel:#000000; --panel2:#101010; --text:#f5f5f5;
+  --muted:#a3a3a3; --line:#282828; --user:#111111; --accent:#8b5cf6;
+  --accent2:#60a5fa; --shadow:0 12px 40px #000000;
+}
+:root[data-theme="dark"] html,
+:root[data-theme="dark"] body,
+:root[data-theme="dark"] .app,
+:root[data-theme="dark"] .sidebar,
+:root[data-theme="dark"] .main,
+:root[data-theme="dark"] .chatarea,
+:root[data-theme="dark"] .topbar,
+:root[data-theme="dark"] .composer-wrap,
+:root[data-theme="dark"] .composer,
+:root[data-theme="dark"] .modal {
+  background-color:#000 !important; color:#f5f5f5;
+}
+:root[data-theme="dark"] body {background-image:radial-gradient(ellipse at 50% -20%,#21113d 0,transparent 55%) !important}
+:root[data-theme="dark"] .sidebar {background:rgba(0,0,0,.97)!important}
+:root[data-theme="dark"] .topbar {background:rgba(0,0,0,.94)!important}
+:root[data-theme="dark"] .composer {background:#000!important}
+:root[data-theme="dark"] .newchat,
+:root[data-theme="dark"] .sidebutton,
+:root[data-theme="dark"] .iconbtn,
+:root[data-theme="dark"] .suggestion,
+:root[data-theme="dark"] .modal input,
+:root[data-theme="dark"] .history-search {background:#000!important;color:#f5f5f5!important}
+:root[data-theme="dark"] .suggestion {background:linear-gradient(145deg,#08080b,#000)!important}
+:root[data-theme="dark"] .userbubble {background:#101010!important;color:#f5f5f5!important}
+:root[data-theme="dark"] .message-content pre {background:#080808!important}
+:root[data-theme="dark"] .history-item.active,
+:root[data-theme="dark"] .history-item:hover {background:#101010!important}
+:root[data-theme="dark"] .modal {background:#000!important}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg:#ffffff; --panel:#ffffff; --panel2:#f5f5f5; --text:#171717;
+  --muted:#666666; --line:#e5e5e5; --user:#f5f5f5; --accent:#6d28d9;
+  --accent2:#2563eb; --shadow:0 10px 35px #1111110d;
+}
+:root[data-theme="light"] html,
+:root[data-theme="light"] body,
+:root[data-theme="light"] .app,
+:root[data-theme="light"] .sidebar,
+:root[data-theme="light"] .main,
+:root[data-theme="light"] .chatarea,
+:root[data-theme="light"] .topbar,
+:root[data-theme="light"] .composer-wrap,
+:root[data-theme="light"] .composer,
+:root[data-theme="light"] .modal {
+  background-color:#fff!important; color:#171717!important;
+}
+:root[data-theme="light"] body {background-image:none!important}
+:root[data-theme="light"] .sidebar,
+:root[data-theme="light"] .topbar {background:#fff!important;border-color:#e5e5e5!important;backdrop-filter:none!important}
+:root[data-theme="light"] .composer {background:#fff!important;border-color:#dedede!important;box-shadow:0 8px 28px #0000000d!important}
+:root[data-theme="light"] .newchat,
+:root[data-theme="light"] .sidebutton,
+:root[data-theme="light"] .iconbtn,
+:root[data-theme="light"] .suggestion,
+:root[data-theme="light"] .modal input,
+:root[data-theme="light"] .history-search {background:#fff!important;color:#171717!important;border-color:#e5e5e5!important}
+:root[data-theme="light"] .suggestion {background:#fff!important}
+:root[data-theme="light"] .suggestion b {color:#171717!important}
+:root[data-theme="light"] .suggestion span {color:#666!important}
+:root[data-theme="light"] .userbubble {background:#f5f5f5!important;color:#171717!important;border-color:#e5e5e5!important;box-shadow:none!important}
+:root[data-theme="light"] .history-item.active,
+:root[data-theme="light"] .history-item:hover {background:#f5f5f5!important;border-color:#e5e5e5!important}
+:root[data-theme="light"] .message-content pre {background:#f7f7f7!important;color:#171717!important;border-color:#e5e5e5!important}
+:root[data-theme="light"] .message-content :not(pre)>code {background:#f0f0f0!important;color:#171717!important}
+:root[data-theme="light"] .message-content th {background:#f5f5f5!important}
+:root[data-theme="light"] .modal {background:#fff!important;border-color:#e5e5e5!important;box-shadow:0 15px 50px #0002!important}
+:root[data-theme="light"] .modal input {background:#fff!important;color:#171717!important}
+:root[data-theme="light"] .composer textarea {color:#171717!important}
+:root[data-theme="light"] .toolbtn:hover,
+:root[data-theme="light"] .upload-btn:hover {color:#6d28d9!important;background:#6d28d910!important}
+:root[data-theme="light"] .response-actions button:hover,
+:root[data-theme="light"] .user-tools button:hover {color:#6d28d9!important;background:#6d28d910!important}
+
 </style>
 </head>
 <body>
