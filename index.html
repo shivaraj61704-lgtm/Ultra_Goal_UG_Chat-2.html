@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#ffffff">
+<meta name="theme-color" content="#000000">
 <meta name="description" content="Ultra Goal AI Chat — learn, code, research, and build with AI. Supports Kannada, English, files, voice input, and live AI through Cloudflare Worker.">
 <title>Ultra Goal AI | Smart Chat Workspace</title>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
@@ -72,6 +72,41 @@ body{background:#000000 !important;color:#f5f5f5}
 .history-item.active,.history-item:hover,.newchat{background:#101010}
 .userbubble{background:#111111}
 .message-content pre{background:#080808}
+
+/* ULTRA GOAL PREMIUM UI UPGRADE — black + neon glow */
+:root{--accent:#8b5cf6;--line:#242038;--panel2:#11101b;--user:#100d1c;--shadow:0 12px 40px #6d28d922}
+body{background:#000!important;background-image:radial-gradient(ellipse at 50% -20%,#21113d 0,transparent 55%)!important}
+.sidebar{background:rgba(0,0,0,.94)!important;border-right:1px solid #28203b;backdrop-filter:blur(18px)}
+.topbar{background:rgba(0,0,0,.86)!important;border-bottom:1px solid #29213d;backdrop-filter:blur(16px)}
+.logo,.welcome-logo,.mini-logo,.profilebtn{background:linear-gradient(135deg,#7c3aed,#2563eb 55%,#06b6d4);box-shadow:0 0 22px #7c3aed55;}
+.logo,.welcome-logo{animation:ugFloat 5s ease-in-out infinite}
+.brandname span,.welcome h1 span{background:linear-gradient(90deg,#a78bfa,#60a5fa,#67e8f9,#a78bfa);background-size:250% auto;background-clip:text;-webkit-background-clip:text;color:transparent;animation:ugGradient 7s linear infinite}
+.newchat,.sidebutton,.iconbtn,.suggestion,.composer,.modal,.file-chip{border-color:#28213c;transition:transform .22s ease,border-color .22s ease,box-shadow .22s ease,background .22s ease}
+.newchat{background:linear-gradient(110deg,#171027,#080810)!important;border-color:#6d28d9!important;box-shadow:inset 0 0 18px #7c3aed12,0 0 14px #7c3aed15}
+.newchat:hover,.sidebutton:hover,.iconbtn:hover,.suggestion:hover{transform:translateY(-2px);border-color:#8b5cf6!important;box-shadow:0 0 18px #7c3aed33;background:#0b0812!important}
+.suggestion{background:linear-gradient(145deg,#09090d,#050507)!important;position:relative;overflow:hidden}
+.suggestion:before{content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;background:linear-gradient(120deg,transparent 20%,#8b5cf610 50%,transparent 80%);transform:translateX(-110%);transition:transform .65s ease}
+.suggestion:hover:before{transform:translateX(110%)}
+.suggestion b{color:#f5f3ff}.suggestion span{color:#aaa4bd}
+.composer{background:rgba(5,5,8,.96)!important;border-color:#33264c;box-shadow:0 0 0 1px #8b5cf60b,0 12px 45px #000,0 0 28px #7c3aed12;backdrop-filter:blur(20px)}
+.composer:focus-within{border-color:#8b5cf6;box-shadow:0 0 0 3px #8b5cf61c,0 0 28px #7c3aed26}
+.send,.primary{background:linear-gradient(135deg,#7c3aed,#4f46e5 60%,#0891b2)!important;color:#fff!important;box-shadow:0 0 18px #7c3aed55;transition:transform .18s ease,box-shadow .18s ease}
+.send:hover,.primary:hover{transform:translateY(-2px) scale(1.04);box-shadow:0 0 26px #8b5cf699}
+.composer-mic{transition:all .2s ease}.composer-mic:hover{border-color:#8b5cf6;box-shadow:0 0 16px #8b5cf655}
+.toolbtn:hover,.upload-btn:hover{color:#c4b5fd!important;background:#8b5cf61a!important}
+.userbubble{background:linear-gradient(135deg,#171026,#0b1020)!important;border-color:#34274c;box-shadow:0 5px 20px #0008}
+.msg:not(.user){animation:ugFadeUp .32s ease both}.msg.user{animation:ugFadeUp .24s ease both}
+.response-actions button:hover,.user-tools button:hover{color:#c4b5fd;background:#8b5cf61a}
+.history-item{transition:background .18s ease,border-color .18s ease}.history-item.active{background:#100b1b;border-color:#49306d}.history-actions button:hover{color:#c4b5fd;box-shadow:0 0 12px #8b5cf644}
+.modal{background:#050507!important;border-color:#392650;box-shadow:0 0 45px #7c3aed22}
+.modal input{background:#08080b!important;border-color:#332641}
+.toast{box-shadow:0 0 22px #7c3aed35;border:1px solid #49306d}
+::selection{background:#7c3aed66;color:#fff}
+@keyframes ugFadeUp{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+@keyframes ugFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+@keyframes ugGradient{to{background-position:250% center}}
+@media(prefers-reduced-motion:reduce){.logo,.welcome-logo,.msg,.brandname span,.welcome h1 span{animation:none!important}}
+
 </style>
 </head>
 <body>
