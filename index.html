@@ -29,6 +29,30 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\
 }
 @media (prefers-reduced-motion: reduce){button{transition:none!important;animation:none!important}}
 
+/* Dedicated Send/Message button animation fix: not dependent on global button rules */
+#sendBtn.send{
+  position:relative; isolation:isolate;
+  transition:transform .18s ease, box-shadow .22s ease, background-color .18s ease, color .18s ease, opacity .18s ease !important;
+  will-change:transform,box-shadow;
+}
+#sendBtn.send:not(:disabled){
+  cursor:pointer;
+  animation:sendButtonReady 2s ease-in-out infinite;
+}
+#sendBtn.send:not(:disabled):hover{
+  transform:translateY(-3px) scale(1.06) !important;
+  box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 18%,transparent),0 0 22px color-mix(in srgb,var(--accent) 55%,transparent) !important;
+}
+#sendBtn.send:not(:disabled):active{
+  transform:translateY(1px) scale(.91) !important;
+  animation:none !important;
+  box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 30%,transparent) !important;
+}
+#sendBtn.send:focus-visible{outline:2px solid var(--accent);outline-offset:4px;}
+#sendBtn.send:disabled{animation:none;box-shadow:none;}
+@keyframes sendButtonReady{0%,100%{box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 0%,transparent)}50%{box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 20%,transparent)}}
+@media(prefers-reduced-motion:reduce){#sendBtn.send{transition:none!important;animation:none!important}#sendBtn.send:not(:disabled):hover,#sendBtn.send:not(:disabled):active{transform:none!important}}
+
 /* Premium answer rendering */
 .message-content{min-width:0}
 .message-content pre{position:relative;padding:48px 14px 14px;background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:0 8px 24px #0000000b}
@@ -45,37 +69,75 @@ window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\
 @media(prefers-reduced-motion:no-preference){.msg.assistant .message-content{animation:answerIn .28s ease-out both}@keyframes answerIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}}
 
 
-/* CROSS-CHECKED GLOBAL BUTTON MOTION: applies to all interactive buttons */
-button, .iconbtn, .profilebtn, .send, .toolbtn, .upload-btn, .suggestion,
-.newchat, .sidebutton, .history-item, .response-actions button, .user-tools button,
-.code-toolbar button, .primary, .secondary, .composer-mic {
-  transition: transform .18s ease, box-shadow .18s ease, background-color .18s ease,
-    border-color .18s ease, color .18s ease, filter .18s ease;
-  -webkit-tap-highlight-color: transparent;
+/* COMPOSER + SEND BUTTON ANIMATION FIX */
+.composer {
+  transition: border-color .22s ease, box-shadow .22s ease, transform .22s ease !important;
 }
-@media (hover:hover) and (prefers-reduced-motion:no-preference) {
-  button:not(:disabled):hover, .iconbtn:hover, .profilebtn:hover, .send:not(:disabled):hover,
-  .toolbtn:hover, .upload-btn:hover, .suggestion:hover, .newchat:hover, .sidebutton:hover,
-  .history-item:hover, .response-actions button:hover, .user-tools button:hover,
-  .code-toolbar button:hover, .primary:hover, .secondary:hover, .composer-mic:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 30%, transparent),
-                0 5px 18px color-mix(in srgb, var(--accent) 15%, transparent);
-  }
+.composer:hover {
+  border-color: color-mix(in srgb, var(--accent) 70%, var(--line)) !important;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 18%, transparent), 0 8px 28px #00000020 !important;
 }
-button:not(:disabled):active, .iconbtn:active, .profilebtn:active, .send:not(:disabled):active,
-.toolbtn:active, .upload-btn:active, .suggestion:active, .newchat:active, .sidebutton:active,
-.history-item:active, .response-actions button:active, .user-tools button:active,
-.code-toolbar button:active, .primary:active, .secondary:active, .composer-mic:active {
-  transform: scale(.97);
-  filter: brightness(.96);
-  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 24%, transparent);
+.composer:focus-within {
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 20%, transparent), 0 8px 28px #00000020 !important;
+  transform: translateY(-1px);
+}
+#prompt { transition: color .18s ease, opacity .18s ease !important; }
+#sendBtn.send:not(:disabled) {
+  animation: sendButtonReady 1.8s ease-in-out infinite !important;
+  transition: transform .18s ease, box-shadow .18s ease, filter .18s ease !important;
+}
+#sendBtn.send:not(:disabled):hover {
+  transform: translateY(-3px) scale(1.07) !important;
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 18%, transparent), 0 0 22px color-mix(in srgb, var(--accent) 48%, transparent) !important;
+  filter: brightness(1.08);
+}
+#sendBtn.send:not(:disabled):active {
+  transform: translateY(1px) scale(.92) !important;
+  animation: none !important;
+}
+@keyframes sendButtonReady {
+  0%,100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 0%, transparent); }
+  50% { box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 22%, transparent); }
 }
 @media (prefers-reduced-motion: reduce) {
-  button, .iconbtn, .profilebtn, .send, .toolbtn, .upload-btn, .suggestion,
-  .newchat, .sidebutton, .history-item, .response-actions button, .user-tools button,
-  .code-toolbar button, .primary, .secondary, .composer-mic {
-    transition: none !important; animation: none !important;
+  .composer, #prompt, #sendBtn.send { transition: none !important; animation: none !important; }
+}
+
+/* FINAL BUTTON MOTION FIX — deliberately not gated by hover or motion-preference queries */
+:root { --button-motion-ease: cubic-bezier(.2,.8,.2,1); }
+button,
+[role="button"],
+.message-content .code-toolbar button {
+  -webkit-tap-highlight-color: transparent;
+  transition: transform .18s var(--button-motion-ease),
+              box-shadow .18s ease, background-color .18s ease,
+              border-color .18s ease, color .18s ease, filter .18s ease !important;
+}
+/* Hover works on mouse/trackpad; no preference-media-query dependency */
+button:not(:disabled):hover,
+[role="button"]:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 5px 18px color-mix(in srgb, var(--accent) 20%, transparent) !important;
+  border-color: color-mix(in srgb, var(--accent) 65%, var(--line)) !important;
+}
+/* Click/press feedback also works on touchscreens */
+button:not(:disabled):active,
+[role="button"]:active {
+  transform: translateY(0) scale(.96) !important;
+  filter: brightness(.96);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 30%, transparent) !important;
+  transition-duration: .07s !important;
+}
+button:focus-visible,
+[role="button"]:focus-visible {
+  outline: 2px solid var(--accent) !important;
+  outline-offset: 3px;
+}
+button:disabled { transform: none !important; box-shadow: none !important; }
+@media (prefers-reduced-motion: reduce) {
+  button, [role="button"], .message-content .code-toolbar button {
+    transition-duration: .01ms !important;
   }
 }
 </style>
