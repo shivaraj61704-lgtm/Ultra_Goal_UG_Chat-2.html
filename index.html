@@ -188,6 +188,24 @@ body{background:#000!important;background-image:radial-gradient(ellipse at 50% -
 :root[data-theme="light"] .response-actions button:hover,
 :root[data-theme="light"] .user-tools button:hover {color:#6d28d9!important;background:#6d28d910!important}
 
+
+/* Ultra Goal premium thinking animation */
+.thinking-card{display:flex;align-items:center;gap:12px;padding:12px 15px;border:1px solid var(--line);border-radius:16px;background:var(--panel);box-shadow:0 0 0 1px color-mix(in srgb,var(--accent) 8%,transparent),0 8px 28px #0000000a;animation:thinkEnter .32s ease-out both;}
+.thinking-orb{position:relative;width:34px;height:34px;flex:0 0 34px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(from 0deg,#3278ef,#a064df,#22d3ee,#3278ef);animation:thinkSpin 2.2s linear infinite;box-shadow:0 0 17px color-mix(in srgb,var(--accent) 30%,transparent);}
+.thinking-orb:before{content:"";position:absolute;inset:3px;border-radius:50%;background:var(--panel);}
+.thinking-orb:after{content:"✦";position:relative;z-index:1;color:var(--accent);font-size:16px;animation:thinkPulse 1.35s ease-in-out infinite;}
+.thinking-copy{display:flex;flex-direction:column;gap:4px;min-width:0}.thinking-title{font-size:13px;font-weight:750;letter-spacing:.1px;color:var(--text)}
+.thinking-subtitle{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:3px}
+.thinking-dot{width:4px;height:4px;border-radius:50%;background:var(--accent);animation:thinkDots 1.15s ease-in-out infinite;}
+.thinking-dot:nth-child(2){animation-delay:.16s}.thinking-dot:nth-child(3){animation-delay:.32s}
+.thinking-equalizer{display:flex;align-items:center;gap:3px;height:16px;margin-left:8px;opacity:.8}
+.thinking-equalizer i{display:block;width:3px;height:5px;border-radius:5px;background:var(--accent);animation:thinkBars .8s ease-in-out infinite alternate}
+.thinking-equalizer i:nth-child(2){animation-delay:.12s}.thinking-equalizer i:nth-child(3){animation-delay:.24s}.thinking-equalizer i:nth-child(4){animation-delay:.36s}
+@keyframes thinkSpin{to{transform:rotate(360deg)}}@keyframes thinkPulse{0%,100%{transform:scale(.8);opacity:.65}50%{transform:scale(1.15);opacity:1}}
+@keyframes thinkDots{0%,70%,100%{transform:translateY(0);opacity:.35}35%{transform:translateY(-4px);opacity:1}}
+@keyframes thinkBars{from{height:4px}to{height:15px}}@keyframes thinkEnter{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media(prefers-reduced-motion:reduce){.thinking-card,.thinking-orb,.thinking-orb:after,.thinking-dot,.thinking-equalizer i{animation:none!important}}
+
 </style>
 </head>
 <body>
@@ -231,7 +249,7 @@ function appendMessage(role,text,actions=true,index=-1){const row=document.creat
 function scrollBottom(){$('chatarea').scrollTop=$('chatarea').scrollHeight}
 function resizeInput(){textarea.style.height='auto';textarea.style.height=Math.min(textarea.scrollHeight,170)+'px';sendBtn.disabled=!textarea.value.trim()||!!activeController}
 function closeSidebar(){$('sidebar').classList.remove('open');$('overlay').classList.remove('show')}
-function makeTyping(id){const row=document.createElement('div');row.className='msg assistant';row.dataset.typingFor=id;const logo=document.createElement('div');logo.className='mini-logo';logo.textContent='UG';const label=document.createElement('div');label.className='typing typing-dots';label.textContent='Ultra Goal is thinking';row.append(logo,label);$('messages').appendChild(row)}
+function makeTyping(id){const row=document.createElement('div');row.className='msg assistant thinking-row';row.dataset.typingFor=id;const logo=document.createElement('div');logo.className='mini-logo';logo.textContent='UG';const card=document.createElement('div');card.className='thinking-card';card.setAttribute('role','status');card.setAttribute('aria-live','polite');const orb=document.createElement('div');orb.className='thinking-orb';const copy=document.createElement('div');copy.className='thinking-copy';const title=document.createElement('div');title.className='thinking-title';title.textContent='Ultra Goal is thinking';const subtitle=document.createElement('div');subtitle.className='thinking-subtitle';subtitle.append(document.createTextNode('Working on your answer'));for(let i=0;i<3;i++){const dot=document.createElement('span');dot.className='thinking-dot';subtitle.appendChild(dot)}copy.append(title,subtitle);const bars=document.createElement('div');bars.className='thinking-equalizer';for(let i=0;i<4;i++)bars.appendChild(document.createElement('i'));card.append(orb,copy,bars);row.append(logo,card);$('messages').appendChild(row)}
 function isDateQuestion(t){return /\b(what day is it|what(?:'s| is) the date|current date|today(?:'s)? date|date today)\b/i.test(String(t||''))}
 function getLocalDateAnswer(){const s=new Intl.DateTimeFormat('en-IN',{weekday:'long',day:'numeric',month:'long',year:'numeric'}).format(new Date());return '**Today is '+s+'.**\n\nThis date is taken from your device/browser clock.'}
 function isWeatherQuestion(t){return /\b(weather|forecast|temperature|rain today|will it rain|humidity|wind speed)\b/i.test(String(t||''))}
