@@ -270,7 +270,7 @@ body{background:#000!important;background-image:radial-gradient(ellipse at 50% -
 .blocks-head strong{font-size:15px}.blocks-head .spacer{flex:1}.blocks-head button,.blocks-action{border:1px solid var(--line);background:var(--bg);color:var(--text);border-radius:9px;padding:8px 11px;font-size:12px}
 .blocks-layout{display:grid;grid-template-columns:190px minmax(260px,1fr) 280px;min-height:0;flex:1}
 .blocks-toolbox{border-right:1px solid var(--line);padding:13px;overflow:auto;background:var(--panel)}.blocks-toolbox h3,.blocks-workspace h3,.blocks-stage h3{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:4px 0 12px}
-.blocks-category{font-size:12px;font-weight:800;color:var(--muted);margin:15px 0 7px}.code-block{display:block;width:100%;text-align:left;border:0;border-radius:9px;padding:10px;margin:7px 0;color:#fff;font-size:12px;font-weight:700;cursor:grab;box-shadow:0 2px 0 #0003}.code-block:active{cursor:grabbing}.cat-event{background:#d99a16}.cat-motion{background:#3978d5}.cat-look{background:#8b55c7}.cat-control{background:#d36a27}.cat-logic{background:#4c9c55}
+.blocks-category{font-size:12px;font-weight:800;color:var(--muted);margin:15px 0 7px}.code-block{display:block;width:100%;text-align:left;border:0;border-radius:9px;padding:10px;margin:7px 0;color:#fff;font-size:12px;font-weight:700;cursor:grab;box-shadow:0 2px 0 #0003}.code-block:active{cursor:grabbing}.code-block{touch-action:none;user-select:none;-webkit-user-select:none}.cat-event{background:#d99a16}.cat-motion{background:#3978d5}.cat-look{background:#8b55c7}.cat-control{background:#d36a27}.cat-logic{background:#4c9c55}
 .blocks-workspace{min-width:0;display:flex;flex-direction:column;padding:14px;overflow:auto;background-color:var(--bg);background-image:radial-gradient(var(--line) 1px,transparent 1px);background-size:18px 18px}
 .blocks-workspace-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px}.blocks-workspace-top h3{margin:0 auto 0 0}.blocks-dropzone{flex:1;min-height:320px;border:1px dashed color-mix(in srgb,var(--accent) 55%,var(--line));border-radius:13px;padding:15px;background:color-mix(in srgb,var(--bg) 90%,var(--accent) 4%)}.blocks-dropzone.dragover{outline:3px solid color-mix(in srgb,var(--accent) 30%,transparent)}.blocks-empty{color:var(--muted);font-size:13px;text-align:center;padding:45px 12px}.placed-block{display:flex;align-items:center;gap:7px;width:max-content;max-width:100%;margin:8px 0;padding:9px 11px;border-radius:9px;color:#fff;font-size:12px;font-weight:700;box-shadow:0 3px 0 #0003}.placed-block input{width:75px;max-width:30vw;border:0;border-radius:5px;padding:4px;color:#202431;background:#fff}.placed-block button{border:0;background:#0002;color:#fff;border-radius:5px;padding:3px 6px}.blocks-stage{border-left:1px solid var(--line);padding:13px;overflow:auto;background:var(--panel)}.stage-canvas{height:210px;display:grid;place-items:center;border:1px solid var(--line);border-radius:12px;background:linear-gradient(145deg,#eaf5ff,#fff);color:#18243a;position:relative;overflow:hidden}.stage-sprite{font-size:54px;transition:transform .25s}.stage-caption{font-size:11px;color:var(--muted);line-height:1.5;margin:9px 0 14px}.blocks-output{white-space:pre-wrap;overflow-wrap:anywhere;min-height:90px;max-height:210px;overflow:auto;border:1px solid var(--line);border-radius:10px;background:var(--bg);padding:10px;font:11px/1.5 ui-monospace,monospace;color:var(--text)}
 @media(max-width:760px){.blocks-layout{grid-template-columns:125px minmax(180px,1fr);grid-template-rows:minmax(250px,1fr) auto}.blocks-toolbox{grid-row:1/3;padding:9px}.blocks-stage{grid-column:2;border-left:0;border-top:1px solid var(--line);display:grid;grid-template-columns:minmax(100px,1fr) minmax(100px,1fr);gap:8px;align-items:start}.blocks-stage h3{grid-column:1/-1;margin-bottom:0}.stage-canvas{height:120px}.blocks-output{max-height:120px}.blocks-head{padding:0 8px}.blocks-head strong{font-size:13px}.blocks-head button{padding:7px 8px}.blocks-workspace{padding:9px}.blocks-workspace-top h3{width:100%}}
@@ -341,7 +341,7 @@ try{applyTheme(localStorage.getItem(THEME_KEY)||'light')}catch(e){applyTheme('li
 </script>
 
 <div class="blocks-overlay" id="blocksOverlay" aria-label="PictoBlox-style coding workspace">
- <div class="blocks-head"><strong>🧩 UG Blocks Studio</strong><span class="modeltag">Block coding</span><span class="spacer"></span><button type="button" id="blocksClear">Clear blocks</button><button type="button" id="closeBlocks">✕ Back to Chat</button></div>
+ <div class="blocks-head"><strong>🧩 UG Blocks Studio</strong><span class="modeltag">Block coding</span><span class="spacer"></span><button type="button" id="blocksSave">💾 Save</button><button type="button" id="blocksLoad">📂 Load</button><button type="button" id="blocksClear">Clear blocks</button><button type="button" id="closeBlocks">✕ Back to Chat</button></div>
  <div class="blocks-layout">
   <aside class="blocks-toolbox"><h3>Block palette</h3>
    <div class="blocks-category">Events</div><button class="code-block cat-event" draggable="true" data-kind="start">▶ When Run clicked</button>
@@ -362,16 +362,61 @@ try{applyTheme(localStorage.getItem(THEME_KEY)||'light')}catch(e){applyTheme('li
  if(!overlay||!zone)return;
  const templates={start:{label:'▶ When Run clicked',cat:'event',fields:[]},move:{label:'Move',cat:'motion',fields:[['steps','10','steps']]},turn:{label:'Turn ↻',cat:'motion',fields:[['degrees','15','degrees']]},say:{label:'Say',cat:'look',fields:[['text','Hello!','']]},size:{label:'Change size by',cat:'look',fields:[['amount','10','']]},wait:{label:'Wait',cat:'control',fields:[['seconds','1','sec']]},repeat:{label:'Repeat',cat:'control',fields:[['count','3','times']]},note:{label:'Note',cat:'logic',fields:[['text','My idea','']]}};
  let blocks=[],running=false,runToken=0;
+ const PROJECTS_KEY='ultraGoalBlocksProjectsV1';
+ function readProjects(){try{const v=JSON.parse(localStorage.getItem(PROJECTS_KEY)||'[]');return Array.isArray(v)?v.filter(p=>p&&typeof p.name==='string'&&Array.isArray(p.blocks)):[]}catch(e){return []}}
+ function saveProject(){
+   if(!blocks.length){alert('ಮೊದಲು workspace ಗೆ ಕೆಲವು blocks ಸೇರಿಸಿ.');return}
+   const name=prompt('ನಿಮ್ಮ project ಗೆ ಹೆಸರನ್ನು ನೀಡಿ:','My UG Project');if(name===null)return;
+   const clean=name.trim();if(!clean){alert('Project ಹೆಸರು ಖಾಲಿ ಇರಬಾರದು.');return}
+   const projects=readProjects(),existing=projects.findIndex(p=>p.name.toLowerCase()===clean.toLowerCase());
+   if(existing>=0&&!confirm('ಈ ಹೆಸರಿನ project ಈಗಾಗಲೇ ಇದೆ. ಅದನ್ನು update ಮಾಡಬೇಕೇ?'))return;
+   const item={name:clean,blocks:blocks.map(b=>({kind:b.kind,values:[...b.values]})),updatedAt:new Date().toISOString()};
+   if(existing>=0)projects.splice(existing,1);projects.unshift(item);
+   try{localStorage.setItem(PROJECTS_KEY,JSON.stringify(projects.slice(0,30)));output.textContent='Saved project: '+clean;caption.textContent='Project saved on this device.';alert('Project save ಆಯಿತು!')}catch(e){alert('Save ಆಗಲಿಲ್ಲ. Browser storage full ಆಗಿರಬಹುದು.')}
+ }
+ function loadProject(){
+   const projects=readProjects();if(!projects.length){alert('ಯಾವುದೇ saved projects ಇಲ್ಲ. ಮೊದಲು Save ಒತ್ತಿ.');return}
+   const menu=projects.map((p,i)=>(i+1)+'. '+p.name).join('\n');const answer=prompt('Load ಮಾಡಲು project number ನಮೂದಿಸಿ:\n\n'+menu,'1');if(answer===null)return;
+   const index=Number(answer)-1;if(!Number.isInteger(index)||index<0||index>=projects.length){alert('ಸರಿಯಾದ project number ನಮೂದಿಸಿ.');return}
+   const chosen=projects[index],valid=chosen.blocks.every(b=>templates[b.kind]&&Array.isArray(b.values)&&b.values.length===templates[b.kind].fields.length);
+   if(!valid){alert('ಈ project data ಸರಿಯಾಗಿಲ್ಲ ಅಥವಾ ಹಳೆಯ format ಆಗಿದೆ.');return}
+   runToken++;running=false;blocks=chosen.blocks.map((b,i)=>({id:Date.now()+i,kind:b.kind,values:b.values.map(v=>String(v))}));render();sprite.textContent='🐱';sprite.style.transform='';caption.textContent='Loaded project: '+chosen.name;output.textContent='Loaded project: '+chosen.name+'\nPress Run to execute it.';
+ }
  const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  function add(kind){const t=templates[kind];if(!t)return;blocks.push({id:Date.now()+Math.random(),kind,values:t.fields.map(f=>f[1])});render()}
  function render(){zone.querySelectorAll('.placed-block').forEach(n=>n.remove());empty.style.display=blocks.length?'none':'block';blocks.forEach((b,i)=>{const t=templates[b.kind],el=document.createElement('div');el.className='placed-block cat-'+t.cat;el.dataset.index=i;let html='<span>'+esc(t.label)+'</span>';t.fields.forEach((f,j)=>html+='<input data-field="'+j+'" aria-label="'+esc(f[0])+'" value="'+esc(b.values[j])+'"><span>'+esc(f[2])+'</span>');html+='<button type="button" data-remove="'+i+'" aria-label="Remove block">×</button>';el.innerHTML=html;zone.appendChild(el)})}
  function open(){overlay.classList.add('open');$('openBlocks').setAttribute('aria-expanded','true')}
  function close(){overlay.classList.remove('open');$('openBlocks').setAttribute('aria-expanded','false')}
  $('openBlocks').addEventListener('click',open);$('closeBlocks').addEventListener('click',close);
- document.querySelectorAll('.code-block').forEach(btn=>{btn.addEventListener('click',()=>add(btn.dataset.kind));btn.addEventListener('dragstart',e=>{e.dataTransfer.setData('text/plain',btn.dataset.kind);e.dataTransfer.effectAllowed='copy'})});
- zone.addEventListener('dragover',e=>{e.preventDefault();zone.classList.add('dragover')});zone.addEventListener('dragleave',()=>zone.classList.remove('dragover'));zone.addEventListener('drop',e=>{e.preventDefault();zone.classList.remove('dragover');add(e.dataTransfer.getData('text/plain'))});
+ // Palette blocks support mouse, touch and pen dragging (without relying on native HTML5 drag).
+ let pointerDrag=null,suppressPaletteClick=false;
+ const paletteButtons=[...document.querySelectorAll('.code-block')];
+ paletteButtons.forEach(btn=>{
+   btn.draggable=false;
+   btn.addEventListener('click',()=>{if(suppressPaletteClick){suppressPaletteClick=false;return}add(btn.dataset.kind)});
+   btn.addEventListener('pointerdown',e=>{
+     if(e.button!==undefined&&e.button!==0)return;
+     pointerDrag={kind:btn.dataset.kind,x:e.clientX,y:e.clientY,moved:false,pointerId:e.pointerId};
+   });
+ });
+ document.addEventListener('pointermove',e=>{
+   if(!pointerDrag||e.pointerId!==pointerDrag.pointerId)return;
+   if(Math.hypot(e.clientX-pointerDrag.x,e.clientY-pointerDrag.y)>7){pointerDrag.moved=true;zone.classList.add('dragover')}
+ });
+ document.addEventListener('pointerup',e=>{
+   if(!pointerDrag||e.pointerId!==pointerDrag.pointerId)return;
+   const drag=pointerDrag;pointerDrag=null;zone.classList.remove('dragover');
+   if(!drag.moved)return;
+   const target=document.elementFromPoint(e.clientX,e.clientY);
+   if(target&&(target===zone||zone.contains(target))){suppressPaletteClick=true;add(drag.kind);setTimeout(()=>{suppressPaletteClick=false},0)}
+ });
+ document.addEventListener('pointercancel',()=>{pointerDrag=null;zone.classList.remove('dragover')});
+ zone.addEventListener('dragover',e=>{e.preventDefault();zone.classList.add('dragover')});
+ zone.addEventListener('dragleave',()=>zone.classList.remove('dragover'));
+ zone.addEventListener('drop',e=>{e.preventDefault();zone.classList.remove('dragover');const kind=e.dataTransfer?.getData('text/plain');if(kind)add(kind)});
  zone.addEventListener('input',e=>{const el=e.target.closest('.placed-block'),field=e.target.dataset.field;if(el&&field!==undefined)blocks[Number(el.dataset.index)].values[Number(field)]=e.target.value});
  zone.addEventListener('click',e=>{const i=e.target.dataset.remove;if(i!==undefined){blocks.splice(Number(i),1);render()}});
+ $('blocksSave').addEventListener('click',saveProject);$('blocksLoad').addEventListener('click',loadProject);
  $('blocksClear').addEventListener('click',()=>{runToken++;running=false;blocks=[];render();sprite.style.transform='';sprite.textContent='🐱';caption.textContent='Workspace cleared.';output.textContent='Ready. Add blocks and press Run.'});
  $('stopBlocks').addEventListener('click',()=>{runToken++;running=false;output.textContent+='\nStopped.'});
  $('runBlocks').addEventListener('click',async()=>{if(running)return;running=true;const token=++runToken;let x=0,angle=0,size=1,lines=[];sprite.textContent='🐱';sprite.style.transform='translate(0,0) rotate(0deg) scale(1)';caption.textContent='Running your blocks…';output.textContent='Running…';const pause=ms=>new Promise(r=>setTimeout(r,ms));for(const b of blocks){if(token!==runToken)break;const v=b.values;switch(b.kind){case'start':lines.push('▶ Program started');break;case'move':x+=Math.max(-200,Math.min(200,Number(v[0])||0));sprite.style.transform=`translate(${x}px,0) rotate(${angle}deg) scale(${size})`;lines.push('Move '+v[0]+' steps');break;case'turn':angle+=(Number(v[0])||0);sprite.style.transform=`translate(${x}px,0) rotate(${angle}deg) scale(${size})`;lines.push('Turn '+v[0]+' degrees');break;case'say':caption.textContent=String(v[0]||'');lines.push('Say: '+v[0]);break;case'size':size=Math.max(.4,Math.min(2.5,size+(Number(v[0])||0)/100));sprite.style.transform=`translate(${x}px,0) rotate(${angle}deg) scale(${size})`;lines.push('Change size by '+v[0]);break;case'wait':lines.push('Wait '+v[0]+' sec');output.textContent=lines.join('\n');await pause(Math.max(0,Math.min(3,Number(v[0])||0))*1000);break;case'repeat':lines.push('Repeat '+v[0]+' times (preview)');break;case'note':lines.push('Note: '+v[0]);break;}output.textContent=lines.join('\n')||'No blocks to run.';await pause(120)}running=false;if(token===runToken){caption.textContent='Program finished. Add or change blocks and run again.';if(!blocks.length)output.textContent='No blocks to run.'}});
