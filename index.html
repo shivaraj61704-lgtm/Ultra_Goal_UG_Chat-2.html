@@ -393,15 +393,14 @@ input:focus,textarea:focus,select:focus{
 </style>
 
 
-/* Blue + red ambient glow around the message send button */
-.send{position:relative;isolation:isolate;overflow:visible;background:linear-gradient(135deg,#278cff 0%,#426dff 48%,#ef3340 100%)!important;box-shadow:0 0 9px #258bff99,0 0 18px #ef334066,0 0 30px #287dff33!important;animation:sendAura 2.8s ease-in-out infinite}
-.send::before{content:"";position:absolute;z-index:-1;inset:-6px;border-radius:50%;background:conic-gradient(from 0deg,#258bff,#ef3340,#258bff);filter:blur(9px);opacity:.62;animation:sendAuraSpin 5s linear infinite}
-.send:hover{transform:translateY(-2px) scale(1.06);box-shadow:0 0 13px #258bffcc,0 0 25px #ef334099,0 0 38px #287dff55!important}
-.send:disabled{animation:none;box-shadow:none!important;opacity:.55}
+/* Blue + red mixed glow around the message send button */
+.send:not(:disabled){position:relative;isolation:isolate;box-shadow:0 0 9px #268cff,0 0 18px #268cff99,0 0 27px #ff334d88,0 0 38px #ff334d55;animation:ugSendGlow 2.4s ease-in-out infinite alternate}
+.send:not(:disabled)::before{content:"";position:absolute;inset:-5px;border-radius:50%;z-index:-1;background:conic-gradient(from 0deg,#258bff,#ff304f,#258bff);filter:blur(8px);opacity:.78;animation:ugSendRing 4s linear infinite}
+.send:not(:disabled):hover{box-shadow:0 0 13px #268cff,0 0 25px #268cffaa,0 0 35px #ff334d,0 0 46px #ff334d77}
 .send:disabled::before{display:none}
-@keyframes sendAura{0%,100%{filter:saturate(1);box-shadow:0 0 8px #258bff88,0 0 15px #ef334055,0 0 25px #287dff22}50%{filter:saturate(1.3);box-shadow:0 0 13px #258bffbb,0 0 23px #ef334088,0 0 34px #287dff44}}
-@keyframes sendAuraSpin{to{transform:rotate(360deg)}}
-@media(prefers-reduced-motion:reduce){.send,.send::before{animation:none!important}}
+@keyframes ugSendGlow{from{filter:drop-shadow(0 0 3px #258bff)}to{filter:drop-shadow(0 0 7px #ff304f)}}
+@keyframes ugSendRing{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){.send:not(:disabled),.send:not(:disabled)::before{animation:none}}
 </head>
 <body>
 <div class="app">
@@ -800,6 +799,16 @@ console.log('UG Code Lab is ready.');</textarea>
  $('codeLoad').addEventListener('click',()=>{try{const p=JSON.parse(localStorage.getItem(STORE)||'null');if(!p)throw Error('No saved project found.');setProject(p);status('Saved project loaded.')}catch(e){status(e.message||'Could not load project.')}});
  $('codeReset').addEventListener('click',()=>{if(!confirm('Reset all three editor tabs to the starter example?'))return;setProject(defaults);$('codeConsole').textContent='Console output will appear here.';status('Starter example restored.');});
  $('codeDownload').addEventListener('click',()=>{const p=project();const safeJs=p.js.split('<'+'/script').join('<\\/'+'script');const file='<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>'+p.css+'</style></head><body>'+p.html+'<script>'+safeJs+'</'+'script></body></html>';const blob=new Blob([file],{type:'text/html'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='ultra-goal-program.html';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);status('Standalone HTML program downloaded.');});
+ document.addEventListener('keydown',event=>{
+   if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==='j'){
+     const prompt=document.getElementById('prompt');
+     if(prompt && !event.repeat){event.preventDefault();prompt.focus();}
+   }
+ });
+})();
+</script>
+
+</body></html>';const blob=new Blob([file],{type:'text/html'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='ultra-goal-program.html';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);status('Standalone HTML program downloaded.');});
  document.addEventListener('keydown',e=>{if(lab.classList.contains('hidden'))return;if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();run()}if(e.key==='Escape')close();});
 })();
 </script>
