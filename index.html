@@ -392,15 +392,6 @@ input:focus,textarea:focus,select:focus{
 @media(max-width:760px){.code-lab-layout{grid-template-columns:1fr;grid-template-rows:minmax(270px,1fr) minmax(250px,1fr);overflow:auto}.code-lab-head{padding:9px}.code-lab-head button{padding:7px 8px}.code-editor{min-height:220px}.code-preview{min-height:210px}}
 </style>
 
-
-/* Blue + red mixed glow around the message send button */
-.send:not(:disabled){position:relative;isolation:isolate;box-shadow:0 0 9px #268cff,0 0 18px #268cff99,0 0 27px #ff334d88,0 0 38px #ff334d55;animation:ugSendGlow 2.4s ease-in-out infinite alternate}
-.send:not(:disabled)::before{content:"";position:absolute;inset:-5px;border-radius:50%;z-index:-1;background:conic-gradient(from 0deg,#258bff,#ff304f,#258bff);filter:blur(8px);opacity:.78;animation:ugSendRing 4s linear infinite}
-.send:not(:disabled):hover{box-shadow:0 0 13px #268cff,0 0 25px #268cffaa,0 0 35px #ff334d,0 0 46px #ff334d77}
-.send:disabled::before{display:none}
-@keyframes ugSendGlow{from{filter:drop-shadow(0 0 3px #258bff)}to{filter:drop-shadow(0 0 7px #ff304f)}}
-@keyframes ugSendRing{to{transform:rotate(360deg)}}
-@media(prefers-reduced-motion:reduce){.send:not(:disabled),.send:not(:disabled)::before{animation:none}}
 </head>
 <body>
 <div class="app">
@@ -410,7 +401,7 @@ input:focus,textarea:focus,select:focus{
 <div class="sidebottom"><button class="sidebutton" id="exportBtn" type="button">⇩ Export conversations</button><button class="sidebutton" id="clearHistoryBtn" type="button">⌫ Clear chat history</button><button class="sidebutton" id="aboutBtn" type="button">✦ About Ultra Goal</button><button class="sidebutton" id="themeSide" type="button">🌙 Dark mode</button><div class="sidefoot">UG AI Chat<br>Dream big. Build smart.</div></div></aside>
 <div class="mobile-overlay" id="overlay"></div><main class="main"><header class="topbar"><div class="top-left"><button class="menu" id="menuBtn" type="button" aria-label="Open menu">☰</button><div><span class="modelname">UG Chat</span><span class="modeltag">AI · Smart mode</span></div></div><div class="top-actions"><button class="iconbtn premium-open-btn" id="openPremium" type="button" title="Open Premium Studio" aria-label="Open Premium Studio">✦ Premium</button><button class="iconbtn blocks-open-btn" id="openBlocks" type="button" title="Open coding workspace" aria-label="Open coding workspace">🧩 Blocks</button><button class="iconbtn" id="openCodeLab" type="button" title="Edit and run programs" aria-label="Open program editor">💻 Code</button><button class="iconbtn" id="themeTop" type="button" title="Toggle theme" aria-label="Toggle theme">☾</button><button class="profilebtn" id="profileBtn" type="button" aria-label="Open profile">UG</button></div></header>
 <section class="chatarea" id="chatarea"><div class="welcome" id="welcome"><div class="welcome-logo">UG</div><h1>What can I help you <span>build?</span></h1><p>Your space to learn, create, and explore. Ask in easy Kannada + English, build with Python, or discover AI and robotics. 😊</p><div class="suggestions"><button class="suggestion" data-prompt="Teach me Python basics with a simple example in easy Kannada and English." type="button"><b>💻 Learn Python</b><span>Learn coding step by step</span></button><button class="suggestion" data-prompt="Explain artificial intelligence in easy Kannada and English." type="button"><b>🧠 Explore AI</b><span>Understand AI simply</span></button><button class="suggestion" data-prompt="Give me a beginner robotics project I can simulate for free." type="button"><b>🤖 Start robotics</b><span>Explore a virtual robot</span></button><button class="suggestion" data-prompt="Help me plan a useful AI startup with a zero budget." type="button"><b>🚀 Build a startup</b><span>Plan your first project</span></button></div></div><div class="messages hidden" id="messages" aria-live="polite"></div></section>
-<div class="composer-wrap"><form class="composer" id="chatForm"><div class="composer-input-row"><textarea id="prompt" rows="1" maxlength="40000" placeholder="Message..." aria-label="Message"></textarea><button class="composer-mic" id="micBtn" type="button" title="Voice input" aria-label="Start voice input">🎙️</button></div><div id="fileChip" class="file-chip hidden"><span id="fileStatus">📄 File ready</span><button type="button" id="removeFileBtn" aria-label="Remove attachment">✕</button></div><input id="fileInput" class="file-input-hidden" type="file" accept=".pdf,.txt,.md,.csv,.json,.html,.docx,.doc" aria-label="Upload a document"><div class="composer-bottom"><div class="toolrow"><button type="button" class="upload-btn" id="uploadBtn">📎 Attach</button><button type="button" class="toolbtn" id="topicBtn">✧ Learning mode</button><button type="button" class="toolbtn" id="clearInput">Clear</button><button type="button" class="toolbtn" id="stopBtn" disabled>■ Stop</button></div><button class="send" id="sendBtn" type="submit" aria-label="Send" disabled>↑</button></div></form><div class="disclaimer">AI can make mistakes. Avoid entering passwords, private information, or sensitive data.</div></div></main></div>
+<div class="composer-wrap"><form class="composer" id="chatForm"><div class="composer-input-row"><textarea id="prompt" rows="1" maxlength="40000" placeholder="Message Ultra Goal..." aria-label="Message Ultra Goal"></textarea><button class="composer-mic" id="micBtn" type="button" title="Voice input" aria-label="Start voice input">🎙️</button></div><div id="fileChip" class="file-chip hidden"><span id="fileStatus">📄 File ready</span><button type="button" id="removeFileBtn" aria-label="Remove attachment">✕</button></div><input id="fileInput" class="file-input-hidden" type="file" accept=".pdf,.txt,.md,.csv,.json,.html,.docx,.doc" aria-label="Upload a document"><div class="composer-bottom"><div class="toolrow"><button type="button" class="upload-btn" id="uploadBtn">📎 Attach</button><button type="button" class="toolbtn" id="topicBtn">✧ Learning mode</button><button type="button" class="toolbtn" id="clearInput">Clear</button><button type="button" class="toolbtn" id="stopBtn" disabled>■ Stop</button></div><button class="send" id="sendBtn" type="submit" aria-label="Send" disabled>↑</button></div></form><div class="disclaimer">AI can make mistakes. Avoid entering passwords, private information, or sensitive data.</div></div></main></div>
 <div class="modal-backdrop hidden" id="modalBackdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><div class="modal"><h2 id="modalTitle">Welcome to Ultra Goal 👋</h2><p>Set a local profile to personalize this browser. This demo does not create a secure account.</p><form id="profileForm"><label for="profileName">Display name</label><input id="profileName" maxlength="60" autocomplete="nickname" placeholder="What should we call you?"><label for="profileEmail">Email (optional, saved only on this device)</label><input id="profileEmail" maxlength="120" type="email" autocomplete="email" placeholder="you@example.com"><div class="modal-actions"><button class="secondary" type="button" id="modalCancel">Cancel</button><button class="primary" type="submit" id="modalSubmit">Save profile</button></div></form></div></div><div class="toast hidden" id="toast" role="status"></div>
 <div class="tracker-backdrop hidden" id="trackerBackdrop" role="dialog" aria-modal="true" aria-labelledby="trackerTitle">
  <section class="tracker-panel">
@@ -499,7 +490,7 @@ async function send(textOverride,options={}){if(activeController)return;const va
 $('chatForm').addEventListener('submit',e=>{e.preventDefault();send()});
 $('openPremium').addEventListener('click',openPremiumStudio);$('closePremium').addEventListener('click',closePremiumStudio);$('premiumBackdrop').addEventListener('click',e=>{if(e.target===$('premiumBackdrop'))closePremiumStudio()});$('savePremium').addEventListener('click',()=>{savePremiumSettings();loadPremiumSettings();fillPremiumSettings();closePremiumStudio()});$('premiumReset').addEventListener('click',()=>{premiumSettings={...PREMIUM_DEFAULTS};try{localStorage.removeItem(PREMIUM_KEY)}catch(e){}fillPremiumSettings();showToast('Premium Studio settings reset.')});$('premiumFocus').addEventListener('click',()=>{document.body.classList.toggle('ug-focus-mode');premiumSettings.focus=document.body.classList.contains('ug-focus-mode');showToast(premiumSettings.focus?'Focus mode on.':'Focus mode off.')});document.querySelectorAll('[data-premium-prompt]').forEach(b=>b.addEventListener('click',()=>{textarea.value=b.dataset.premiumPrompt||'';resizeInput();closePremiumStudio();textarea.focus()}));document.addEventListener('keydown',e=>{if(e.key==='Escape')closePremiumStudio()});
 textarea.addEventListener('input',resizeInput);textarea.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing){e.preventDefault();send()}});$('historySearch').addEventListener('input',renderHistory);
-$('newChat').addEventListener('click',newChat);$('clearInput').addEventListener('click',()=>{textarea.value='';editingMessageIndex=null;resizeInput();textarea.focus()});$('stopBtn').addEventListener('click',()=>activeController?.abort());document.querySelectorAll('[data-prompt]').forEach(b=>b.addEventListener('click',()=>{textarea.value=b.dataset.prompt||'';resizeInput();send()}));$('menuBtn').addEventListener('click',()=>{$('sidebar').classList.add('open');$('overlay').classList.add('show')});$('overlay').addEventListener('click',closeSidebar);$('themeTop').addEventListener('click',toggleTheme);$('themeSide').addEventListener('click',toggleTheme);$('topicBtn').addEventListener('click',()=>{learningMode=!learningMode;$('topicBtn').textContent=learningMode?'✧ Learning mode':'✧ General mode';textarea.placeholder=learningMode?'Ask about AI, Python or robotics...':'Message...';showToast(learningMode?'Learning mode enabled.':'General mode enabled.')});$('aboutBtn').addEventListener('click',()=>{closeSidebar();alert('Ultra Goal AI Chat\n\nA learning-focused interface for maths, Python, AI, robotics, and startup ideas.\n\nYour profile and chat history are stored locally in this browser. Conversations are sent to the configured Cloudflare Worker.')});$('clearHistoryBtn').addEventListener('click',()=>{if(!confirm('Clear all saved conversations from this browser? This cannot be undone.'))return;if(activeController)activeController.abort();chats=[];activeChatId=null;editingMessageIndex=null;saveChats();renderHistory();showWelcome();closeSidebar();showToast('🧹 Chat history cleared!')});$('exportBtn').addEventListener('click',()=>{const blob=new Blob([JSON.stringify(chats,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='ultra-goal-chat-history.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);showToast('📦 Chat history export started!')});
+$('newChat').addEventListener('click',newChat);$('clearInput').addEventListener('click',()=>{textarea.value='';editingMessageIndex=null;resizeInput();textarea.focus()});$('stopBtn').addEventListener('click',()=>activeController?.abort());document.querySelectorAll('[data-prompt]').forEach(b=>b.addEventListener('click',()=>{textarea.value=b.dataset.prompt||'';resizeInput();send()}));$('menuBtn').addEventListener('click',()=>{$('sidebar').classList.add('open');$('overlay').classList.add('show')});$('overlay').addEventListener('click',closeSidebar);$('themeTop').addEventListener('click',toggleTheme);$('themeSide').addEventListener('click',toggleTheme);$('topicBtn').addEventListener('click',()=>{learningMode=!learningMode;$('topicBtn').textContent=learningMode?'✧ Learning mode':'✧ General mode';textarea.placeholder=learningMode?'Ask about AI, Python or robotics...':'Message Ultra Goal...';showToast(learningMode?'Learning mode enabled.':'General mode enabled.')});$('aboutBtn').addEventListener('click',()=>{closeSidebar();alert('Ultra Goal AI Chat\n\nA learning-focused interface for maths, Python, AI, robotics, and startup ideas.\n\nYour profile and chat history are stored locally in this browser. Conversations are sent to the configured Cloudflare Worker.')});$('clearHistoryBtn').addEventListener('click',()=>{if(!confirm('Clear all saved conversations from this browser? This cannot be undone.'))return;if(activeController)activeController.abort();chats=[];activeChatId=null;editingMessageIndex=null;saveChats();renderHistory();showWelcome();closeSidebar();showToast('🧹 Chat history cleared!')});$('exportBtn').addEventListener('click',()=>{const blob=new Blob([JSON.stringify(chats,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='ultra-goal-chat-history.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);showToast('📦 Chat history export started!')});
 function loadScriptOnce(src,globalName,promise){if(window[globalName])return Promise.resolve(window[globalName]);if(promise)return promise;return new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=src;s.onload=()=>window[globalName]?resolve(window[globalName]):reject(Error('Library did not load.'));s.onerror=()=>reject(Error('Could not load document reader. Check your internet connection.'));document.head.appendChild(s)})}
 async function extractFileText(file){const name=file.name.toLowerCase();if(file.size>12*1024*1024)throw Error('Please choose a file smaller than 12 MB.');if(name.endsWith('.pdf')||file.type==='application/pdf'){pdfJsPromise=loadScriptOnce('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js','pdfjsLib',pdfJsPromise);const pdfjs=await pdfJsPromise;pdfjs.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';const pdf=await pdfjs.getDocument({data:new Uint8Array(await file.arrayBuffer())}).promise,pages=[];for(let n=1;n<=pdf.numPages;n++){const p=await pdf.getPage(n),c=await p.getTextContent();pages.push(c.items.map(i=>i.str||'').join(' '))}const result=pages.join('\n\n');if(!result.trim())throw Error('No selectable text found. This may be a scanned PDF; OCR is not included.');return result}if(name.endsWith('.docx')||file.type==='application/vnd.openxmlformats-officedocument.wordprocessingml.document'){mammothPromise=loadScriptOnce('https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.8.0/mammoth.browser.min.js','mammoth',mammothPromise);return(await(await mammothPromise).extractRawText({arrayBuffer:await file.arrayBuffer()})).value||''}if(name.endsWith('.doc'))throw Error('Old .doc files are not supported. Save as .docx or PDF.');return file.text()}
 $('uploadBtn').addEventListener('click',()=>$('fileInput').click());$('fileInput').addEventListener('change',async e=>{const f=e.target.files?.[0];if(!f)return;$('uploadBtn').disabled=true;$('fileStatus').textContent='⏳ Reading '+f.name+'…';$('fileChip').classList.remove('hidden');try{const text=await extractFileText(f);if(!text.trim())throw Error('This file appears empty.');attachedFileText=text.slice(0,30000);attachedFileName=f.name;$('fileStatus').textContent='📄 '+f.name+' — text extracted'+(text.length>30000?' (first 30,000 characters)':'');const instruction=textarea.value.trim();textarea.value=(instruction?instruction+'\n\n':'')+'Please use the attached document text below to answer my question.\n\n[Document: '+f.name+']\n'+attachedFileText;resizeInput();textarea.focus();showToast('📄 Document ready! Add a question, then tap Send.')}catch(err){attachedFileText='';attachedFileName='';$('fileStatus').textContent='⚠️ '+(err.message||'Could not read file.');showToast(err.message||'Could not read file.')}finally{$('uploadBtn').disabled=false}});$('removeFileBtn').addEventListener('click',()=>{attachedFileText='';attachedFileName='';$('fileInput').value='';$('fileChip').classList.add('hidden');showToast('Attachment status removed. Remove its text from the message too if already inserted.')});
@@ -788,7 +779,55 @@ console.log('UG Code Lab is ready.');</textarea>
  function escapeScript(s){return JSON.stringify(s).replace(/</g,'\\u003c').replace(/>/g,'\\u003e').replace(/&/g,'\\u0026');}
  function run(){const p=project();const consoleBridge=`<script>(function(){const send=(type,args)=>parent.postMessage({ugCodeLab:true,type,args:Array.from(args||[]).map(x=>{try{return typeof x==='string'?x:JSON.stringify(x)}catch(e){return String(x)}})},'*');['log','info','warn','error'].forEach(k=>{const old=console[k];console[k]=function(){send(k,arguments);try{old.apply(console,arguments)}catch(e){}}});window.addEventListener('error',e=>send('error',[e.message+' at line '+e.lineno]));window.addEventListener('unhandledrejection',e=>send('error',[String(e.reason)]));})();<\/script>`;
   const userJs=`<script>try{(new Function(${escapeScript(p.js)}))()}catch(e){parent.postMessage({ugCodeLab:true,type:'error',args:[e.name+': '+e.message]},'*')}<\/script>`;
-  const doc='<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>'+p.css+'</style></head><body>'+p.html+consoleBridge+userJs+'</body></html>';
+  const doc='<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>'+p.css+'</style></head><body>'+p.html+consoleBridge+userJs+'
+<script>
+/* Ultra Goal premium micro-interactions. Additive only; no existing handlers are replaced. */
+(()=>{
+ 'use strict';
+ const reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+ // Give dynamically opened workspace panels and newly added chat content a subtle entrance.
+ if(!reduce && 'MutationObserver' in window){
+   const observer=new MutationObserver(records=>{
+     for(const record of records){
+       for(const node of record.addedNodes){
+         if(!(node instanceof HTMLElement)) continue;
+         if(node.matches('.modal,.tracker-panel,.premium-panel,.code-panel,.block-panel')){
+           node.style.animation='none'; void node.offsetWidth; node.style.animation='';
+         }
+         if(node.matches('.messages>*')){
+           node.style.animation='none'; void node.offsetWidth; node.style.animation='';
+         }
+       }
+     }
+   });
+   observer.observe(document.body,{childList:true,subtree:true});
+ }
+ // Fast, tiny press feedback that works for current and future buttons.
+ document.addEventListener('pointerdown',event=>{
+   const button=event.target.closest('button');
+   if(!button||button.disabled||reduce)return;
+   button.classList.remove('ug-pressed');
+   requestAnimationFrame(()=>button.classList.add('ug-pressed'));
+ },{passive:true});
+ document.addEventListener('pointerup',event=>{
+   const button=event.target.closest('button');
+   if(button) button.classList.remove('ug-pressed');
+ },{passive:true});
+ document.addEventListener('pointercancel',event=>{
+   const button=event.target.closest('button');
+   if(button) button.classList.remove('ug-pressed');
+ },{passive:true});
+ // Keyboard shortcut: focus the message box without interfering with existing shortcuts.
+ document.addEventListener('keydown',event=>{
+   if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==='j'){
+     const prompt=document.getElementById('prompt');
+     if(prompt && !event.repeat){event.preventDefault();prompt.focus();}
+   }
+ });
+})();
+</script>
+
+</body></html>';
   $('codeConsole').textContent='Running…';$('codePreview').srcdoc=doc;status('Program running in the sandbox preview.');
  }
  window.addEventListener('message',e=>{if(e.source!==$('codePreview').contentWindow||!e.data||e.data.ugCodeLab!==true)return;const line='['+e.data.type+'] '+(e.data.args||[]).join(' ');const box=$('codeConsole');box.textContent=(box.textContent==='Running…'?'':box.textContent+'\n')+line;box.scrollTop=box.scrollHeight;if(e.data.type==='error')status('Program reported an error. Check the console below the preview.');});
@@ -798,7 +837,45 @@ console.log('UG Code Lab is ready.');</textarea>
  $('codeSave').addEventListener('click',()=>{try{localStorage.setItem(STORE,JSON.stringify(project()));status('Project saved on this device.');if(typeof showToast==='function')showToast('Code project saved on this device.')}catch(e){status('Could not save project: browser storage is unavailable.')}});
  $('codeLoad').addEventListener('click',()=>{try{const p=JSON.parse(localStorage.getItem(STORE)||'null');if(!p)throw Error('No saved project found.');setProject(p);status('Saved project loaded.')}catch(e){status(e.message||'Could not load project.')}});
  $('codeReset').addEventListener('click',()=>{if(!confirm('Reset all three editor tabs to the starter example?'))return;setProject(defaults);$('codeConsole').textContent='Console output will appear here.';status('Starter example restored.');});
- $('codeDownload').addEventListener('click',()=>{const p=project();const safeJs=p.js.split('<'+'/script').join('<\\/'+'script');const file='<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>'+p.css+'</style></head><body>'+p.html+'<script>'+safeJs+'</'+'script></body></html>';const blob=new Blob([file],{type:'text/html'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='ultra-goal-program.html';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);status('Standalone HTML program downloaded.');});
+ $('codeDownload').addEventListener('click',()=>{const p=project();const file='<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>'+p.css+'</style></head><body>'+p.html+'<script>'+p.js.split('<'+'/script').join('<\\/'+'script')+'</'+'script>
+<script>
+/* Ultra Goal premium micro-interactions. Additive only; no existing handlers are replaced. */
+(()=>{
+ 'use strict';
+ const reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+ // Give dynamically opened workspace panels and newly added chat content a subtle entrance.
+ if(!reduce && 'MutationObserver' in window){
+   const observer=new MutationObserver(records=>{
+     for(const record of records){
+       for(const node of record.addedNodes){
+         if(!(node instanceof HTMLElement)) continue;
+         if(node.matches('.modal,.tracker-panel,.premium-panel,.code-panel,.block-panel')){
+           node.style.animation='none'; void node.offsetWidth; node.style.animation='';
+         }
+         if(node.matches('.messages>*')){
+           node.style.animation='none'; void node.offsetWidth; node.style.animation='';
+         }
+       }
+     }
+   });
+   observer.observe(document.body,{childList:true,subtree:true});
+ }
+ // Fast, tiny press feedback that works for current and future buttons.
+ document.addEventListener('pointerdown',event=>{
+   const button=event.target.closest('button');
+   if(!button||button.disabled||reduce)return;
+   button.classList.remove('ug-pressed');
+   requestAnimationFrame(()=>button.classList.add('ug-pressed'));
+ },{passive:true});
+ document.addEventListener('pointerup',event=>{
+   const button=event.target.closest('button');
+   if(button) button.classList.remove('ug-pressed');
+ },{passive:true});
+ document.addEventListener('pointercancel',event=>{
+   const button=event.target.closest('button');
+   if(button) button.classList.remove('ug-pressed');
+ },{passive:true});
+ // Keyboard shortcut: focus the message box without interfering with existing shortcuts.
  document.addEventListener('keydown',event=>{
    if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==='j'){
      const prompt=document.getElementById('prompt');
