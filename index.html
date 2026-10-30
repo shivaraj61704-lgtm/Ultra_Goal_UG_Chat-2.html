@@ -1,328 +1,48 @@
-  <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#000000">
-<meta name="description" content="Ultra Goal AI Chat — learn, code, research, and build with AI. Supports Kannada, English, files, voice input, and live AI through Cloudflare Worker.">
-<title>Ultra Goal AI | Smart Chat Workspace</title>
-<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/dompurify/dist/purify.min.js"></script>
-<script>
-window.MathJax={tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]'],['$$','$$']],processEscapes:true,processEnvironments:true},options:{skipHtmlTags:['script','noscript','style','textarea','pre','code']},startup:{typeset:false}};
-</script>
-<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<style>
-:root{color-scheme:light;--bg:#fff;--panel:#f7f8fb;--panel2:#edf0f6;--text:#202431;--muted:#707887;--line:#e4e7ee;--accent:#4169e1;--user:#edf1f8;--shadow:0 10px 35px #18223a0c;--danger:#d93025}
-:root[data-theme=dark]{color-scheme:dark;--bg:#111318;--panel:#191c23;--panel2:#252a35;--text:#edf0f6;--muted:#a0a7b5;--line:#303541;--accent:#91a9ff;--user:#272d3a;--shadow:0 10px 35px #0004;--danger:#ff7168}
-*{box-sizing:border-box}html,body{height:100%;margin:0}body{background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;overflow:hidden}button,input,textarea{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}button:disabled{opacity:.45;cursor:not-allowed}.hidden{display:none!important}.app{height:100dvh;display:flex}.sidebar{width:270px;flex-shrink:0;display:flex;flex-direction:column;gap:15px;padding:17px 13px;background:var(--panel);border-right:1px solid var(--line);z-index:30;transition:transform .2s}.brandrow{display:flex;align-items:center;gap:10px;padding:3px 7px 8px}.logo,.welcome-logo,.mini-logo{display:grid;place-items:center;color:white;font-weight:900;background:linear-gradient(135deg,#3278ee,#9560e9)}.logo{width:36px;height:36px;border-radius:13px}.brandname{font-weight:800;font-size:15px}.brandname span{color:var(--accent)}.newchat,.sidebutton{display:flex;align-items:center;gap:9px;width:100%;border:1px solid var(--line);border-radius:12px;padding:11px 13px;background:var(--bg);color:var(--text);font-size:13px;text-align:left}.newchat{background:var(--panel2);font-weight:700}.history-label{font-size:10px;color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:1px;padding:2px 9px}.history{display:flex;flex-direction:column;align-items:stretch;gap:6px;width:100%;min-width:0;min-height:0;flex:1 1 auto;overflow-x:hidden;overflow-y:auto;padding:2px 0}.history-item{display:block;position:relative;flex:0 0 auto;width:100%;min-width:0;min-height:40px;box-sizing:border-box;margin:0;padding:10px 12px;border:1px solid transparent;border-radius:10px;background:transparent;color:var(--text);font-size:13px;font-weight:500;line-height:1.45;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.history-item.active,.history-item:hover{background:var(--panel2)}.history-item.active{border-color:var(--line)}.history-empty,.sidefoot{font-size:11px;color:var(--muted);padding:8px 9px;line-height:1.6}.history-empty{font-size:12px;overflow-wrap:anywhere}.sidebottom{margin-top:auto;display:grid;gap:6px}.main{flex:1;min-width:0;display:flex;flex-direction:column;position:relative}.topbar{min-height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 22px;border-bottom:1px solid var(--line);flex-shrink:0;gap:12px}.top-left,.top-actions{display:flex;align-items:center;gap:10px;min-width:0}.menu{display:none;border:0;background:transparent;color:var(--text);font-size:22px}.modelname{font-size:15px;font-weight:750}.modeltag{font-size:10px;color:var(--muted);background:var(--panel);padding:4px 7px;border-radius:7px;margin-left:7px}.iconbtn{display:grid;place-items:center;height:38px;min-width:38px;padding:0 8px;border:1px solid var(--line);border-radius:11px;background:var(--bg);color:var(--text)}.top-actions{gap:8px;flex-shrink:0}.profilebtn{display:grid;place-items:center;height:38px;width:38px;flex-shrink:0;border:2px solid var(--line);border-radius:50%;background:linear-gradient(135deg,#3278ee,#9560e9);color:#fff;font-weight:800;overflow:hidden}.file-input-hidden{position:absolute!important;width:1px!important;height:1px!important;opacity:0!important;pointer-events:none!important}.file-chip{display:flex;align-items:center;gap:8px;max-width:100%;margin:8px 0 0;padding:7px 10px;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--muted);font-size:12px;overflow-wrap:anywhere}.file-chip button{border:0;background:transparent;color:var(--text);padding:2px 5px}.upload-btn,.toolbtn{border:0;background:transparent;color:var(--muted);border-radius:9px;padding:7px 9px;font-size:12px}.upload-btn:hover,.toolbtn:hover{background:var(--panel);color:var(--text)}.composer-input-row{display:flex;align-items:flex-end;gap:8px}.composer-input-row textarea{flex:1;min-width:0}.composer-mic{flex:0 0 38px;width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--panel);color:var(--text);display:grid;place-items:center;font-size:17px}.composer-mic.listening{background:var(--danger);color:white}.chatarea{flex:1;overflow-y:auto;padding:22px 20px 18px;scroll-behavior:smooth}.welcome{min-height:100%;max-width:850px;margin:auto;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:18px 0 32px}.welcome-logo{height:64px;width:64px;border-radius:22px;margin:0 auto 22px;font-size:21px}.welcome h1{font-size:clamp(29px,4vw,44px);line-height:1.15;letter-spacing:-1px;margin:0 0 13px}.welcome h1 span{background:linear-gradient(100deg,#3278ef,#a064df);background-clip:text;-webkit-background-clip:text;color:transparent}.welcome p{color:var(--muted);font-size:14px;line-height:1.75;max-width:540px;margin:0 auto}.suggestions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px;margin:30px auto 0;max-width:680px;width:100%;text-align:left}.suggestion{border:1px solid var(--line);background:var(--bg);border-radius:16px;padding:15px;min-height:88px;text-align:left;color:var(--text)}.suggestion:hover{border-color:var(--accent)}.suggestion b{display:block;font-size:13px;margin-bottom:7px}.suggestion span{font-size:12px;color:var(--muted);line-height:1.5}.messages{max-width:820px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:24px;padding-bottom:20px}.msg{display:flex;gap:12px;align-items:flex-start;min-width:0}.msg.user{justify-content:flex-end}.mini-logo{width:30px;height:30px;flex-shrink:0;border-radius:10px;font-size:10px;margin-top:2px}.msgbody{min-width:0;max-width:min(720px,92%);font-size:15px;line-height:1.8;overflow-wrap:anywhere}.userwrap{max-width:100%}.userbubble{background:var(--user);border:1px solid var(--line);border-radius:19px;padding:12px 15px;max-width:min(650px,86%);font-size:14px;line-height:1.75;white-space:pre-wrap;overflow-wrap:anywhere}.message-content p{margin:0 0 14px}.message-content p:last-child{margin-bottom:0}.message-content h1,.message-content h2,.message-content h3{line-height:1.35;margin:22px 0 10px}.message-content h1{font-size:1.45em}.message-content h2{font-size:1.3em}.message-content h3{font-size:1.12em}.message-content ul,.message-content ol{padding-left:25px;margin:9px 0 16px}.message-content li{margin:5px 0}.message-content blockquote{border-left:3px solid var(--accent);margin:14px 0;padding:5px 14px;color:var(--muted)}.message-content table{border-collapse:collapse;display:block;overflow-x:auto;margin:14px 0;max-width:100%}.message-content th,.message-content td{border:1px solid var(--line);padding:8px 11px;text-align:left}.message-content th{background:var(--panel)}.message-content pre{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;overflow:auto;max-width:100%;line-height:1.6}.message-content pre code{white-space:pre}.message-content :not(pre)>code{background:var(--panel2);border-radius:5px;padding:1px 5px;font-size:.9em}.message-content a{color:var(--accent)}.message-content mjx-container{max-width:100%;overflow-x:auto;overflow-y:hidden}.response-actions,.user-tools{display:flex;gap:5px;margin-top:8px;flex-wrap:wrap}.user-tools{justify-content:flex-end}.response-actions button,.user-tools button{border:0;background:transparent;color:var(--muted);padding:5px 7px;border-radius:7px;font-size:11px}.response-actions button:hover,.user-tools button:hover{background:var(--panel2);color:var(--text)}.typing{color:var(--muted);font-size:13px;padding:6px 0}.typing-dots:after{content:"";animation:dots 1.2s steps(4,end) infinite}@keyframes dots{0%{content:""}25%{content:"."}50%{content:".."}75%,100%{content:"..."}}.composer-wrap{padding:10px 20px 15px;background:linear-gradient(to top,var(--bg) 82%,transparent)}.composer{max-width:820px;margin:auto;border:1px solid var(--line);border-radius:24px;padding:12px 13px 9px 18px;box-shadow:var(--shadow);background:var(--bg)}.composer textarea{display:block;width:100%;resize:none;border:0;outline:0;background:transparent;color:var(--text);font-size:14px;line-height:1.6;min-height:29px;max-height:170px}.composer-bottom{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:8px}.toolrow{display:flex;align-items:center;gap:5px;flex-wrap:wrap}.send{height:38px;width:40px;flex-shrink:0;border:0;border-radius:50%;background:var(--text);color:var(--bg);font-size:19px}.disclaimer{text-align:center;font-size:10.5px;color:var(--muted);margin:9px auto 0;max-width:820px;line-height:1.5}.mobile-overlay{display:none}.modal-backdrop{position:fixed;inset:0;z-index:100;background:#0b1020a6;display:grid;place-items:center;padding:18px}.modal{width:min(460px,100%);background:var(--bg);color:var(--text);border:1px solid var(--line);border-radius:22px;padding:24px;box-shadow:var(--shadow)}.modal h2{margin:0 0 8px;font-size:22px}.modal p{color:var(--muted);font-size:13px;line-height:1.6}.modal label{display:block;font-size:12px;font-weight:700;margin:14px 0 6px}.modal input{width:100%;border:1px solid var(--line);border-radius:11px;padding:11px 12px;background:var(--bg);color:var(--text)}.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}.primary,.secondary{border-radius:11px;padding:10px 15px;font-weight:700}.primary{background:var(--accent);color:white;border:0}.secondary{background:var(--panel);color:var(--text);border:1px solid var(--line)}.toast{position:fixed;z-index:120;bottom:22px;left:50%;transform:translateX(-50%);background:var(--text);color:var(--bg);padding:10px 14px;border-radius:12px;font-size:12px;max-width:calc(100% - 30px);text-align:center}
+ 
+const SYSTEM_PROMPT = `You are Ultra Goal AI (UG), an advanced AI educational assistant.
 
-/* Ultra Goal premium polish */
-:root{--accent:#6558e8;--accent2:#2f9cf4;--glow:0 12px 40px #6558e80d}
-:root[data-theme=dark]{--accent:#a59aff;--accent2:#69b7ff;--glow:0 12px 40px #0005}
-body{background:radial-gradient(ellipse at 70% -20%,color-mix(in srgb,var(--accent) 7%,transparent),transparent 45%),var(--bg)}
-.sidebar{background:color-mix(in srgb,var(--panel) 92%,var(--accent) 8%)}
-.logo,.welcome-logo,.mini-logo{background:linear-gradient(135deg,var(--accent2),var(--accent));box-shadow:0 5px 18px color-mix(in srgb,var(--accent) 22%,transparent)}
-.newchat{border-color:color-mix(in srgb,var(--accent) 30%,var(--line));transition:transform .16s,border-color .16s}
-.newchat:hover,.sidebutton:hover,.suggestion:hover{transform:translateY(-1px);border-color:var(--accent)}
-.iconbtn,.profilebtn,.send,.composer,.suggestion,.modal{transition:box-shadow .18s,border-color .18s,transform .18s}
-.composer:focus-within{border-color:color-mix(in srgb,var(--accent) 55%,var(--line));box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 9%,transparent),var(--shadow)}
-.send{background:linear-gradient(135deg,var(--accent2),var(--accent));color:#fff;box-shadow:0 5px 16px color-mix(in srgb,var(--accent) 24%,transparent)}
-.welcome h1 span{background-image:linear-gradient(100deg,var(--accent2),var(--accent),#c16de8)}
-.msg{animation:messageIn .2s ease-out both}@keyframes messageIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
-.history-search{width:100%;border:1px solid var(--line);border-radius:11px;padding:10px 11px;background:var(--bg);color:var(--text);font-size:12px;outline-offset:2px}
-.history-item{padding-right:48px}
-.history-actions{position:absolute;right:5px;top:50%;transform:translateY(-50%);display:flex;gap:1px;opacity:0;transition:opacity .15s}
-.history-item:hover .history-actions,.history-item:focus-within .history-actions{opacity:1}
-.history-actions button{border:0;background:var(--panel2);color:var(--text);border-radius:6px;width:21px;height:24px;padding:0;font-size:11px}
-.history-actions button:hover{background:var(--accent);color:white}
-.response-actions button:focus-visible,.history-actions button:focus-visible{outline:2px solid var(--accent)}
-.feedback{font-size:11px!important}
-@media(hover:none){.history-actions{opacity:1}}
+YOUR TEACHING STYLE:
+Give clear, detailed, structured and student-friendly explanations.
+For educational questions, follow this format whenever appropriate:
 
-@media(max-width:760px){.sidebar{position:fixed;inset:0 auto 0 0;width:280px;transform:translateX(-105%);box-shadow:10px 0 40px #0002}.sidebar.open{transform:translateX(0)}.mobile-overlay.show{display:block;position:fixed;z-index:29;inset:0;background:#11182766}.menu{display:block}.topbar{min-height:57px;padding:0 13px}.chatarea{padding:15px 13px}.welcome{padding-top:8px}.welcome-logo{width:54px;height:54px}.suggestions{grid-template-columns:1fr;gap:8px;margin-top:23px}.suggestion{min-height:68px;padding:12px 14px}.composer-wrap{padding:8px 10px 12px}.composer{width:100%;border-radius:22px;padding:10px 10px 8px}.composer textarea{font-size:16px;max-height:130px}.composer-bottom{gap:4px}.toolrow{min-width:0;gap:2px}.upload-btn,.toolbtn{padding:7px 5px;font-size:11px}.send{height:36px;width:36px}.disclaimer{font-size:10px}.messages{gap:20px}.msgbody{font-size:14px}.userbubble{max-width:90%}.top-actions{gap:5px}}@media(max-width:400px){.topbar{padding:0 8px;gap:5px}.top-left{gap:5px}.modeltag{display:none}.top-actions{gap:4px}.iconbtn{height:34px;min-width:34px;padding:0 5px}.profilebtn{height:34px;width:34px}.composer-bottom{align-items:flex-end}.toolbtn{font-size:11px}}@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important}}
+1. Introduction
+2. Definition
+3. Step-by-step explanation
+4. Mathematical representation with LaTeX
+5. Real-world examples
+6. Common misconceptions and their explanations
+7. Summary table
+8. Kannada summary using Kannada + English mixed language
+9. Important exam points for 2nd PUC, JEE Main and KCET when relevant.
 
-/* Compact sidebar utility buttons: Export, Clear History, About, and Light/Dark mode */
-.sidebottom .sidebutton {
-  min-height: 27px;
-  padding: 5px 7px;
-  gap: 5px;
-  border-radius: 7px;
-  font-size: 10px;
-  line-height: 1.2;
-}
-/* ULTRA GOAL PREMIUM UI UPGRADE — black + neon glow */
-:root{--accent:#8b5cf6;--line:#242038;--panel2:#11101b;--user:#100d1c;--shadow:0 12px 40px #6d28d922}
-body{background:#000!important;background-image:radial-gradient(ellipse at 50% -20%,#21113d 0,transparent 55%)!important}
-.sidebar{background:rgba(0,0,0,.94)!important;border-right:1px solid #28203b;backdrop-filter:blur(18px)}
-.topbar{background:rgba(0,0,0,.86)!important;border-bottom:1px solid #29213d;backdrop-filter:blur(16px)}
-.logo,.welcome-logo,.mini-logo,.profilebtn{background:linear-gradient(135deg,#7c3aed,#2563eb 55%,#06b6d4);box-shadow:0 0 22px #7c3aed55;}
-.logo,.welcome-logo{animation:ugFloat 5s ease-in-out infinite}
-.brandname span,.welcome h1 span{background:linear-gradient(90deg,#a78bfa,#60a5fa,#67e8f9,#a78bfa);background-size:250% auto;background-clip:text;-webkit-background-clip:text;color:transparent;animation:ugGradient 7s linear infinite}
-.newchat,.sidebutton,.iconbtn,.suggestion,.composer,.modal,.file-chip{border-color:#28213c;transition:transform .22s ease,border-color .22s ease,box-shadow .22s ease,background .22s ease}
-.newchat{background:linear-gradient(110deg,#171027,#080810)!important;border-color:#6d28d9!important;box-shadow:inset 0 0 18px #7c3aed12,0 0 14px #7c3aed15}
-.newchat:hover,.sidebutton:hover,.iconbtn:hover,.suggestion:hover{transform:translateY(-2px);border-color:#8b5cf6!important;box-shadow:0 0 18px #7c3aed33;background:#0b0812!important}
-.suggestion{background:linear-gradient(145deg,#09090d,#050507)!important;position:relative;overflow:hidden}
-.suggestion:before{content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;background:linear-gradient(120deg,transparent 20%,#8b5cf610 50%,transparent 80%);transform:translateX(-110%);transition:transform .65s ease}
-.suggestion:hover:before{transform:translateX(110%)}
-.suggestion b{color:#f5f3ff}.suggestion span{color:#aaa4bd}
-.composer{background:rgba(5,5,8,.96)!important;border-color:#33264c;box-shadow:0 0 0 1px #8b5cf60b,0 12px 45px #000,0 0 28px #7c3aed12;backdrop-filter:blur(20px)}
-.composer:focus-within{border-color:#8b5cf6;box-shadow:0 0 0 3px #8b5cf61c,0 0 28px #7c3aed26}
-.send,.primary{background:linear-gradient(135deg,#7c3aed,#4f46e5 60%,#0891b2)!important;color:#fff!important;box-shadow:0 0 18px #7c3aed55;transition:transform .18s ease,box-shadow .18s ease}
-.send:hover,.primary:hover{transform:translateY(-2px) scale(1.04);box-shadow:0 0 26px #8b5cf699}
-.composer-mic{transition:all .2s ease}.composer-mic:hover{border-color:#8b5cf6;box-shadow:0 0 16px #8b5cf655}
-.toolbtn:hover,.upload-btn:hover{color:#c4b5fd!important;background:#8b5cf61a!important}
-.userbubble{background:linear-gradient(135deg,#171026,#0b1020)!important;border-color:#34274c;box-shadow:0 5px 20px #0008}
-.msg:not(.user){animation:ugFadeUp .32s ease both}.msg.user{animation:ugFadeUp .24s ease both}
-.response-actions button:hover,.user-tools button:hover{color:#c4b5fd;background:#8b5cf61a}
-.history-item{transition:background .18s ease,border-color .18s ease}.history-item.active{background:#100b1b;border-color:#49306d}.history-actions button:hover{color:#c4b5fd;box-shadow:0 0 12px #8b5cf644}
-.modal{background:#050507!important;border-color:#392650;box-shadow:0 0 45px #7c3aed22}
-.modal input{background:#08080b!important;border-color:#332641}
-.toast{box-shadow:0 0 22px #7c3aed35;border:1px solid #49306d}
-::selection{background:#7c3aed66;color:#fff}
-@keyframes ugFadeUp{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
-@keyframes ugFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
-@keyframes ugGradient{to{background-position:250% center}}
-@media(prefers-reduced-motion:reduce){.logo,.welcome-logo,.msg,.brandname span,.welcome h1 span{animation:none!important}}
+EXPLANATION RULES:
+- Explain concepts deeply but use simple English.
+- Explain every important formula and its symbols.
+- Use headings, numbered lists and bullet points.
+- Give practical examples wherever useful.
+- Explain why and how, not just what.
+- Include diagrams or describe them when useful.
+- For numerical problems, show given data, formula, substitution, calculation and final answer.
+- Highlight important definitions and formulas.
+- Do not repeat information unnecessarily.
+- Do not force every section into simple questions.
+- Adjust answer length to the complexity of the question.
+- If the user asks for a short answer, answer briefly.
+- If the user asks for Kannada, explain line by line in Kannada.
+- Maintain scientific and mathematical accuracy.
 
-/* THEME FIX: true full-black dark mode and true full-white light mode */
-:root[data-theme="dark"] {
-  color-scheme: dark;
-  --bg:#000000; --panel:#000000; --panel2:#101010; --text:#f5f5f5;
-  --muted:#a3a3a3; --line:#282828; --user:#111111; --accent:#8b5cf6;
-  --accent2:#60a5fa; --shadow:0 12px 40px #000000;
-}
-:root[data-theme="dark"] html,
-:root[data-theme="dark"] body,
-:root[data-theme="dark"] .app,
-:root[data-theme="dark"] .sidebar,
-:root[data-theme="dark"] .main,
-:root[data-theme="dark"] .chatarea,
-:root[data-theme="dark"] .topbar,
-:root[data-theme="dark"] .composer-wrap,
-:root[data-theme="dark"] .composer,
-:root[data-theme="dark"] .modal {
-  background-color:#000 !important; color:#f5f5f5;
-}
-:root[data-theme="dark"] body {background:#000!important;background-image:none!important}
-:root[data-theme="dark"] .sidebar {background:rgba(0,0,0,.97)!important}
-:root[data-theme="dark"] .topbar {background:rgba(0,0,0,.94)!important}
-:root[data-theme="dark"] .composer {background:#000!important}
-:root[data-theme="dark"] .newchat,
-:root[data-theme="dark"] .sidebutton,
-:root[data-theme="dark"] .iconbtn,
-:root[data-theme="dark"] .suggestion,
-:root[data-theme="dark"] .modal input,
-:root[data-theme="dark"] .history-search {background:#000!important;color:#f5f5f5!important}
-:root[data-theme="dark"] .suggestion {background:linear-gradient(145deg,#08080b,#000)!important}
-:root[data-theme="dark"] .userbubble {background:#101010!important;color:#f5f5f5!important}
-:root[data-theme="dark"] .message-content pre {background:#080808!important}
-:root[data-theme="dark"] .history-item.active,
-:root[data-theme="dark"] .history-item:hover {background:#101010!important}
-:root[data-theme="dark"] .modal {background:#000!important}
+EXAM PREPARATION:
+When relevant, include:
+- 2nd PUC board examination points.
+- JEE Main concepts and formulas.
+- KCET important points.
+- Common mistakes in MCQs.
 
-:root[data-theme="light"] {
-  color-scheme: light;
-  --bg:#ffffff; --panel:#ffffff; --panel2:#f5f5f5; --text:#171717;
-  --muted:#666666; --line:#e5e5e5; --user:#f5f5f5; --accent:#6d28d9;
-  --accent2:#2563eb; --shadow:0 10px 35px #1111110d;
-}
-:root[data-theme="light"] html,
-:root[data-theme="light"] body,
-:root[data-theme="light"] .app,
-:root[data-theme="light"] .sidebar,
-:root[data-theme="light"] .main,
-:root[data-theme="light"] .chatarea,
-:root[data-theme="light"] .topbar,
-:root[data-theme="light"] .composer-wrap,
-:root[data-theme="light"] .composer,
-:root[data-theme="light"] .modal {
-  background-color:#fff!important; color:#171717!important;
-}
-:root[data-theme="light"] body {background-image:none!important}
-:root[data-theme="light"] .sidebar,
-:root[data-theme="light"] .topbar {background:#fff!important;border-color:#e5e5e5!important;backdrop-filter:none!important}
-:root[data-theme="light"] .composer {background:#fff!important;border-color:#dedede!important;box-shadow:0 8px 28px #0000000d!important}
-:root[data-theme="light"] .newchat,
-:root[data-theme="light"] .sidebutton,
-:root[data-theme="light"] .iconbtn,
-:root[data-theme="light"] .suggestion,
-:root[data-theme="light"] .modal input,
-:root[data-theme="light"] .history-search {background:#fff!important;color:#171717!important;border-color:#e5e5e5!important}
-:root[data-theme="light"] .suggestion {background:#fff!important}
-:root[data-theme="light"] .suggestion b {color:#171717!important}
-:root[data-theme="light"] .suggestion span {color:#666!important}
-:root[data-theme="light"] .userbubble {background:#f5f5f5!important;color:#171717!important;border-color:#e5e5e5!important;box-shadow:none!important}
-:root[data-theme="light"] .history-item.active,
-:root[data-theme="light"] .history-item:hover {background:#f5f5f5!important;border-color:#e5e5e5!important}
-:root[data-theme="light"] .message-content pre {background:#f7f7f7!important;color:#171717!important;border-color:#e5e5e5!important}
-:root[data-theme="light"] .message-content :not(pre)>code {background:#f0f0f0!important;color:#171717!important}
-:root[data-theme="light"] .message-content th {background:#f5f5f5!important}
-:root[data-theme="light"] .modal {background:#fff!important;border-color:#e5e5e5!important;box-shadow:0 15px 50px #0002!important}
-:root[data-theme="light"] .modal input {background:#fff!important;color:#171717!important}
-:root[data-theme="light"] .composer textarea {color:#171717!important}
-:root[data-theme="light"] .toolbtn:hover,
-:root[data-theme="light"] .upload-btn:hover {color:#6d28d9!important;background:#6d28d910!important}
-:root[data-theme="light"] .response-actions button:hover,
-:root[data-theme="light"] .user-tools button:hover {color:#6d28d9!important;background:#6d28d910!important}
+CURRENT-DATE RULES:
+- Treat the separately supplied current date and time as authoritative.
+- For current events, recent news, current office holders, exam dates, admissions, results, prices, rules and software versions, use live search results when available.
+- Never present outdated training knowledge as verified current information.
+- If live search fails or returns no useful results, clearly state that the latest information could not be verified.
+- Never invent sources, citations or URLs.
 
-
-/* Ultra Goal premium thinking animation */
-.thinking-card{display:flex;align-items:center;gap:12px;padding:12px 15px;border:1px solid var(--line);border-radius:16px;background:var(--panel);box-shadow:0 0 0 1px color-mix(in srgb,var(--accent) 8%,transparent),0 8px 28px #0000000a;animation:thinkEnter .32s ease-out both;}
-.thinking-orb{position:relative;width:34px;height:34px;flex:0 0 34px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(from 0deg,#3278ef,#a064df,#22d3ee,#3278ef);animation:thinkSpin 2.2s linear infinite;box-shadow:0 0 17px color-mix(in srgb,var(--accent) 30%,transparent);}
-.thinking-orb:before{content:"";position:absolute;inset:3px;border-radius:50%;background:var(--panel);}
-.thinking-orb:after{content:"✦";position:relative;z-index:1;color:var(--accent);font-size:16px;animation:thinkPulse 1.35s ease-in-out infinite;}
-.thinking-copy{display:flex;flex-direction:column;gap:4px;min-width:0}.thinking-title{font-size:13px;font-weight:750;letter-spacing:.1px;color:var(--text)}
-.thinking-subtitle{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:3px}
-.thinking-dot{width:4px;height:4px;border-radius:50%;background:var(--accent);animation:thinkDots 1.15s ease-in-out infinite;}
-.thinking-dot:nth-child(2){animation-delay:.16s}.thinking-dot:nth-child(3){animation-delay:.32s}
-.thinking-equalizer{display:flex;align-items:center;gap:3px;height:16px;margin-left:8px;opacity:.8}
-.thinking-equalizer i{display:block;width:3px;height:5px;border-radius:5px;background:var(--accent);animation:thinkBars .8s ease-in-out infinite alternate}
-.thinking-equalizer i:nth-child(2){animation-delay:.12s}.thinking-equalizer i:nth-child(3){animation-delay:.24s}.thinking-equalizer i:nth-child(4){animation-delay:.36s}
-@keyframes thinkSpin{to{transform:rotate(360deg)}}@keyframes thinkPulse{0%,100%{transform:scale(.8);opacity:.65}50%{transform:scale(1.15);opacity:1}}
-@keyframes thinkDots{0%,70%,100%{transform:translateY(0);opacity:.35}35%{transform:translateY(-4px);opacity:1}}
-@keyframes thinkBars{from{height:4px}to{height:15px}}@keyframes thinkEnter{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
-/* Thinking animation intentionally remains active in both themes. */
-
-
-/* FINAL THEME ENFORCEMENT: pure black dark mode / clean white light mode */
-:root[data-theme="dark"] {
-  color-scheme: dark;
-  --bg:#000; --panel:#000; --panel2:#101010; --text:#f5f5f5;
-  --muted:#a3a3a3; --line:#282828; --user:#101010;
-  --accent:#a78bfa; --accent2:#60a5fa; --shadow:0 12px 40px #000;
-}
-:root[data-theme="dark"] body,
-:root[data-theme="dark"] .app,
-:root[data-theme="dark"] .sidebar,
-:root[data-theme="dark"] .main,
-:root[data-theme="dark"] .chatarea,
-:root[data-theme="dark"] .topbar,
-:root[data-theme="dark"] .composer-wrap,
-:root[data-theme="dark"] .composer,
-:root[data-theme="dark"] .modal,
-:root[data-theme="dark"] .thinking-card {
-  background:#000!important;
-  color:#f5f5f5!important;
-}
-:root[data-theme="dark"] body {background-image:none!important}
-:root[data-theme="dark"] .sidebar,
-:root[data-theme="dark"] .topbar {border-color:#282828!important}
-:root[data-theme="dark"] .newchat,
-:root[data-theme="dark"] .sidebutton,
-:root[data-theme="dark"] .iconbtn,
-:root[data-theme="dark"] .suggestion,
-:root[data-theme="dark"] .history-search,
-:root[data-theme="dark"] .modal input {
-  background:#000!important;color:#f5f5f5!important;border-color:#282828!important;
-}
-:root[data-theme="dark"] .suggestion {background:#050505!important}
-:root[data-theme="dark"] .suggestion b {color:#f5f5f5!important}
-:root[data-theme="dark"] .suggestion span {color:#aaa!important}
-:root[data-theme="dark"] .history-item.active,
-:root[data-theme="dark"] .history-item:hover {background:#101010!important}
-:root[data-theme="dark"] .userbubble {background:#101010!important;color:#f5f5f5!important}
-:root[data-theme="dark"] .composer {background:#000!important}
-:root[data-theme="dark"] .composer textarea {color:#f5f5f5!important}
-:root[data-theme="dark"] .message-content pre {background:#080808!important}
-:root[data-theme="dark"] .thinking-card {border-color:#282828!important}
-:root[data-theme="light"] {
-  color-scheme:light;
-  --bg:#fff; --panel:#fff; --panel2:#f5f5f5; --text:#171717;
-  --muted:#666; --line:#e5e5e5; --user:#f5f5f5;
-  --accent:#6d28d9; --accent2:#2563eb; --shadow:0 10px 35px #1111;
-}
-:root[data-theme="light"] body,
-:root[data-theme="light"] .app,
-:root[data-theme="light"] .sidebar,
-:root[data-theme="light"] .main,
-:root[data-theme="light"] .chatarea,
-:root[data-theme="light"] .topbar,
-:root[data-theme="light"] .composer-wrap,
-:root[data-theme="light"] .composer,
-:root[data-theme="light"] .modal,
-:root[data-theme="light"] .thinking-card {
-  background:#fff!important;color:#171717!important;
-}
-:root[data-theme="light"] body {background-image:none!important}
-:root[data-theme="light"] .sidebar,
-:root[data-theme="light"] .topbar {border-color:#e5e5e5!important}
-:root[data-theme="light"] .newchat,
-:root[data-theme="light"] .sidebutton,
-:root[data-theme="light"] .iconbtn,
-:root[data-theme="light"] .suggestion,
-:root[data-theme="light"] .history-search,
-:root[data-theme="light"] .modal input {
-  background:#fff!important;color:#171717!important;border-color:#e5e5e5!important;
-}
-:root[data-theme="light"] .suggestion b {color:#171717!important}
-:root[data-theme="light"] .suggestion span {color:#666!important}
-:root[data-theme="light"] .history-item.active,
-:root[data-theme="light"] .history-item:hover {background:#f5f5f5!important}
-:root[data-theme="light"] .userbubble {background:#f5f5f5!important;color:#171717!important;border-color:#e5e5e5!important}
-:root[data-theme="light"] .composer textarea {color:#171717!important}
-:root[data-theme="light"] .thinking-card {border-color:#e5e5e5!important}
-
-</style>
-</head>
-<body>
-<div class="app">
-<aside class="sidebar" id="sidebar"><div class="brandrow"><div class="logo">UG</div><div class="brandname">Ultra <span>Goal</span></div></div>
-<button class="newchat" id="newChat" type="button">＋ New chat <span style="margin-left:auto;color:var(--muted)">Ctrl K</span></button>
-<button class="sidebutton" id="loginSide" type="button">👤 <span id="profileLabel">Sign in / profile</span></button><div class="history-label">Recent chats</div><input class="history-search" id="historySearch" type="search" placeholder="Search conversations…" aria-label="Search conversations"><div class="history" id="history"></div>
-<div class="sidebottom"><button class="sidebutton" id="exportBtn" type="button">⇩ Export conversations</button><button class="sidebutton" id="clearHistoryBtn" type="button">⌫ Clear chat history</button><button class="sidebutton" id="aboutBtn" type="button">✦ About Ultra Goal</button><button class="sidebutton" id="themeSide" type="button">🌙 Dark mode</button><div class="sidefoot">UG AI Chat<br>Dream big. Build smart.</div></div></aside>
-<div class="mobile-overlay" id="overlay"></div><main class="main"><header class="topbar"><div class="top-left"><button class="menu" id="menuBtn" type="button" aria-label="Open menu">☰</button><div><span class="modelname">UG Chat</span><span class="modeltag">AI · Smart mode</span></div></div><div class="top-actions"><button class="iconbtn" id="themeTop" type="button" title="Toggle theme" aria-label="Toggle theme">☾</button><button class="profilebtn" id="profileBtn" type="button" aria-label="Open profile">UG</button></div></header>
-<section class="chatarea" id="chatarea"><div class="welcome" id="welcome"><div class="welcome-logo">UG</div><h1>What can I help you <span>build?</span></h1><p>Your space to learn, create, and explore. Ask in easy Kannada + English, build with Python, or discover AI and robotics. 😊</p><div class="suggestions"><button class="suggestion" data-prompt="Teach me Python basics with a simple example in easy Kannada and English." type="button"><b>💻 Learn Python</b><span>Learn coding step by step</span></button><button class="suggestion" data-prompt="Explain artificial intelligence in easy Kannada and English." type="button"><b>🧠 Explore AI</b><span>Understand AI simply</span></button><button class="suggestion" data-prompt="Give me a beginner robotics project I can simulate for free." type="button"><b>🤖 Start robotics</b><span>Explore a virtual robot</span></button><button class="suggestion" data-prompt="Help me plan a useful AI startup with a zero budget." type="button"><b>🚀 Build a startup</b><span>Plan your first project</span></button></div></div><div class="messages hidden" id="messages" aria-live="polite"></div></section>
-<div class="composer-wrap"><form class="composer" id="chatForm"><div class="composer-input-row"><textarea id="prompt" rows="1" maxlength="40000" placeholder="Message Ultra Goal..." aria-label="Message Ultra Goal"></textarea><button class="composer-mic" id="micBtn" type="button" title="Voice input" aria-label="Start voice input">🎙️</button></div><div id="fileChip" class="file-chip hidden"><span id="fileStatus">📄 File ready</span><button type="button" id="removeFileBtn" aria-label="Remove attachment">✕</button></div><input id="fileInput" class="file-input-hidden" type="file" accept=".pdf,.txt,.md,.csv,.json,.html,.docx,.doc" aria-label="Upload a document"><div class="composer-bottom"><div class="toolrow"><button type="button" class="upload-btn" id="uploadBtn">📎 Attach</button><button type="button" class="toolbtn" id="topicBtn">✧ Learning mode</button><button type="button" class="toolbtn" id="clearInput">Clear</button><button type="button" class="toolbtn" id="stopBtn" disabled>■ Stop</button></div><button class="send" id="sendBtn" type="submit" aria-label="Send" disabled>↑</button></div></form><div class="disclaimer">AI can make mistakes. Avoid entering passwords, private information, or sensitive data.</div></div></main></div>
-<div class="modal-backdrop hidden" id="modalBackdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><div class="modal"><h2 id="modalTitle">Welcome to Ultra Goal 👋</h2><p>Set a local profile to personalize this browser. This demo does not create a secure account.</p><form id="profileForm"><label for="profileName">Display name</label><input id="profileName" maxlength="60" autocomplete="nickname" placeholder="What should we call you?"><label for="profileEmail">Email (optional, saved only on this device)</label><input id="profileEmail" maxlength="120" type="email" autocomplete="email" placeholder="you@example.com"><div class="modal-actions"><button class="secondary" type="button" id="modalCancel">Cancel</button><button class="primary" type="submit" id="modalSubmit">Save profile</button></div></form></div></div><div class="toast hidden" id="toast" role="status"></div>
-<script>
-'use strict';
-const $=id=>document.getElementById(id),textarea=$('prompt'),sendBtn=$('sendBtn');
-const STORAGE_KEY='ultraGoalChatsV3',THEME_KEY='ultraGoalTheme',PROFILE_KEY='ultraGoalProfile';
-// Your deployed Cloudflare Worker URL.
-const WORKER_URL='https://ultra-goal-ai.shivaraj61704.workers.dev/';
-let chats=[],activeChatId=null,learningMode=true,editingMessageIndex=null,activeController=null,toastTimer=null,recognition=null,listening=false,attachedFileText='',attachedFileName='',pdfJsPromise=null,mammothPromise=null;
-function activeChat(){return chats.find(c=>c.id===activeChatId)||null}
-function saveChats(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(chats.slice(0,50)))}catch(e){showToast('Could not save history in this browser.')}}
-function showToast(message){const t=$('toast');t.textContent=message;t.classList.remove('hidden');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.add('hidden'),2800)}
-function applyTheme(theme){const v=theme==='dark'?'dark':'light';document.documentElement.dataset.theme=v;$('themeTop').textContent=v==='dark'?'☀':'☾';$('themeSide').textContent=v==='dark'?'☀ Light mode':'🌙 Dark mode';const m=document.querySelector('meta[name="theme-color"]');if(m)m.content=v==='dark'?'#000000':'#ffffff';try{localStorage.setItem(THEME_KEY,v)}catch(e){}}
-function toggleTheme(){applyTheme(document.documentElement.dataset.theme==='dark'?'light':'dark')}
-function getProfile(){try{return JSON.parse(localStorage.getItem(PROFILE_KEY)||'null')}catch(e){return null}}
-function updateProfileUI(){const p=getProfile();$('profileLabel').textContent=p?.name||'Sign in / profile';$('profileBtn').textContent=p?.name?p.name.trim().slice(0,2).toUpperCase():'UG'}
-function openProfile(){const p=getProfile();$('profileName').value=p?.name||'';$('profileEmail').value=p?.email||'';$('modalTitle').textContent=p?'Your profile 👤':'Welcome to Ultra Goal 👋';$('modalSubmit').textContent=p?'Save changes':'Save profile';$('modalBackdrop').classList.remove('hidden');$('profileName').focus()}
-function closeProfile(){$('modalBackdrop').classList.add('hidden')}
-$('profileForm').addEventListener('submit',e=>{e.preventDefault();const name=$('profileName').value.trim(),email=$('profileEmail').value.trim();if(email&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){showToast('Enter a valid email or leave it blank.');return}try{localStorage.setItem(PROFILE_KEY,JSON.stringify({name:name||'UG User',email}));updateProfileUI();closeProfile();showToast('Profile saved on this device.')}catch(e){showToast('Could not save profile.')}});
-$('modalCancel').addEventListener('click',closeProfile);$('modalBackdrop').addEventListener('click',e=>{if(e.target===$('modalBackdrop'))closeProfile()});$('loginSide').addEventListener('click',()=>{openProfile();closeSidebar()});$('profileBtn').addEventListener('click',openProfile);
-function renderHistory(){const h=$('history');h.replaceChildren();const query=($('historySearch')?.value||'').trim().toLowerCase();const filtered=chats.slice(0,50).filter(c=>{const title=String(c.title||'New chat');const content=(c.messages||[]).map(m=>m.text||'').join(' ');return !query||(title+' '+content).toLowerCase().includes(query)});if(!filtered.length){const d=document.createElement('div');d.className='history-empty';d.textContent=chats.length?'No conversations match your search.':'💬 Your conversations will appear here. Start chatting to build your history!';h.appendChild(d);return}filtered.forEach(c=>{const b=document.createElement('div');b.className='history-item'+(c.id===activeChatId?' active':'');b.tabIndex=0;b.setAttribute('role','button');const title=(c.title||'New chat').trim();const label=document.createElement('span');label.textContent=title==='New chat'?'💬 New chat':'✨ '+title;label.style.display='block';label.style.overflow='hidden';label.style.textOverflow='ellipsis';label.style.whiteSpace='nowrap';b.title=title;b.setAttribute('aria-label','Open chat: '+title);const open=()=>showChat(c.id);b.addEventListener('click',e=>{if(!e.target.closest('.history-actions'))open()});b.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&!e.target.closest('button')){e.preventDefault();open()}});const actions=document.createElement('span');actions.className='history-actions';const rename=document.createElement('button');rename.type='button';rename.title='Rename conversation';rename.setAttribute('aria-label','Rename '+title);rename.textContent='✎';rename.addEventListener('click',e=>{e.stopPropagation();const next=prompt('Rename conversation:',title);if(next===null)return;const clean=next.trim().slice(0,80);if(!clean){showToast('Chat title cannot be empty.');return}c.title=clean;saveChats();renderHistory();showToast('Conversation renamed.')});const del=document.createElement('button');del.type='button';del.title='Delete conversation';del.setAttribute('aria-label','Delete '+title);del.textContent='×';del.addEventListener('click',e=>{e.stopPropagation();if(!confirm('Delete this conversation?'))return;if(activeChatId===c.id){activeController?.abort();activeChatId=null}chats=chats.filter(x=>x.id!==c.id);saveChats();renderHistory();if(activeChatId===null){if(chats.length)showChat(chats[0].id);else showWelcome()}showToast('Conversation deleted.')});actions.append(rename,del);b.append(label,actions);h.appendChild(b)})}
-function showWelcome(){$('welcome').classList.remove('hidden');$('messages').classList.add('hidden');$('messages').replaceChildren()}
-function newChat(){const c={id:String(Date.now())+Math.random().toString(16).slice(2),title:'New chat',messages:[]};chats.unshift(c);activeChatId=c.id;editingMessageIndex=null;saveChats();renderHistory();showWelcome();textarea.value='';attachedFileText='';attachedFileName='';$('fileInput').value='';$('fileChip').classList.add('hidden');resizeInput();closeSidebar();textarea.focus()}
-function showChat(id){const c=chats.find(x=>x.id===id);if(!c)return;activeChatId=id;editingMessageIndex=null;$('welcome').classList.add('hidden');$('messages').classList.remove('hidden');$('messages').replaceChildren();c.messages.forEach((m,i)=>appendMessage(m.role,m.text,m.role==='assistant',i));renderHistory();scrollBottom();closeSidebar()}
-function formatMarkdown(text){if(typeof marked==='undefined'||typeof DOMPurify==='undefined')return null;marked.setOptions({gfm:true,breaks:true});return DOMPurify.sanitize(marked.parse(String(text??'')))}
-async function renderMath(el){try{if(!window.MathJax?.typesetPromise)return;if(window.MathJax.startup?.promise)await window.MathJax.startup.promise;if(window.MathJax.typesetPromise){window.MathJax.typesetClear?.([el]);await window.MathJax.typesetPromise([el])}}catch(e){console.warn('MathJax render failed',e)}}
-async function copyText(text,button){try{await navigator.clipboard.writeText(String(text??''));const old=button.textContent;button.textContent='Copied ✓';setTimeout(()=>button.textContent=old,1300)}catch(e){showToast('Copy blocked by browser. Copy manually.')}}
-function addUserTools(wrap,text,index){const tools=document.createElement('div');tools.className='user-tools';const copy=document.createElement('button');copy.type='button';copy.textContent='Copy';copy.onclick=()=>copyText(text,copy);const edit=document.createElement('button');edit.type='button';edit.textContent='✎ Edit';edit.onclick=()=>{const c=activeChat();if(!c||c.messages[index]?.role!=='user')return;editingMessageIndex=index;textarea.value=text;resizeInput();textarea.focus();textarea.setSelectionRange(textarea.value.length,textarea.value.length);showToast('Edit the message and press Send.')};tools.append(copy,edit);wrap.appendChild(tools)}
-function speakText(text,button){if(!('speechSynthesis'in window)){showToast('Read aloud is not supported in this browser.');return}if(window.speechSynthesis.speaking){window.speechSynthesis.cancel();button.textContent='🔊 Read aloud';return}const clean=String(text).replace(/```[\s\S]*?```/g,' code block omitted ').replace(/https?:\/\/\S+/g,' link ').replace(/[#*_`>]/g,' ').slice(0,12000);const u=new SpeechSynthesisUtterance(clean);u.lang=/[ಕ-೿]/.test(clean)?'kn-IN':'en-IN';u.onend=u.onerror=()=>{button.textContent='🔊 Read aloud'};button.textContent='⏹ Stop reading';window.speechSynthesis.speak(u)}
-function appendMessage(role,text,actions=true,index=-1){const row=document.createElement('div');row.className='msg '+(role==='user'?'user':'assistant');if(role==='user'){const wrap=document.createElement('div');wrap.className='userwrap';const bubble=document.createElement('div');bubble.className='userbubble';bubble.textContent=text;wrap.appendChild(bubble);addUserTools(wrap,text,index);row.appendChild(wrap)}else{const logo=document.createElement('div');logo.className='mini-logo';logo.textContent='UG';const content=document.createElement('div');content.className='msgbody';const answer=document.createElement('div');answer.className='message-content';const html=formatMarkdown(text);if(html===null)answer.textContent=text;else answer.innerHTML=html;content.appendChild(answer);row.append(logo,content);renderMath(answer);if(actions){const bar=document.createElement('div');bar.className='response-actions';const copy=document.createElement('button');copy.type='button';copy.textContent='Copy';copy.onclick=()=>copyText(text,copy);const speak=document.createElement('button');speak.type='button';speak.className='speak-btn';speak.textContent='🔊 Read aloud';speak.onclick=()=>speakText(text,speak);const regen=document.createElement('button');regen.type='button';regen.textContent='↻ Regenerate';regen.onclick=()=>{const c=activeChat();if(!c||activeController)return;const i=c.messages.map(m=>m.role).lastIndexOf('user');if(i<0)return;c.messages=c.messages.slice(0,i+1);saveChats();showChat(c.id);send(null,{regenerate:true})};const up=document.createElement('button');up.type='button';up.className='feedback';up.textContent='👍 Helpful';up.onclick=()=>{up.textContent='👍 Thanks';up.disabled=true;showToast('Thanks for your feedback!')};const down=document.createElement('button');down.type='button';down.className='feedback';down.textContent='👎 Not helpful';down.onclick=()=>{down.textContent='👎 Feedback noted';down.disabled=true;showToast('Feedback noted for this browser session.')};bar.append(copy,speak,regen,up,down);content.appendChild(bar)}}$('messages').appendChild(row)}
-function scrollBottom(){$('chatarea').scrollTop=$('chatarea').scrollHeight}
-function resizeInput(){textarea.style.height='auto';textarea.style.height=Math.min(textarea.scrollHeight,170)+'px';sendBtn.disabled=!textarea.value.trim()||!!activeController}
-function closeSidebar(){$('sidebar').classList.remove('open');$('overlay').classList.remove('show')}
-function makeTyping(id){const row=document.createElement('div');row.className='msg assistant thinking-row';row.dataset.typingFor=id;const logo=document.createElement('div');logo.className='mini-logo';logo.textContent='UG';const card=document.createElement('div');card.className='thinking-card';card.setAttribute('role','status');card.setAttribute('aria-live','polite');const orb=document.createElement('div');orb.className='thinking-orb';const copy=document.createElement('div');copy.className='thinking-copy';const title=document.createElement('div');title.className='thinking-title';title.textContent='Ultra Goal is thinking';const subtitle=document.createElement('div');subtitle.className='thinking-subtitle';subtitle.append(document.createTextNode('Working on your answer'));for(let i=0;i<3;i++){const dot=document.createElement('span');dot.className='thinking-dot';subtitle.appendChild(dot)}copy.append(title,subtitle);const bars=document.createElement('div');bars.className='thinking-equalizer';for(let i=0;i<4;i++)bars.appendChild(document.createElement('i'));card.append(orb,copy,bars);row.append(logo,card);$('messages').appendChild(row)}
-function isDateQuestion(t){return /\b(what day is it|what(?:'s| is) the date|current date|today(?:'s)? date|date today)\b/i.test(String(t||''))}
-function getLocalDateAnswer(){const s=new Intl.DateTimeFormat('en-IN',{weekday:'long',day:'numeric',month:'long',year:'numeric'}).format(new Date());return '**Today is '+s+'.**\n\nThis date is taken from your device/browser clock.'}
-function isWeatherQuestion(t){return /\b(weather|forecast|temperature|rain today|will it rain|humidity|wind speed)\b/i.test(String(t||''))}
-function extractWeatherPlace(t){let m=String(t||'').match(/\b(?:weather|forecast|temperature)\b.*?\b(?:in|for|at)\s+([a-z][a-z .'-]{1,55}?)(?:\?|$|\b today\b|\b tomorrow\b|\b this week\b)/i);if(!m)m=String(t||'').match(/^\s*(?:what(?:'s| is)\s+)?(?:the\s+)?weather\s+(?:like\s+)?(?:in|for|at)\s+([a-z][a-z .'-]{1,55})\s*\??$/i);if(!m)m=String(t||'').match(/^\s*([a-z][a-z .'-]{1,45})\s+weather\s*\??$/i);return m?m[1].trim().replace(/[?.!,]+$/,''):''}
-function weatherCodeText(c){if(c===0)return'Clear sky';if([1,2,3].includes(c))return'Partly cloudy / overcast';if([45,48].includes(c))return'Foggy';if([51,53,55,56,57].includes(c))return'Drizzle';if([61,63,65,66,67,80,81,82].includes(c))return'Rain / showers';if([71,73,75,77,85,86].includes(c))return'Snow';if([95,96,99].includes(c))return'Thunderstorm';return'Conditions unavailable'}
-async function getWeatherAnswer(question,signal){let lat,lon,name='';const place=extractWeatherPlace(question);if(place){const r=await fetch('https://geocoding-api.open-meteo.com/v1/search?name='+encodeURIComponent(place)+'&count=1&language=en&format=json',{signal});if(!r.ok)throw Error('Location lookup failed. Try Weather in Hubballi.');const g=await r.json();if(!g.results?.length)return'Could not find that place. Try **Weather in Hubballi**.';const hit=g.results[0];lat=hit.latitude;lon=hit.longitude;name=[hit.name,hit.admin1,hit.country].filter(Boolean).join(', ')}else{if(!navigator.geolocation)throw Error('Ask **Weather in Hubballi** or enable browser location.');const p=await new Promise((resolve,reject)=>navigator.geolocation.getCurrentPosition(resolve,reject,{timeout:9000,maximumAge:600000}));lat=p.coords.latitude;lon=p.coords.longitude;name='your current location'}const q=new URLSearchParams({latitude:lat,longitude:lon,current:'temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m',daily:'weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max',timezone:'auto',forecast_days:'3'});const r=await fetch('https://api.open-meteo.com/v1/forecast?'+q,{signal});if(!r.ok)throw Error('Weather service unavailable. Try again.');const d=await r.json(),c=d.current;if(!c)throw Error('Weather data unavailable.');const unit=d.current_units?.temperature_2m||'°C',lines=['## Live weather — '+name,'**Current conditions:** '+weatherCodeText(c.weather_code),'- **Temperature:** '+c.temperature_2m+unit+' (feels like '+c.apparent_temperature+unit+')','- **Humidity:** '+c.relative_humidity_2m+'%','- **Wind:** '+c.wind_speed_10m+' '+(d.current_units?.wind_speed_10m||'km/h'),'','**3-day forecast:**'];d.daily?.time?.forEach((day,i)=>lines.push('- **'+day+':** '+weatherCodeText(d.daily.weather_code[i])+', low '+d.daily.temperature_2m_min[i]+unit+', high '+d.daily.temperature_2m_max[i]+unit+(d.daily.precipitation_probability_max?.[i]!=null?', precipitation chance '+d.daily.precipitation_probability_max[i]+'%':'')));lines.push('','_Live data from Open-Meteo. Forecasts can change._');return lines.join('\n')}
-function extractAnswer(d){if(typeof d==='string')return d;const a=[d?.response,d?.reply,d?.text,d?.answer,d?.result?.response,d?.result?.text,d?.output_text,d?.output?.[0]?.content?.[0]?.text,d?.result?.output?.[0]?.content?.[0]?.text,d?.choices?.[0]?.message?.content];return a.find(x=>typeof x==='string'&&x.trim())||''}
-async function send(textOverride,options={}){if(activeController)return;const value=(textOverride??textarea.value).trim();if(!value&&!options.regenerate)return;let chat=activeChat();if(!chat){chat={id:String(Date.now())+Math.random().toString(16).slice(2),title:value.slice(0,34)||'New chat',messages:[]};chats.unshift(chat);activeChatId=chat.id}if(options.regenerate){const i=chat.messages.map(m=>m.role).lastIndexOf('user');if(i<0)return;chat.messages=chat.messages.slice(0,i+1)}else if(editingMessageIndex!==null){const i=editingMessageIndex;chat.messages=chat.messages.slice(0,i);chat.messages.push({role:'user',text:value});editingMessageIndex=null}else chat.messages.push({role:'user',text:value});if(chat.title==='New chat')chat.title=value.slice(0,34)||'New chat';saveChats();renderHistory();$('welcome').classList.add('hidden');$('messages').classList.remove('hidden');$('messages').replaceChildren();chat.messages.forEach((m,i)=>appendMessage(m.role,m.text,m.role==='assistant',i));textarea.value='';resizeInput();const chatId=chat.id;makeTyping(chatId);activeController=new AbortController();sendBtn.disabled=true;$('stopBtn').disabled=false;scrollBottom();try{const current=chats.find(c=>c.id===chatId);const messages=(current?.messages||[]).filter(m=>m.role==='user'||m.role==='assistant').slice(-30).map(m=>({role:m.role,content:m.text}));const latestUser=[...messages].reverse().find(m=>m.role==='user');const question=latestUser?.content||value;let answer='';if(isDateQuestion(question))answer=getLocalDateAnswer();else if(isWeatherQuestion(question))answer=await getWeatherAnswer(question,activeController.signal);else{const response=await fetch(WORKER_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'chat',message:question,messages,learningMode,currentDateTime:new Date().toISOString()}),signal:activeController.signal});const raw=await response.text();let data;try{data=raw?JSON.parse(raw):{}}catch(e){data={error:raw||'Server returned an unreadable response.'}}if(!response.ok)throw Error([data.error,data.details,data.message,'HTTP '+response.status].filter(Boolean).join(' — ')||'Worker request failed.');answer=extractAnswer(data);if(!answer.trim())throw Error(data.error||'Worker returned no answer text. Check Worker response format.')}const latest=chats.find(c=>c.id===chatId);if(latest){latest.messages.push({role:'assistant',text:answer.trim()});saveChats()}if(activeChatId===chatId){$('messages').querySelector('[data-typing-for="'+chatId+'"]')?.remove();appendMessage('assistant',answer.trim(),true,(activeChat()?.messages.length||1)-1);scrollBottom()}}catch(e){if(e.name==='AbortError')showToast('⏹️ Generation stopped.');else if(activeChatId===chatId){$('messages').querySelector('[data-typing-for="'+chatId+'"]')?.remove();appendMessage('assistant','Could not get an AI response: '+(e.message||'Please try again.')+'\n\nCheck that the Cloudflare Worker is deployed, accepts POST requests, and returns JSON containing a response, reply, text, or answer field.',false);scrollBottom()}}finally{activeController=null;$('stopBtn').disabled=true;resizeInput()}}
-$('chatForm').addEventListener('submit',e=>{e.preventDefault();send()});textarea.addEventListener('input',resizeInput);textarea.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing){e.preventDefault();send()}});$('historySearch').addEventListener('input',renderHistory);
-$('newChat').addEventListener('click',newChat);$('clearInput').addEventListener('click',()=>{textarea.value='';editingMessageIndex=null;resizeInput();textarea.focus()});$('stopBtn').addEventListener('click',()=>activeController?.abort());document.querySelectorAll('[data-prompt]').forEach(b=>b.addEventListener('click',()=>{textarea.value=b.dataset.prompt||'';resizeInput();send()}));$('menuBtn').addEventListener('click',()=>{$('sidebar').classList.add('open');$('overlay').classList.add('show')});$('overlay').addEventListener('click',closeSidebar);$('themeTop').addEventListener('click',toggleTheme);$('themeSide').addEventListener('click',toggleTheme);$('topicBtn').addEventListener('click',()=>{learningMode=!learningMode;$('topicBtn').textContent=learningMode?'✧ Learning mode':'✧ General mode';textarea.placeholder=learningMode?'Ask about AI, Python or robotics...':'Message Ultra Goal...';showToast(learningMode?'Learning mode enabled.':'General mode enabled.')});$('aboutBtn').addEventListener('click',()=>{closeSidebar();alert('Ultra Goal AI Chat\n\nA learning-focused interface for maths, Python, AI, robotics, and startup ideas.\n\nYour profile and chat history are stored locally in this browser. Conversations are sent to the configured Cloudflare Worker.')});$('clearHistoryBtn').addEventListener('click',()=>{if(!confirm('Clear all saved conversations from this browser? This cannot be undone.'))return;if(activeController)activeController.abort();chats=[];activeChatId=null;editingMessageIndex=null;saveChats();renderHistory();showWelcome();closeSidebar();showToast('🧹 Chat history cleared!')});$('exportBtn').addEventListener('click',()=>{const blob=new Blob([JSON.stringify(chats,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='ultra-goal-chat-history.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);showToast('📦 Chat history export started!')});
-function loadScriptOnce(src,globalName,promise){if(window[globalName])return Promise.resolve(window[globalName]);if(promise)return promise;return new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=src;s.onload=()=>window[globalName]?resolve(window[globalName]):reject(Error('Library did not load.'));s.onerror=()=>reject(Error('Could not load document reader. Check your internet connection.'));document.head.appendChild(s)})}
-async function extractFileText(file){const name=file.name.toLowerCase();if(file.size>12*1024*1024)throw Error('Please choose a file smaller than 12 MB.');if(name.endsWith('.pdf')||file.type==='application/pdf'){pdfJsPromise=loadScriptOnce('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js','pdfjsLib',pdfJsPromise);const pdfjs=await pdfJsPromise;pdfjs.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';const pdf=await pdfjs.getDocument({data:new Uint8Array(await file.arrayBuffer())}).promise,pages=[];for(let n=1;n<=pdf.numPages;n++){const p=await pdf.getPage(n),c=await p.getTextContent();pages.push(c.items.map(i=>i.str||'').join(' '))}const result=pages.join('\n\n');if(!result.trim())throw Error('No selectable text found. This may be a scanned PDF; OCR is not included.');return result}if(name.endsWith('.docx')||file.type==='application/vnd.openxmlformats-officedocument.wordprocessingml.document'){mammothPromise=loadScriptOnce('https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.8.0/mammoth.browser.min.js','mammoth',mammothPromise);return(await(await mammothPromise).extractRawText({arrayBuffer:await file.arrayBuffer()})).value||''}if(name.endsWith('.doc'))throw Error('Old .doc files are not supported. Save as .docx or PDF.');return file.text()}
-$('uploadBtn').addEventListener('click',()=>$('fileInput').click());$('fileInput').addEventListener('change',async e=>{const f=e.target.files?.[0];if(!f)return;$('uploadBtn').disabled=true;$('fileStatus').textContent='⏳ Reading '+f.name+'…';$('fileChip').classList.remove('hidden');try{const text=await extractFileText(f);if(!text.trim())throw Error('This file appears empty.');attachedFileText=text.slice(0,30000);attachedFileName=f.name;$('fileStatus').textContent='📄 '+f.name+' — text extracted'+(text.length>30000?' (first 30,000 characters)':'');const instruction=textarea.value.trim();textarea.value=(instruction?instruction+'\n\n':'')+'Please use the attached document text below to answer my question.\n\n[Document: '+f.name+']\n'+attachedFileText;resizeInput();textarea.focus();showToast('📄 Document ready! Add a question, then tap Send.')}catch(err){attachedFileText='';attachedFileName='';$('fileStatus').textContent='⚠️ '+(err.message||'Could not read file.');showToast(err.message||'Could not read file.')}finally{$('uploadBtn').disabled=false}});$('removeFileBtn').addEventListener('click',()=>{attachedFileText='';attachedFileName='';$('fileInput').value='';$('fileChip').classList.add('hidden');showToast('Attachment status removed. Remove its text from the message too if already inserted.')});
-function setupMicrophone(){const b=$('micBtn'),SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){b.addEventListener('click',()=>showToast('Voice input is not supported. Try a recent Chrome browser.'));return}recognition=new SR();recognition.lang='en-IN';recognition.continuous=false;recognition.interimResults=true;recognition.onstart=()=>{listening=true;b.classList.add('listening');b.textContent='⏹';showToast('🎙️ Listening… speak now!')};recognition.onresult=e=>{let t='';for(let i=0;i<e.results.length;i++)t+=e.results[i][0].transcript;textarea.value=t;resizeInput()};recognition.onerror=e=>showToast(e.error==='not-allowed'?'Allow microphone permission in browser settings.':'Voice input error: '+e.error);recognition.onend=()=>{listening=false;b.classList.remove('listening');b.textContent='🎙️'};b.addEventListener('click',()=>{if(listening){recognition.stop();return}try{recognition.start()}catch(e){showToast('Wait a moment and try again.')}})}
-function loadChats(){try{const saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]');chats=Array.isArray(saved)?saved.filter(c=>c&&typeof c.id==='string'&&Array.isArray(c.messages)):[]}catch(e){chats=[]}if(chats.length)showChat(chats[0].id);else{showWelcome();renderHistory()}}
-try{applyTheme(localStorage.getItem(THEME_KEY)||'light')}catch(e){applyTheme('light')}updateProfileUI();loadChats();resizeInput();setupMicrophone();window.addEventListener('pagehide',()=>{if('speechSynthesis'in window)window.speechSynthesis.cancel()});document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();newChat()}if(e.key==='Escape'){closeProfile();closeSidebar();if(listening&&recognition)recognition.stop()}});
-</script>
-</body>
-</html>
+You are Ultra Goal AI: Learn Smarter. Think Better. Achieve More.`;
