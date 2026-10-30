@@ -1,4 +1,4 @@
-    <!DOCTYPE html>
+     <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -310,6 +310,71 @@ body{background:#000!important;background-image:radial-gradient(ellipse at 50% -
 .tracker-empty{color:var(--muted);font-size:12px;padding:8px 0}.tracker-bar{height:9px;background:var(--panel2);border-radius:99px;overflow:hidden;margin-top:6px}.tracker-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--accent2),var(--accent));border-radius:99px}
 .tracker-note{font-size:11px;color:var(--muted);line-height:1.55;margin-top:10px}
 @media(max-width:700px){.tracker-panel{height:96dvh;padding:14px;border-radius:15px}.tracker-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.tracker-columns{grid-template-columns:1fr}.tracker-fields{grid-template-columns:1fr}.tracker-fields .wide{grid-column:auto}.tracker-head h2{font-size:19px}}
+
+
+/* ===== Ultra Goal premium interaction layer (additive; preserves existing features) ===== */
+:root{
+ --ug-ease:cubic-bezier(.2,.75,.25,1);
+ --ug-glow:0 12px 34px color-mix(in srgb,var(--accent) 13%,transparent);
+}
+button,.sidebutton,.newchat,.iconbtn,.suggestion,.toolbtn,.upload-btn,.send,
+.tracker-card,.tracker-stat,.premium-field,.modal,.tracker-panel,.premium-panel,
+.code-panel,.block-panel{
+ transition:transform .18s var(--ug-ease),box-shadow .2s var(--ug-ease),
+ background-color .2s ease,border-color .2s ease,filter .2s ease,opacity .2s ease;
+}
+button:not(:disabled):hover,.sidebutton:hover,.newchat:hover,.iconbtn:hover,
+.suggestion:hover,.toolbtn:hover,.upload-btn:hover{
+ transform:translateY(-2px);
+ box-shadow:var(--ug-glow);
+ border-color:color-mix(in srgb,var(--accent) 42%,var(--line));
+}
+button:not(:disabled):active,.sidebutton:active,.newchat:active,.iconbtn:active,
+.suggestion:active,.toolbtn:active,.upload-btn:active{
+ transform:translateY(0) scale(.975);
+ filter:brightness(.97);
+}
+button:disabled{transform:none!important;box-shadow:none!important}
+button{position:relative;isolation:isolate; -webkit-tap-highlight-color:transparent}
+button:focus-visible{box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 18%,transparent)}
+.logo,.welcome-logo,.mini-logo,.profilebtn{
+ box-shadow:0 5px 18px color-mix(in srgb,var(--accent) 22%,transparent);
+}
+.logo,.welcome-logo{animation:ug-float 5s ease-in-out infinite}
+.welcome h1{animation:ug-rise .55s var(--ug-ease) both}
+.welcome>p{animation:ug-rise .65s var(--ug-ease) both}
+.suggestion{animation:ug-rise .55s var(--ug-ease) both}
+.suggestion:nth-child(2){animation-delay:.05s}.suggestion:nth-child(3){animation-delay:.1s}.suggestion:nth-child(4){animation-delay:.15s}
+.topbar,.composer{backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+.history-item{transition:background .18s ease,transform .18s var(--ug-ease),border-color .18s ease}
+.history-item:hover{transform:translateX(3px)}
+.messages>*{animation:ug-message-in .24s var(--ug-ease) both}
+.modal,.tracker-panel,.premium-panel,.code-panel,.block-panel{
+ animation:ug-panel-in .24s var(--ug-ease) both;
+}
+.modal-backdrop,.tracker-backdrop,.premium-backdrop{
+ animation:ug-fade-in .18s ease both;
+}
+.tracker-card,.tracker-stat{will-change:transform}
+.tracker-card:hover{transform:translateY(-2px);box-shadow:var(--ug-glow)}
+input,textarea,select{transition:border-color .18s ease,box-shadow .18s ease,background-color .18s ease}
+input:focus,textarea:focus,select:focus{
+ border-color:var(--accent)!important;
+ box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 15%,transparent);
+}
+.send:not(:disabled){box-shadow:0 5px 18px color-mix(in srgb,var(--accent) 28%,transparent)}
+.send:not(:disabled):hover{transform:translateY(-2px) scale(1.04)}
+.toast{animation:ug-toast-in .22s var(--ug-ease) both}
+@keyframes ug-rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes ug-message-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes ug-panel-in{from{opacity:0;transform:translateY(12px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes ug-fade-in{from{opacity:0}to{opacity:1}}
+@keyframes ug-toast-in{from{opacity:0;transform:translate(-50%,10px)}to{opacity:1;transform:translate(-50%,0)}}
+@keyframes ug-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+@media(hover:none){button:not(:disabled):hover,.sidebutton:hover,.newchat:hover,.iconbtn:hover,.suggestion:hover{transform:none;box-shadow:none}}
+@media(prefers-reduced-motion:reduce){
+ *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
 </style>
 
 <style>
@@ -714,7 +779,55 @@ console.log('UG Code Lab is ready.');</textarea>
  function escapeScript(s){return JSON.stringify(s).replace(/</g,'\\u003c').replace(/>/g,'\\u003e').replace(/&/g,'\\u0026');}
  function run(){const p=project();const consoleBridge=`<script>(function(){const send=(type,args)=>parent.postMessage({ugCodeLab:true,type,args:Array.from(args||[]).map(x=>{try{return typeof x==='string'?x:JSON.stringify(x)}catch(e){return String(x)}})},'*');['log','info','warn','error'].forEach(k=>{const old=console[k];console[k]=function(){send(k,arguments);try{old.apply(console,arguments)}catch(e){}}});window.addEventListener('error',e=>send('error',[e.message+' at line '+e.lineno]));window.addEventListener('unhandledrejection',e=>send('error',[String(e.reason)]));})();<\/script>`;
   const userJs=`<script>try{(new Function(${escapeScript(p.js)}))()}catch(e){parent.postMessage({ugCodeLab:true,type:'error',args:[e.name+': '+e.message]},'*')}<\/script>`;
-  const doc='<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>'+p.css+'</style></head><body>'+p.html+consoleBridge+userJs+'</body></html>';
+  const doc='<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>'+p.css+'</style></head><body>'+p.html+consoleBridge+userJs+'
+<script>
+/* Ultra Goal premium micro-interactions. Additive only; no existing handlers are replaced. */
+(()=>{
+ 'use strict';
+ const reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+ // Give dynamically opened workspace panels and newly added chat content a subtle entrance.
+ if(!reduce && 'MutationObserver' in window){
+   const observer=new MutationObserver(records=>{
+     for(const record of records){
+       for(const node of record.addedNodes){
+         if(!(node instanceof HTMLElement)) continue;
+         if(node.matches('.modal,.tracker-panel,.premium-panel,.code-panel,.block-panel')){
+           node.style.animation='none'; void node.offsetWidth; node.style.animation='';
+         }
+         if(node.matches('.messages>*')){
+           node.style.animation='none'; void node.offsetWidth; node.style.animation='';
+         }
+       }
+     }
+   });
+   observer.observe(document.body,{childList:true,subtree:true});
+ }
+ // Fast, tiny press feedback that works for current and future buttons.
+ document.addEventListener('pointerdown',event=>{
+   const button=event.target.closest('button');
+   if(!button||button.disabled||reduce)return;
+   button.classList.remove('ug-pressed');
+   requestAnimationFrame(()=>button.classList.add('ug-pressed'));
+ },{passive:true});
+ document.addEventListener('pointerup',event=>{
+   const button=event.target.closest('button');
+   if(button) button.classList.remove('ug-pressed');
+ },{passive:true});
+ document.addEventListener('pointercancel',event=>{
+   const button=event.target.closest('button');
+   if(button) button.classList.remove('ug-pressed');
+ },{passive:true});
+ // Keyboard shortcut: focus the message box without interfering with existing shortcuts.
+ document.addEventListener('keydown',event=>{
+   if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==='j'){
+     const prompt=document.getElementById('prompt');
+     if(prompt && !event.repeat){event.preventDefault();prompt.focus();}
+   }
+ });
+})();
+</script>
+
+</body></html>';
   $('codeConsole').textContent='Running…';$('codePreview').srcdoc=doc;status('Program running in the sandbox preview.');
  }
  window.addEventListener('message',e=>{if(e.source!==$('codePreview').contentWindow||!e.data||e.data.ugCodeLab!==true)return;const line='['+e.data.type+'] '+(e.data.args||[]).join(' ');const box=$('codeConsole');box.textContent=(box.textContent==='Running…'?'':box.textContent+'\n')+line;box.scrollTop=box.scrollHeight;if(e.data.type==='error')status('Program reported an error. Check the console below the preview.');});
@@ -724,8 +837,104 @@ console.log('UG Code Lab is ready.');</textarea>
  $('codeSave').addEventListener('click',()=>{try{localStorage.setItem(STORE,JSON.stringify(project()));status('Project saved on this device.');if(typeof showToast==='function')showToast('Code project saved on this device.')}catch(e){status('Could not save project: browser storage is unavailable.')}});
  $('codeLoad').addEventListener('click',()=>{try{const p=JSON.parse(localStorage.getItem(STORE)||'null');if(!p)throw Error('No saved project found.');setProject(p);status('Saved project loaded.')}catch(e){status(e.message||'Could not load project.')}});
  $('codeReset').addEventListener('click',()=>{if(!confirm('Reset all three editor tabs to the starter example?'))return;setProject(defaults);$('codeConsole').textContent='Console output will appear here.';status('Starter example restored.');});
- $('codeDownload').addEventListener('click',()=>{const p=project();const file='<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>'+p.css+'</style></head><body>'+p.html+'<script>'+p.js.split('<'+'/script').join('<\\/'+'script')+'</'+'script></body></html>';const blob=new Blob([file],{type:'text/html'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='ultra-goal-program.html';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);status('Standalone HTML program downloaded.');});
+ $('codeDownload').addEventListener('click',()=>{const p=project();const file='<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>'+p.css+'</style></head><body>'+p.html+'<script>'+p.js.split('<'+'/script').join('<\\/'+'script')+'</'+'script>
+<script>
+/* Ultra Goal premium micro-interactions. Additive only; no existing handlers are replaced. */
+(()=>{
+ 'use strict';
+ const reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+ // Give dynamically opened workspace panels and newly added chat content a subtle entrance.
+ if(!reduce && 'MutationObserver' in window){
+   const observer=new MutationObserver(records=>{
+     for(const record of records){
+       for(const node of record.addedNodes){
+         if(!(node instanceof HTMLElement)) continue;
+         if(node.matches('.modal,.tracker-panel,.premium-panel,.code-panel,.block-panel')){
+           node.style.animation='none'; void node.offsetWidth; node.style.animation='';
+         }
+         if(node.matches('.messages>*')){
+           node.style.animation='none'; void node.offsetWidth; node.style.animation='';
+         }
+       }
+     }
+   });
+   observer.observe(document.body,{childList:true,subtree:true});
+ }
+ // Fast, tiny press feedback that works for current and future buttons.
+ document.addEventListener('pointerdown',event=>{
+   const button=event.target.closest('button');
+   if(!button||button.disabled||reduce)return;
+   button.classList.remove('ug-pressed');
+   requestAnimationFrame(()=>button.classList.add('ug-pressed'));
+ },{passive:true});
+ document.addEventListener('pointerup',event=>{
+   const button=event.target.closest('button');
+   if(button) button.classList.remove('ug-pressed');
+ },{passive:true});
+ document.addEventListener('pointercancel',event=>{
+   const button=event.target.closest('button');
+   if(button) button.classList.remove('ug-pressed');
+ },{passive:true});
+ // Keyboard shortcut: focus the message box without interfering with existing shortcuts.
+ document.addEventListener('keydown',event=>{
+   if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==='j'){
+     const prompt=document.getElementById('prompt');
+     if(prompt && !event.repeat){event.preventDefault();prompt.focus();}
+   }
+ });
+})();
+</script>
+
+</body></html>';const blob=new Blob([file],{type:'text/html'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='ultra-goal-program.html';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);status('Standalone HTML program downloaded.');});
  document.addEventListener('keydown',e=>{if(lab.classList.contains('hidden'))return;if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();run()}if(e.key==='Escape')close();});
+})();
+</script>
+
+
+<script>
+/* Ultra Goal premium micro-interactions. Additive only; no existing handlers are replaced. */
+(()=>{
+ 'use strict';
+ const reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+ // Give dynamically opened workspace panels and newly added chat content a subtle entrance.
+ if(!reduce && 'MutationObserver' in window){
+   const observer=new MutationObserver(records=>{
+     for(const record of records){
+       for(const node of record.addedNodes){
+         if(!(node instanceof HTMLElement)) continue;
+         if(node.matches('.modal,.tracker-panel,.premium-panel,.code-panel,.block-panel')){
+           node.style.animation='none'; void node.offsetWidth; node.style.animation='';
+         }
+         if(node.matches('.messages>*')){
+           node.style.animation='none'; void node.offsetWidth; node.style.animation='';
+         }
+       }
+     }
+   });
+   observer.observe(document.body,{childList:true,subtree:true});
+ }
+ // Fast, tiny press feedback that works for current and future buttons.
+ document.addEventListener('pointerdown',event=>{
+   const button=event.target.closest('button');
+   if(!button||button.disabled||reduce)return;
+   button.classList.remove('ug-pressed');
+   requestAnimationFrame(()=>button.classList.add('ug-pressed'));
+ },{passive:true});
+ document.addEventListener('pointerup',event=>{
+   const button=event.target.closest('button');
+   if(button) button.classList.remove('ug-pressed');
+ },{passive:true});
+ document.addEventListener('pointercancel',event=>{
+   const button=event.target.closest('button');
+   if(button) button.classList.remove('ug-pressed');
+ },{passive:true});
+ // Keyboard shortcut: focus the message box without interfering with existing shortcuts.
+ document.addEventListener('keydown',event=>{
+   if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==='j'){
+     const prompt=document.getElementById('prompt');
+     if(prompt && !event.repeat){event.preventDefault();prompt.focus();}
+   }
+ });
 })();
 </script>
 
