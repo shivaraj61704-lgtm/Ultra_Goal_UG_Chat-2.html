@@ -1,4 +1,4 @@
-   <!DOCTYPE html>
+    <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -263,6 +263,19 @@ body{background:#000!important;background-image:radial-gradient(ellipse at 50% -
 :root[data-theme="light"] .composer textarea {color:#171717!important}
 :root[data-theme="light"] .thinking-card {border-color:#e5e5e5!important}
 
+
+/* Optional PictoBlox-inspired block coding workspace. Existing chat styles/features are untouched. */
+.blocks-overlay{position:fixed;inset:0;z-index:90;display:none;background:var(--bg);color:var(--text);flex-direction:column}
+.blocks-overlay.open{display:flex}.blocks-head{height:58px;flex:0 0 58px;display:flex;align-items:center;gap:10px;padding:0 15px;border-bottom:1px solid var(--line);background:var(--panel)}
+.blocks-head strong{font-size:15px}.blocks-head .spacer{flex:1}.blocks-head button,.blocks-action{border:1px solid var(--line);background:var(--bg);color:var(--text);border-radius:9px;padding:8px 11px;font-size:12px}
+.blocks-layout{display:grid;grid-template-columns:190px minmax(260px,1fr) 280px;min-height:0;flex:1}
+.blocks-toolbox{border-right:1px solid var(--line);padding:13px;overflow:auto;background:var(--panel)}.blocks-toolbox h3,.blocks-workspace h3,.blocks-stage h3{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:4px 0 12px}
+.blocks-category{font-size:12px;font-weight:800;color:var(--muted);margin:15px 0 7px}.code-block{display:block;width:100%;text-align:left;border:0;border-radius:9px;padding:10px;margin:7px 0;color:#fff;font-size:12px;font-weight:700;cursor:grab;box-shadow:0 2px 0 #0003}.code-block:active{cursor:grabbing}.cat-event{background:#d99a16}.cat-motion{background:#3978d5}.cat-look{background:#8b55c7}.cat-control{background:#d36a27}.cat-logic{background:#4c9c55}
+.blocks-workspace{min-width:0;display:flex;flex-direction:column;padding:14px;overflow:auto;background-color:var(--bg);background-image:radial-gradient(var(--line) 1px,transparent 1px);background-size:18px 18px}
+.blocks-workspace-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px}.blocks-workspace-top h3{margin:0 auto 0 0}.blocks-dropzone{flex:1;min-height:320px;border:1px dashed color-mix(in srgb,var(--accent) 55%,var(--line));border-radius:13px;padding:15px;background:color-mix(in srgb,var(--bg) 90%,var(--accent) 4%)}.blocks-dropzone.dragover{outline:3px solid color-mix(in srgb,var(--accent) 30%,transparent)}.blocks-empty{color:var(--muted);font-size:13px;text-align:center;padding:45px 12px}.placed-block{display:flex;align-items:center;gap:7px;width:max-content;max-width:100%;margin:8px 0;padding:9px 11px;border-radius:9px;color:#fff;font-size:12px;font-weight:700;box-shadow:0 3px 0 #0003}.placed-block input{width:75px;max-width:30vw;border:0;border-radius:5px;padding:4px;color:#202431;background:#fff}.placed-block button{border:0;background:#0002;color:#fff;border-radius:5px;padding:3px 6px}.blocks-stage{border-left:1px solid var(--line);padding:13px;overflow:auto;background:var(--panel)}.stage-canvas{height:210px;display:grid;place-items:center;border:1px solid var(--line);border-radius:12px;background:linear-gradient(145deg,#eaf5ff,#fff);color:#18243a;position:relative;overflow:hidden}.stage-sprite{font-size:54px;transition:transform .25s}.stage-caption{font-size:11px;color:var(--muted);line-height:1.5;margin:9px 0 14px}.blocks-output{white-space:pre-wrap;overflow-wrap:anywhere;min-height:90px;max-height:210px;overflow:auto;border:1px solid var(--line);border-radius:10px;background:var(--bg);padding:10px;font:11px/1.5 ui-monospace,monospace;color:var(--text)}
+@media(max-width:760px){.blocks-layout{grid-template-columns:125px minmax(180px,1fr);grid-template-rows:minmax(250px,1fr) auto}.blocks-toolbox{grid-row:1/3;padding:9px}.blocks-stage{grid-column:2;border-left:0;border-top:1px solid var(--line);display:grid;grid-template-columns:minmax(100px,1fr) minmax(100px,1fr);gap:8px;align-items:start}.blocks-stage h3{grid-column:1/-1;margin-bottom:0}.stage-canvas{height:120px}.blocks-output{max-height:120px}.blocks-head{padding:0 8px}.blocks-head strong{font-size:13px}.blocks-head button{padding:7px 8px}.blocks-workspace{padding:9px}.blocks-workspace-top h3{width:100%}}
+@media(max-width:420px){.blocks-layout{grid-template-columns:108px minmax(150px,1fr)}.code-block{font-size:10px;padding:8px 6px}.blocks-stage{grid-template-columns:1fr}.blocks-stage h3{grid-column:1}.stage-canvas{height:100px}}
+
 </style>
 </head>
 <body>
@@ -271,7 +284,7 @@ body{background:#000!important;background-image:radial-gradient(ellipse at 50% -
 <button class="newchat" id="newChat" type="button">＋ New chat <span style="margin-left:auto;color:var(--muted)">Ctrl K</span></button>
 <button class="sidebutton" id="loginSide" type="button">👤 <span id="profileLabel">Sign in / profile</span></button><div class="history-label">Recent chats</div><input class="history-search" id="historySearch" type="search" placeholder="Search conversations…" aria-label="Search conversations"><div class="history" id="history"></div>
 <div class="sidebottom"><button class="sidebutton" id="exportBtn" type="button">⇩ Export conversations</button><button class="sidebutton" id="clearHistoryBtn" type="button">⌫ Clear chat history</button><button class="sidebutton" id="aboutBtn" type="button">✦ About Ultra Goal</button><button class="sidebutton" id="themeSide" type="button">🌙 Dark mode</button><div class="sidefoot">UG AI Chat<br>Dream big. Build smart.</div></div></aside>
-<div class="mobile-overlay" id="overlay"></div><main class="main"><header class="topbar"><div class="top-left"><button class="menu" id="menuBtn" type="button" aria-label="Open menu">☰</button><div><span class="modelname">UG Chat</span><span class="modeltag">AI · Smart mode</span></div></div><div class="top-actions"><button class="iconbtn" id="themeTop" type="button" title="Toggle theme" aria-label="Toggle theme">☾</button><button class="profilebtn" id="profileBtn" type="button" aria-label="Open profile">UG</button></div></header>
+<div class="mobile-overlay" id="overlay"></div><main class="main"><header class="topbar"><div class="top-left"><button class="menu" id="menuBtn" type="button" aria-label="Open menu">☰</button><div><span class="modelname">UG Chat</span><span class="modeltag">AI · Smart mode</span></div></div><div class="top-actions"><button class="iconbtn blocks-open-btn" id="openBlocks" type="button" title="Open coding workspace" aria-label="Open coding workspace">🧩 Blocks</button><button class="iconbtn" id="themeTop" type="button" title="Toggle theme" aria-label="Toggle theme">☾</button><button class="profilebtn" id="profileBtn" type="button" aria-label="Open profile">UG</button></div></header>
 <section class="chatarea" id="chatarea"><div class="welcome" id="welcome"><div class="welcome-logo">UG</div><h1>What can I help you <span>build?</span></h1><p>Your space to learn, create, and explore. Ask in easy Kannada + English, build with Python, or discover AI and robotics. 😊</p><div class="suggestions"><button class="suggestion" data-prompt="Teach me Python basics with a simple example in easy Kannada and English." type="button"><b>💻 Learn Python</b><span>Learn coding step by step</span></button><button class="suggestion" data-prompt="Explain artificial intelligence in easy Kannada and English." type="button"><b>🧠 Explore AI</b><span>Understand AI simply</span></button><button class="suggestion" data-prompt="Give me a beginner robotics project I can simulate for free." type="button"><b>🤖 Start robotics</b><span>Explore a virtual robot</span></button><button class="suggestion" data-prompt="Help me plan a useful AI startup with a zero budget." type="button"><b>🚀 Build a startup</b><span>Plan your first project</span></button></div></div><div class="messages hidden" id="messages" aria-live="polite"></div></section>
 <div class="composer-wrap"><form class="composer" id="chatForm"><div class="composer-input-row"><textarea id="prompt" rows="1" maxlength="40000" placeholder="Message Ultra Goal..." aria-label="Message Ultra Goal"></textarea><button class="composer-mic" id="micBtn" type="button" title="Voice input" aria-label="Start voice input">🎙️</button></div><div id="fileChip" class="file-chip hidden"><span id="fileStatus">📄 File ready</span><button type="button" id="removeFileBtn" aria-label="Remove attachment">✕</button></div><input id="fileInput" class="file-input-hidden" type="file" accept=".pdf,.txt,.md,.csv,.json,.html,.docx,.doc" aria-label="Upload a document"><div class="composer-bottom"><div class="toolrow"><button type="button" class="upload-btn" id="uploadBtn">📎 Attach</button><button type="button" class="toolbtn" id="topicBtn">✧ Learning mode</button><button type="button" class="toolbtn" id="clearInput">Clear</button><button type="button" class="toolbtn" id="stopBtn" disabled>■ Stop</button></div><button class="send" id="sendBtn" type="submit" aria-label="Send" disabled>↑</button></div></form><div class="disclaimer">AI can make mistakes. Avoid entering passwords, private information, or sensitive data.</div></div></main></div>
 <div class="modal-backdrop hidden" id="modalBackdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><div class="modal"><h2 id="modalTitle">Welcome to Ultra Goal 👋</h2><p>Set a local profile to personalize this browser. This demo does not create a secure account.</p><form id="profileForm"><label for="profileName">Display name</label><input id="profileName" maxlength="60" autocomplete="nickname" placeholder="What should we call you?"><label for="profileEmail">Email (optional, saved only on this device)</label><input id="profileEmail" maxlength="120" type="email" autocomplete="email" placeholder="you@example.com"><div class="modal-actions"><button class="secondary" type="button" id="modalCancel">Cancel</button><button class="primary" type="submit" id="modalSubmit">Save profile</button></div></form></div></div><div class="toast hidden" id="toast" role="status"></div>
@@ -323,54 +336,45 @@ $('uploadBtn').addEventListener('click',()=>$('fileInput').click());$('fileInput
 function setupMicrophone(){const b=$('micBtn'),SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){b.addEventListener('click',()=>showToast('Voice input is not supported. Try a recent Chrome browser.'));return}recognition=new SR();recognition.lang='en-IN';recognition.continuous=false;recognition.interimResults=true;recognition.onstart=()=>{listening=true;b.classList.add('listening');b.textContent='⏹';showToast('🎙️ Listening… speak now!')};recognition.onresult=e=>{let t='';for(let i=0;i<e.results.length;i++)t+=e.results[i][0].transcript;textarea.value=t;resizeInput()};recognition.onerror=e=>showToast(e.error==='not-allowed'?'Allow microphone permission in browser settings.':'Voice input error: '+e.error);recognition.onend=()=>{listening=false;b.classList.remove('listening');b.textContent='🎙️'};b.addEventListener('click',()=>{if(listening){recognition.stop();return}try{recognition.start()}catch(e){showToast('Wait a moment and try again.')}})}
 function loadChats(){try{const saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]');chats=Array.isArray(saved)?saved.filter(c=>c&&typeof c.id==='string'&&Array.isArray(c.messages)):[]}catch(e){chats=[]}if(chats.length)showChat(chats[0].id);else{showWelcome();renderHistory()}}
 try{applyTheme(localStorage.getItem(THEME_KEY)||'light')}catch(e){applyTheme('light')}updateProfileUI();loadChats();resizeInput();setupMicrophone();window.addEventListener('pagehide',()=>{if('speechSynthesis'in window)window.speechSynthesis.cancel()});document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();newChat()}if(e.key==='Escape'){closeProfile();closeSidebar();if(listening&&recognition)recognition.stop()}});
+
+/* PictoBlox-inspired visual blocks: self-contained and isolated from the AI chat flow. */
+(()=>{
+ const overlay=$('blocksOverlay'),zone=$('blocksDropzone'),empty=$('blocksEmpty'),output=$('blocksOutput'),sprite=$('stageSprite'),caption=$('stageCaption');
+ if(!overlay||!zone)return;
+ const templates={start:{label:'▶ When Run clicked',cat:'event',fields:[]},move:{label:'Move',cat:'motion',fields:[['steps','10','steps']]},turn:{label:'Turn ↻',cat:'motion',fields:[['degrees','15','degrees']]},say:{label:'Say',cat:'look',fields:[['text','Hello!','']]},size:{label:'Change size by',cat:'look',fields:[['amount','10','']]},wait:{label:'Wait',cat:'control',fields:[['seconds','1','sec']]},repeat:{label:'Repeat',cat:'control',fields:[['count','3','times']]},note:{label:'Note',cat:'logic',fields:[['text','My idea','']]}};
+ let blocks=[],running=false,runToken=0;
+ const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ function add(kind){const t=templates[kind];if(!t)return;blocks.push({id:Date.now()+Math.random(),kind,values:t.fields.map(f=>f[1])});render()}
+ function render(){zone.querySelectorAll('.placed-block').forEach(n=>n.remove());empty.style.display=blocks.length?'none':'block';blocks.forEach((b,i)=>{const t=templates[b.kind],el=document.createElement('div');el.className='placed-block cat-'+t.cat;el.dataset.index=i;let html='<span>'+esc(t.label)+'</span>';t.fields.forEach((f,j)=>html+='<input data-field="'+j+'" aria-label="'+esc(f[0])+'" value="'+esc(b.values[j])+'"><span>'+esc(f[2])+'</span>');html+='<button type="button" data-remove="'+i+'" aria-label="Remove block">×</button>';el.innerHTML=html;zone.appendChild(el)})}
+ function open(){overlay.classList.add('open');$('openBlocks').setAttribute('aria-expanded','true')}
+ function close(){overlay.classList.remove('open');$('openBlocks').setAttribute('aria-expanded','false')}
+ $('openBlocks').addEventListener('click',open);$('closeBlocks').addEventListener('click',close);
+ document.querySelectorAll('.code-block').forEach(btn=>{btn.addEventListener('click',()=>add(btn.dataset.kind));btn.addEventListener('dragstart',e=>{e.dataTransfer.setData('text/plain',btn.dataset.kind);e.dataTransfer.effectAllowed='copy'})});
+ zone.addEventListener('dragover',e=>{e.preventDefault();zone.classList.add('dragover')});zone.addEventListener('dragleave',()=>zone.classList.remove('dragover'));zone.addEventListener('drop',e=>{e.preventDefault();zone.classList.remove('dragover');add(e.dataTransfer.getData('text/plain'))});
+ zone.addEventListener('input',e=>{const el=e.target.closest('.placed-block'),field=e.target.dataset.field;if(el&&field!==undefined)blocks[Number(el.dataset.index)].values[Number(field)]=e.target.value});
+ zone.addEventListener('click',e=>{const i=e.target.dataset.remove;if(i!==undefined){blocks.splice(Number(i),1);render()}});
+ $('blocksClear').addEventListener('click',()=>{runToken++;running=false;blocks=[];render();sprite.style.transform='';sprite.textContent='🐱';caption.textContent='Workspace cleared.';output.textContent='Ready. Add blocks and press Run.'});
+ $('stopBlocks').addEventListener('click',()=>{runToken++;running=false;output.textContent+='\nStopped.'});
+ $('runBlocks').addEventListener('click',async()=>{if(running)return;running=true;const token=++runToken;let x=0,angle=0,size=1,lines=[];sprite.textContent='🐱';sprite.style.transform='translate(0,0) rotate(0deg) scale(1)';caption.textContent='Running your blocks…';output.textContent='Running…';const pause=ms=>new Promise(r=>setTimeout(r,ms));for(const b of blocks){if(token!==runToken)break;const v=b.values;switch(b.kind){case'start':lines.push('▶ Program started');break;case'move':x+=Math.max(-200,Math.min(200,Number(v[0])||0));sprite.style.transform=`translate(${x}px,0) rotate(${angle}deg) scale(${size})`;lines.push('Move '+v[0]+' steps');break;case'turn':angle+=(Number(v[0])||0);sprite.style.transform=`translate(${x}px,0) rotate(${angle}deg) scale(${size})`;lines.push('Turn '+v[0]+' degrees');break;case'say':caption.textContent=String(v[0]||'');lines.push('Say: '+v[0]);break;case'size':size=Math.max(.4,Math.min(2.5,size+(Number(v[0])||0)/100));sprite.style.transform=`translate(${x}px,0) rotate(${angle}deg) scale(${size})`;lines.push('Change size by '+v[0]);break;case'wait':lines.push('Wait '+v[0]+' sec');output.textContent=lines.join('\n');await pause(Math.max(0,Math.min(3,Number(v[0])||0))*1000);break;case'repeat':lines.push('Repeat '+v[0]+' times (preview)');break;case'note':lines.push('Note: '+v[0]);break;}output.textContent=lines.join('\n')||'No blocks to run.';await pause(120)}running=false;if(token===runToken){caption.textContent='Program finished. Add or change blocks and run again.';if(!blocks.length)output.textContent='No blocks to run.'}});
+ render();
+})();
+
 </script>
+
+<div class="blocks-overlay" id="blocksOverlay" aria-label="PictoBlox-style coding workspace">
+ <div class="blocks-head"><strong>🧩 UG Blocks Studio</strong><span class="modeltag">Block coding</span><span class="spacer"></span><button type="button" id="blocksClear">Clear blocks</button><button type="button" id="closeBlocks">✕ Back to Chat</button></div>
+ <div class="blocks-layout">
+  <aside class="blocks-toolbox"><h3>Block palette</h3>
+   <div class="blocks-category">Events</div><button class="code-block cat-event" draggable="true" data-kind="start">▶ When Run clicked</button>
+   <div class="blocks-category">Motion</div><button class="code-block cat-motion" draggable="true" data-kind="move">Move <input aria-label="Move steps" value="10" readonly> steps</button><button class="code-block cat-motion" draggable="true" data-kind="turn">Turn ↻ <input aria-label="Turn degrees" value="15" readonly> degrees</button>
+   <div class="blocks-category">Looks</div><button class="code-block cat-look" draggable="true" data-kind="say">Say <input aria-label="Say text" value="Hello!" readonly></button><button class="code-block cat-look" draggable="true" data-kind="size">Change size by <input aria-label="Size amount" value="10" readonly></button>
+   <div class="blocks-category">Control</div><button class="code-block cat-control" draggable="true" data-kind="wait">Wait <input aria-label="Wait seconds" value="1" readonly> sec</button><button class="code-block cat-control" draggable="true" data-kind="repeat">Repeat <input aria-label="Repeat count" value="3" readonly> times</button>
+   <div class="blocks-category">Logic</div><button class="code-block cat-logic" draggable="true" data-kind="note">Add a note</button>
+  </aside>
+  <section class="blocks-workspace"><div class="blocks-workspace-top"><h3>Code workspace</h3><button class="blocks-action" id="runBlocks">▶ Run</button><button class="blocks-action" id="stopBlocks">■ Stop</button></div><div class="blocks-dropzone" id="blocksDropzone"><div class="blocks-empty" id="blocksEmpty">Drag blocks here, or click a block in the palette to add it.</div></div></section>
+  <aside class="blocks-stage"><h3>Stage preview</h3><div><div class="stage-canvas"><div class="stage-sprite" id="stageSprite">🐱</div></div><div class="stage-caption" id="stageCaption">Your program output appears here. This is a simple learning sandbox.</div></div><div><h3>Program output</h3><pre class="blocks-output" id="blocksOutput">Ready. Add blocks and press Run.</pre></div></aside>
+ </div>
+</div>
+
 </body>
 </html>
-
-const SYSTEM_PROMPT = `You are Ultra Goal AI (UG), an advanced AI educational assistant.
-
-YOUR TEACHING STYLE:
-Give clear, detailed, structured and student-friendly explanations.
-For educational questions, follow this format whenever appropriate:
-
-1. Introduction
-2. Definition
-3. Step-by-step explanation
-4. Mathematical representation with LaTeX
-5. Real-world examples
-6. Common misconceptions and their explanations
-7. Summary table
-8. Kannada summary using Kannada + English mixed language
-9. Important exam points for 2nd PUC, JEE Main and KCET when relevant.
-
-EXPLANATION RULES:
-- Explain concepts deeply but use simple English.
-- Explain every important formula and its symbols.
-- Use headings, numbered lists and bullet points.
-- Give practical examples wherever useful.
-- Explain why and how, not just what.
-- Include diagrams or describe them when useful.
-- For numerical problems, show given data, formula, substitution, calculation and final answer.
-- Highlight important definitions and formulas.
-- Do not repeat information unnecessarily.
-- Do not force every section into simple questions.
-- Adjust answer length to the complexity of the question.
-- If the user asks for a short answer, answer briefly.
-- If the user asks for Kannada, explain line by line in Kannada.
-- Maintain scientific and mathematical accuracy.
-
-EXAM PREPARATION:
-When relevant, include:
-- 2nd PUC board examination points.
-- JEE Main concepts and formulas.
-- KCET important points.
-- Common mistakes in MCQs.
-
-CURRENT-DATE RULES:
-- Treat the separately supplied current date and time as authoritative.
-- For current events, recent news, current office holders, exam dates, admissions, results, prices, rules and software versions, use live search results when available.
-- Never present outdated training knowledge as verified current information.
-- If live search fails or returns no useful results, clearly state that the latest information could not be verified.
-- Never invent sources, citations or URLs.
-
-You are Ultra Goal AI: Learn Smarter. Think Better. Achieve More.`;
