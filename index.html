@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+  <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -40,7 +40,7 @@ body{background:radial-gradient(ellipse at 70% -20%,color-mix(in srgb,var(--acce
 .feedback{font-size:11px!important}
 @media(hover:none){.history-actions{opacity:1}}
 
-@media(max-width:760px){.sidebar{position:fixed;inset:0 auto 0 0;width:280px;transform:translateX(-105%);box-shadow:10px 0 40px #0002}.sidebar.open{transform:translateX(0)}.mobile-overlay.show{display:block;position:fixed;z-index:29;inset:0;background:#11182766}.menu{display:block}.topbar{min-height:57px;padding:0 13px}.chatarea{padding:15px 13px}.welcome{padding-top:8px}.welcome-logo{width:54px;height:54px}.suggestions{grid-template-columns:1fr;gap:8px;margin-top:23px}.suggestion{min-height:68px;padding:12px 14px}.composer-wrap{padding:8px 10px 12px}.composer{width:100%;border-radius:22px;padding:10px 10px 8px}.composer textarea{font-size:16px;max-height:130px}.composer-bottom{gap:4px}.toolrow{min-width:0;gap:2px}.upload-btn,.toolbtn{padding:7px 5px;font-size:11px}.send{height:36px;width:36px}.disclaimer{font-size:10px}.messages{gap:20px}.msgbody{font-size:14px}.userbubble{max-width:90%}.top-actions{gap:5px}}@media(max-width:400px){.topbar{padding:0 8px;gap:5px}.top-left{gap:5px}.modeltag{display:none}.top-actions{gap:4px}.iconbtn{height:34px;min-width:34px;padding:0 5px}.profilebtn{height:34px;width:34px}.composer-bottom{align-items:flex-end}.toolbtn{font-size:11px}}@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+@media(max-width:760px){.sidebar{position:fixed;inset:0 auto 0 0;width:280px;transform:translateX(-105%);box-shadow:10px 0 40px #0002}.sidebar.open{transform:translateX(0)}.mobile-overlay.show{display:block;position:fixed;z-index:29;inset:0;background:#11182766}.menu{display:block}.topbar{min-height:57px;padding:0 13px}.chatarea{padding:15px 13px}.welcome{padding-top:8px}.welcome-logo{width:54px;height:54px}.suggestions{grid-template-columns:1fr;gap:8px;margin-top:23px}.suggestion{min-height:68px;padding:12px 14px}.composer-wrap{padding:8px 10px 12px}.composer{width:100%;border-radius:22px;padding:10px 10px 8px}.composer textarea{font-size:16px;max-height:130px}.composer-bottom{gap:4px}.toolrow{min-width:0;gap:2px}.upload-btn,.toolbtn{padding:7px 5px;font-size:11px}.send{height:36px;width:36px}.disclaimer{font-size:10px}.messages{gap:20px}.msgbody{font-size:14px}.userbubble{max-width:90%}.top-actions{gap:5px}}@media(max-width:400px){.topbar{padding:0 8px;gap:5px}.top-left{gap:5px}.modeltag{display:none}.top-actions{gap:4px}.iconbtn{height:34px;min-width:34px;padding:0 5px}.profilebtn{height:34px;width:34px}.composer-bottom{align-items:flex-end}.toolbtn{font-size:11px}}@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important}}
 
 /* Compact sidebar utility buttons: Export, Clear History, About, and Light/Dark mode */
 .sidebottom .sidebutton {
@@ -51,28 +51,6 @@ body{background:radial-gradient(ellipse at 70% -20%,color-mix(in srgb,var(--acce
   font-size: 10px;
   line-height: 1.2;
 }
-/* ULTRA GOAL: FULL BLACK BACKGROUND */
-:root, :root[data-theme="dark"]{
-  color-scheme: dark;
-  --bg:#000000;
-  --panel:#000000;
-  --panel2:#101010;
-  --text:#f5f5f5;
-  --muted:#a3a3a3;
-  --line:#252525;
-  --user:#111111;
-  --shadow:0 10px 35px #000000;
-}
-html,body,.app,.sidebar,.main,.chatarea,.topbar,.composer-wrap,.composer,.modal{
-  background:#000000 !important;
-}
-body{background:#000000 !important;color:#f5f5f5}
-.composer-wrap{background:#000000 !important}
-.newchat,.sidebutton,.iconbtn,.suggestion,.modal input{background:#000000;color:#f5f5f5}
-.history-item.active,.history-item:hover,.newchat{background:#101010}
-.userbubble{background:#111111}
-.message-content pre{background:#080808}
-
 /* ULTRA GOAL PREMIUM UI UPGRADE — black + neon glow */
 :root{--accent:#8b5cf6;--line:#242038;--panel2:#11101b;--user:#100d1c;--shadow:0 12px 40px #6d28d922}
 body{background:#000!important;background-image:radial-gradient(ellipse at 50% -20%,#21113d 0,transparent 55%)!important}
@@ -126,7 +104,7 @@ body{background:#000!important;background-image:radial-gradient(ellipse at 50% -
 :root[data-theme="dark"] .modal {
   background-color:#000 !important; color:#f5f5f5;
 }
-:root[data-theme="dark"] body {background-image:radial-gradient(ellipse at 50% -20%,#21113d 0,transparent 55%) !important}
+:root[data-theme="dark"] body {background:#000!important;background-image:none!important}
 :root[data-theme="dark"] .sidebar {background:rgba(0,0,0,.97)!important}
 :root[data-theme="dark"] .topbar {background:rgba(0,0,0,.94)!important}
 :root[data-theme="dark"] .composer {background:#000!important}
@@ -204,7 +182,86 @@ body{background:#000!important;background-image:radial-gradient(ellipse at 50% -
 @keyframes thinkSpin{to{transform:rotate(360deg)}}@keyframes thinkPulse{0%,100%{transform:scale(.8);opacity:.65}50%{transform:scale(1.15);opacity:1}}
 @keyframes thinkDots{0%,70%,100%{transform:translateY(0);opacity:.35}35%{transform:translateY(-4px);opacity:1}}
 @keyframes thinkBars{from{height:4px}to{height:15px}}@keyframes thinkEnter{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
-@media(prefers-reduced-motion:reduce){.thinking-card,.thinking-orb,.thinking-orb:after,.thinking-dot,.thinking-equalizer i{animation:none!important}}
+/* Thinking animation intentionally remains active in both themes. */
+
+
+/* FINAL THEME ENFORCEMENT: pure black dark mode / clean white light mode */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg:#000; --panel:#000; --panel2:#101010; --text:#f5f5f5;
+  --muted:#a3a3a3; --line:#282828; --user:#101010;
+  --accent:#a78bfa; --accent2:#60a5fa; --shadow:0 12px 40px #000;
+}
+:root[data-theme="dark"] body,
+:root[data-theme="dark"] .app,
+:root[data-theme="dark"] .sidebar,
+:root[data-theme="dark"] .main,
+:root[data-theme="dark"] .chatarea,
+:root[data-theme="dark"] .topbar,
+:root[data-theme="dark"] .composer-wrap,
+:root[data-theme="dark"] .composer,
+:root[data-theme="dark"] .modal,
+:root[data-theme="dark"] .thinking-card {
+  background:#000!important;
+  color:#f5f5f5!important;
+}
+:root[data-theme="dark"] body {background-image:none!important}
+:root[data-theme="dark"] .sidebar,
+:root[data-theme="dark"] .topbar {border-color:#282828!important}
+:root[data-theme="dark"] .newchat,
+:root[data-theme="dark"] .sidebutton,
+:root[data-theme="dark"] .iconbtn,
+:root[data-theme="dark"] .suggestion,
+:root[data-theme="dark"] .history-search,
+:root[data-theme="dark"] .modal input {
+  background:#000!important;color:#f5f5f5!important;border-color:#282828!important;
+}
+:root[data-theme="dark"] .suggestion {background:#050505!important}
+:root[data-theme="dark"] .suggestion b {color:#f5f5f5!important}
+:root[data-theme="dark"] .suggestion span {color:#aaa!important}
+:root[data-theme="dark"] .history-item.active,
+:root[data-theme="dark"] .history-item:hover {background:#101010!important}
+:root[data-theme="dark"] .userbubble {background:#101010!important;color:#f5f5f5!important}
+:root[data-theme="dark"] .composer {background:#000!important}
+:root[data-theme="dark"] .composer textarea {color:#f5f5f5!important}
+:root[data-theme="dark"] .message-content pre {background:#080808!important}
+:root[data-theme="dark"] .thinking-card {border-color:#282828!important}
+:root[data-theme="light"] {
+  color-scheme:light;
+  --bg:#fff; --panel:#fff; --panel2:#f5f5f5; --text:#171717;
+  --muted:#666; --line:#e5e5e5; --user:#f5f5f5;
+  --accent:#6d28d9; --accent2:#2563eb; --shadow:0 10px 35px #1111;
+}
+:root[data-theme="light"] body,
+:root[data-theme="light"] .app,
+:root[data-theme="light"] .sidebar,
+:root[data-theme="light"] .main,
+:root[data-theme="light"] .chatarea,
+:root[data-theme="light"] .topbar,
+:root[data-theme="light"] .composer-wrap,
+:root[data-theme="light"] .composer,
+:root[data-theme="light"] .modal,
+:root[data-theme="light"] .thinking-card {
+  background:#fff!important;color:#171717!important;
+}
+:root[data-theme="light"] body {background-image:none!important}
+:root[data-theme="light"] .sidebar,
+:root[data-theme="light"] .topbar {border-color:#e5e5e5!important}
+:root[data-theme="light"] .newchat,
+:root[data-theme="light"] .sidebutton,
+:root[data-theme="light"] .iconbtn,
+:root[data-theme="light"] .suggestion,
+:root[data-theme="light"] .history-search,
+:root[data-theme="light"] .modal input {
+  background:#fff!important;color:#171717!important;border-color:#e5e5e5!important;
+}
+:root[data-theme="light"] .suggestion b {color:#171717!important}
+:root[data-theme="light"] .suggestion span {color:#666!important}
+:root[data-theme="light"] .history-item.active,
+:root[data-theme="light"] .history-item:hover {background:#f5f5f5!important}
+:root[data-theme="light"] .userbubble {background:#f5f5f5!important;color:#171717!important;border-color:#e5e5e5!important}
+:root[data-theme="light"] .composer textarea {color:#171717!important}
+:root[data-theme="light"] .thinking-card {border-color:#e5e5e5!important}
 
 </style>
 </head>
@@ -228,7 +285,7 @@ let chats=[],activeChatId=null,learningMode=true,editingMessageIndex=null,active
 function activeChat(){return chats.find(c=>c.id===activeChatId)||null}
 function saveChats(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(chats.slice(0,50)))}catch(e){showToast('Could not save history in this browser.')}}
 function showToast(message){const t=$('toast');t.textContent=message;t.classList.remove('hidden');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.add('hidden'),2800)}
-function applyTheme(theme){const v=theme==='dark'?'dark':'light';document.documentElement.dataset.theme=v;$('themeTop').textContent=v==='dark'?'☀':'☾';$('themeSide').textContent=v==='dark'?'☀ Light mode':'🌙 Dark mode';const m=document.querySelector('meta[name="theme-color"]');if(m)m.content=v==='dark'?'#111318':'#ffffff';try{localStorage.setItem(THEME_KEY,v)}catch(e){}}
+function applyTheme(theme){const v=theme==='dark'?'dark':'light';document.documentElement.dataset.theme=v;$('themeTop').textContent=v==='dark'?'☀':'☾';$('themeSide').textContent=v==='dark'?'☀ Light mode':'🌙 Dark mode';const m=document.querySelector('meta[name="theme-color"]');if(m)m.content=v==='dark'?'#000000':'#ffffff';try{localStorage.setItem(THEME_KEY,v)}catch(e){}}
 function toggleTheme(){applyTheme(document.documentElement.dataset.theme==='dark'?'light':'dark')}
 function getProfile(){try{return JSON.parse(localStorage.getItem(PROFILE_KEY)||'null')}catch(e){return null}}
 function updateProfileUI(){const p=getProfile();$('profileLabel').textContent=p?.name||'Sign in / profile';$('profileBtn').textContent=p?.name?p.name.trim().slice(0,2).toUpperCase():'UG'}
