@@ -311,6 +311,20 @@ body{background:#000!important;background-image:radial-gradient(ellipse at 50% -
 .tracker-note{font-size:11px;color:var(--muted);line-height:1.55;margin-top:10px}
 @media(max-width:700px){.tracker-panel{height:96dvh;padding:14px;border-radius:15px}.tracker-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.tracker-columns{grid-template-columns:1fr}.tracker-fields{grid-template-columns:1fr}.tracker-fields .wide{grid-column:auto}.tracker-head h2{font-size:19px}}
 </style>
+
+/* UG Code Lab: HTML/CSS/JavaScript editor and isolated preview */
+.code-lab-backdrop{position:fixed;inset:0;z-index:115;background:var(--bg);display:flex;flex-direction:column;color:var(--text)}
+.code-lab-head{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.code-lab-head strong{font-size:15px}.code-lab-head .spacer{flex:1}.code-lab-head button,.code-tab{border:1px solid var(--line);border-radius:9px;padding:8px 11px;background:var(--panel);color:var(--text);font-size:12px}
+.code-lab-layout{display:grid;grid-template-columns:minmax(300px,1fr) minmax(300px,1fr);gap:12px;padding:12px;flex:1;min-height:0}
+.code-editor-pane,.code-preview-pane{display:flex;flex-direction:column;min-width:0;min-height:0;border:1px solid var(--line);border-radius:13px;overflow:hidden;background:var(--panel)}
+.code-tabs{display:flex;gap:6px;padding:9px;border-bottom:1px solid var(--line);flex-wrap:wrap}.code-tab.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.code-editor{display:block;flex:1;width:100%;min-height:250px;resize:none;border:0;outline:0;padding:15px;background:var(--bg);color:var(--text);font:13px/1.6 ui-monospace,SFMono-Regular,Consolas,monospace;tab-size:2;white-space:pre;overflow:auto}
+.code-pane-foot{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:9px 12px;border-top:1px solid var(--line);font-size:11px;color:var(--muted)}
+.code-preview-title{padding:12px;font-size:12px;font-weight:750;border-bottom:1px solid var(--line)}.code-preview{border:0;background:#fff;flex:1;width:100%;min-height:250px}.code-console{max-height:125px;overflow:auto;padding:9px 12px;background:var(--bg);border-top:1px solid var(--line);font:11px/1.5 ui-monospace,monospace;white-space:pre-wrap;color:var(--muted)}
+.code-lab-note{padding:0 14px 12px;color:var(--muted);font-size:11px;line-height:1.5}
+@media(max-width:760px){.code-lab-layout{grid-template-columns:1fr;grid-template-rows:minmax(270px,1fr) minmax(250px,1fr);overflow:auto}.code-lab-head{padding:9px}.code-lab-head button{padding:7px 8px}.code-editor{min-height:220px}.code-preview{min-height:210px}}
+
 </head>
 <body>
 <div class="app">
@@ -318,7 +332,7 @@ body{background:#000!important;background-image:radial-gradient(ellipse at 50% -
 <button class="newchat" id="newChat" type="button">＋ New chat <span style="margin-left:auto;color:var(--muted)">Ctrl K</span></button>
 <button class="sidebutton" id="loginSide" type="button">👤 <span id="profileLabel">Sign in / profile</span></button><button class="sidebutton" id="studentTrackerBtn" type="button">📊 Student progress tracker</button><div class="history-label">Recent chats</div><input class="history-search" id="historySearch" type="search" placeholder="Search conversations…" aria-label="Search conversations"><div class="history" id="history"></div>
 <div class="sidebottom"><button class="sidebutton" id="exportBtn" type="button">⇩ Export conversations</button><button class="sidebutton" id="clearHistoryBtn" type="button">⌫ Clear chat history</button><button class="sidebutton" id="aboutBtn" type="button">✦ About Ultra Goal</button><button class="sidebutton" id="themeSide" type="button">🌙 Dark mode</button><div class="sidefoot">UG AI Chat<br>Dream big. Build smart.</div></div></aside>
-<div class="mobile-overlay" id="overlay"></div><main class="main"><header class="topbar"><div class="top-left"><button class="menu" id="menuBtn" type="button" aria-label="Open menu">☰</button><div><span class="modelname">UG Chat</span><span class="modeltag">AI · Smart mode</span></div></div><div class="top-actions"><button class="iconbtn premium-open-btn" id="openPremium" type="button" title="Open Premium Studio" aria-label="Open Premium Studio">✦ Premium</button><button class="iconbtn blocks-open-btn" id="openBlocks" type="button" title="Open coding workspace" aria-label="Open coding workspace">🧩 Blocks</button><button class="iconbtn" id="themeTop" type="button" title="Toggle theme" aria-label="Toggle theme">☾</button><button class="profilebtn" id="profileBtn" type="button" aria-label="Open profile">UG</button></div></header>
+<div class="mobile-overlay" id="overlay"></div><main class="main"><header class="topbar"><div class="top-left"><button class="menu" id="menuBtn" type="button" aria-label="Open menu">☰</button><div><span class="modelname">UG Chat</span><span class="modeltag">AI · Smart mode</span></div></div><div class="top-actions"><button class="iconbtn premium-open-btn" id="openPremium" type="button" title="Open Premium Studio" aria-label="Open Premium Studio">✦ Premium</button><button class="iconbtn blocks-open-btn" id="openBlocks" type="button" title="Open coding workspace" aria-label="Open coding workspace">🧩 Blocks</button><button class="iconbtn" id="openCodeLab" type="button" title="Edit and run programs" aria-label="Open program editor">💻 Code</button><button class="iconbtn" id="themeTop" type="button" title="Toggle theme" aria-label="Toggle theme">☾</button><button class="profilebtn" id="profileBtn" type="button" aria-label="Open profile">UG</button></div></header>
 <section class="chatarea" id="chatarea"><div class="welcome" id="welcome"><div class="welcome-logo">UG</div><h1>What can I help you <span>build?</span></h1><p>Your space to learn, create, and explore. Ask in easy Kannada + English, build with Python, or discover AI and robotics. 😊</p><div class="suggestions"><button class="suggestion" data-prompt="Teach me Python basics with a simple example in easy Kannada and English." type="button"><b>💻 Learn Python</b><span>Learn coding step by step</span></button><button class="suggestion" data-prompt="Explain artificial intelligence in easy Kannada and English." type="button"><b>🧠 Explore AI</b><span>Understand AI simply</span></button><button class="suggestion" data-prompt="Give me a beginner robotics project I can simulate for free." type="button"><b>🤖 Start robotics</b><span>Explore a virtual robot</span></button><button class="suggestion" data-prompt="Help me plan a useful AI startup with a zero budget." type="button"><b>🚀 Build a startup</b><span>Plan your first project</span></button></div></div><div class="messages hidden" id="messages" aria-live="polite"></div></section>
 <div class="composer-wrap"><form class="composer" id="chatForm"><div class="composer-input-row"><textarea id="prompt" rows="1" maxlength="40000" placeholder="Message Ultra Goal..." aria-label="Message Ultra Goal"></textarea><button class="composer-mic" id="micBtn" type="button" title="Voice input" aria-label="Start voice input">🎙️</button></div><div id="fileChip" class="file-chip hidden"><span id="fileStatus">📄 File ready</span><button type="button" id="removeFileBtn" aria-label="Remove attachment">✕</button></div><input id="fileInput" class="file-input-hidden" type="file" accept=".pdf,.txt,.md,.csv,.json,.html,.docx,.doc" aria-label="Upload a document"><div class="composer-bottom"><div class="toolrow"><button type="button" class="upload-btn" id="uploadBtn">📎 Attach</button><button type="button" class="toolbtn" id="topicBtn">✧ Learning mode</button><button type="button" class="toolbtn" id="clearInput">Clear</button><button type="button" class="toolbtn" id="stopBtn" disabled>■ Stop</button></div><button class="send" id="sendBtn" type="submit" aria-label="Send" disabled>↑</button></div></form><div class="disclaimer">AI can make mistakes. Avoid entering passwords, private information, or sensitive data.</div></div></main></div>
 <div class="modal-backdrop hidden" id="modalBackdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><div class="modal"><h2 id="modalTitle">Welcome to Ultra Goal 👋</h2><p>Set a local profile to personalize this browser. This demo does not create a secure account.</p><form id="profileForm"><label for="profileName">Display name</label><input id="profileName" maxlength="60" autocomplete="nickname" placeholder="What should we call you?"><label for="profileEmail">Email (optional, saved only on this device)</label><input id="profileEmail" maxlength="120" type="email" autocomplete="email" placeholder="you@example.com"><div class="modal-actions"><button class="secondary" type="button" id="modalCancel">Cancel</button><button class="primary" type="submit" id="modalSubmit">Save profile</button></div></form></div></div><div class="toast hidden" id="toast" role="status"></div>
@@ -458,6 +472,27 @@ loadPremiumSettings();fillPremiumSettings();try{applyTheme(localStorage.getItem(
 
 
 </script>
+
+
+<div class="code-lab-backdrop hidden" id="codeLab" role="dialog" aria-modal="true" aria-label="Program editor and runner">
+ <header class="code-lab-head"><strong>💻 UG Code Lab</strong><span class="modeltag">Edit · Run · Preview</span><span class="spacer"></span><button type="button" id="codeRun" class="primary">▶ Run</button><button type="button" id="codeStop">■ Stop</button><button type="button" id="codeSave">💾 Save</button><button type="button" id="codeLoad">📂 Load</button><button type="button" id="codeDownload">⇩ Download HTML</button><button type="button" id="codeReset">↺ Reset</button><button type="button" id="codeClose">✕ Close</button></header>
+ <div class="code-lab-layout">
+  <section class="code-editor-pane"><nav class="code-tabs" aria-label="Code files"><button type="button" class="code-tab active" data-code-tab="html">HTML</button><button type="button" class="code-tab" data-code-tab="css">CSS</button><button type="button" class="code-tab" data-code-tab="js">JavaScript</button></nav>
+   <textarea id="codeHtml" class="code-editor" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="HTML code"><main class="card"><h1>Hello, Ultra Goal! 🚀</h1><p>Edit this program, then press Run.</p><button id="helloBtn">Click me</button><p id="message"></p></main></textarea>
+   <textarea id="codeCss" class="code-editor hidden" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="CSS code">body { font-family: system-ui, sans-serif; padding: 24px; background: #eef4ff; }
+.card { max-width: 520px; margin: 30px auto; padding: 24px; border-radius: 18px; background: white; box-shadow: 0 8px 28px #19345a20; }
+h1 { color: #315bd6; }
+button { padding: 10px 16px; border: 0; border-radius: 9px; background: #4169e1; color: white; cursor: pointer; }</textarea>
+   <textarea id="codeJs" class="code-editor hidden" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="JavaScript code">document.getElementById('helloBtn').addEventListener('click', () => {
+  document.getElementById('message').textContent = 'Your program is running!';
+});
+console.log('UG Code Lab is ready.');</textarea>
+   <footer class="code-pane-foot"><span id="codeStatus">Ready. Choose a tab, edit your code and press Run.</span><span class="spacer"></span><span>Ctrl + Enter = Run</span></footer>
+  </section>
+  <section class="code-preview-pane"><div class="code-preview-title">Live program preview</div><iframe id="codePreview" class="code-preview" title="Your program preview" sandbox="allow-scripts allow-forms"></iframe><pre id="codeConsole" class="code-console">Console output will appear here.</pre></section>
+ </div>
+ <div class="code-lab-note">This editor runs HTML, CSS and JavaScript in a sandboxed preview, separate from the main Ultra Goal AI app. Save stores your code in this browser only. Do not run code from unknown sources.</div>
+</div>
 
 <div class="blocks-overlay" id="blocksOverlay" aria-label="PictoBlox-style coding workspace">
  <div class="blocks-head"><strong>🧩 UG Blocks Studio</strong><span class="modeltag">Block coding</span><span class="spacer"></span><button type="button" id="blocksSave">💾 Save</button><button type="button" id="blocksLoad">📂 Load</button><button type="button" id="blocksClear">Clear blocks</button><button type="button" id="closeBlocks">✕ Back to Chat</button></div>
@@ -658,6 +693,38 @@ loadPremiumSettings();fillPremiumSettings();try{applyTheme(localStorage.getItem(
  render();
 })();
 
+</script>
+
+
+<script>
+(()=>{
+ const $=id=>document.getElementById(id);
+ const lab=$('codeLab'); if(!lab||!$('openCodeLab')) return;
+ const STORE='ultraGoalCodeLabProjectV1';
+ const defaults={html:'<main class="card"><h1>Hello, Ultra Goal! 🚀</h1><p>Edit this program, then press Run.</p><button id="helloBtn">Click me</button><p id="message"></p></main>',css:'body { font-family: system-ui, sans-serif; padding: 24px; background: #eef4ff; }\n.card { max-width: 520px; margin: 30px auto; padding: 24px; border-radius: 18px; background: white; box-shadow: 0 8px 28px #19345a20; }\nh1 { color: #315bd6; }\nbutton { padding: 10px 16px; border: 0; border-radius: 9px; background: #4169e1; color: white; cursor: pointer; }',js:"document.getElementById('helloBtn').addEventListener('click', () => {\n  document.getElementById('message').textContent = 'Your program is running!';\n});\nconsole.log('UG Code Lab is ready.');"};
+ const fields={html:$('codeHtml'),css:$('codeCss'),js:$('codeJs')};let active='html';
+ const status=t=>{$('codeStatus').textContent=t};
+ function project(){return {html:fields.html.value,css:fields.css.value,js:fields.js.value}};
+ function setProject(p){Object.keys(fields).forEach(k=>fields[k].value=typeof p?.[k]==='string'?p[k]:defaults[k]);}
+ function showTab(name){active=name;document.querySelectorAll('[data-code-tab]').forEach(b=>b.classList.toggle('active',b.dataset.codeTab===name));Object.entries(fields).forEach(([k,el])=>el.classList.toggle('hidden',k!==name));fields[name].focus()}
+ function open(){lab.classList.remove('hidden');showTab(active);$('openCodeLab').setAttribute('aria-expanded','true');}
+ function close(){lab.classList.add('hidden');$('openCodeLab').setAttribute('aria-expanded','false');$('openCodeLab').focus()}
+ function escapeScript(s){return JSON.stringify(s).replace(/</g,'\\u003c').replace(/>/g,'\\u003e').replace(/&/g,'\\u0026');}
+ function run(){const p=project();const consoleBridge=`<script>(function(){const send=(type,args)=>parent.postMessage({ugCodeLab:true,type,args:Array.from(args||[]).map(x=>{try{return typeof x==='string'?x:JSON.stringify(x)}catch(e){return String(x)}})},'*');['log','info','warn','error'].forEach(k=>{const old=console[k];console[k]=function(){send(k,arguments);try{old.apply(console,arguments)}catch(e){}}});window.addEventListener('error',e=>send('error',[e.message+' at line '+e.lineno]));window.addEventListener('unhandledrejection',e=>send('error',[String(e.reason)]));})();<\/script>`;
+  const userJs=`<script>try{(new Function(${escapeScript(p.js)}))()}catch(e){parent.postMessage({ugCodeLab:true,type:'error',args:[e.name+': '+e.message]},'*')}<\/script>`;
+  const doc='<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>'+p.css+'</style></head><body>'+p.html+consoleBridge+userJs+'</body></html>';
+  $('codeConsole').textContent='Running…';$('codePreview').srcdoc=doc;status('Program running in the sandbox preview.');
+ }
+ window.addEventListener('message',e=>{if(e.source!==$('codePreview').contentWindow||!e.data||e.data.ugCodeLab!==true)return;const line='['+e.data.type+'] '+(e.data.args||[]).join(' ');const box=$('codeConsole');box.textContent=(box.textContent==='Running…'?'':box.textContent+'\n')+line;box.scrollTop=box.scrollHeight;if(e.data.type==='error')status('Program reported an error. Check the console below the preview.');});
+ $('openCodeLab').addEventListener('click',open);$('codeClose').addEventListener('click',close);$('codeRun').addEventListener('click',run);
+ $('codeStop').addEventListener('click',()=>{$('codePreview').srcdoc='<!doctype html><title>Stopped</title><p style="font:16px system-ui;padding:20px">Program stopped.</p>';$('codeConsole').textContent='Program stopped.';status('Stopped.');});
+ document.querySelectorAll('[data-code-tab]').forEach(b=>b.addEventListener('click',()=>showTab(b.dataset.codeTab)));
+ $('codeSave').addEventListener('click',()=>{try{localStorage.setItem(STORE,JSON.stringify(project()));status('Project saved on this device.');if(typeof showToast==='function')showToast('Code project saved on this device.')}catch(e){status('Could not save project: browser storage is unavailable.')}});
+ $('codeLoad').addEventListener('click',()=>{try{const p=JSON.parse(localStorage.getItem(STORE)||'null');if(!p)throw Error('No saved project found.');setProject(p);status('Saved project loaded.')}catch(e){status(e.message||'Could not load project.')}});
+ $('codeReset').addEventListener('click',()=>{if(!confirm('Reset all three editor tabs to the starter example?'))return;setProject(defaults);$('codeConsole').textContent='Console output will appear here.';status('Starter example restored.');});
+ $('codeDownload').addEventListener('click',()=>{const p=project();const file='<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>'+p.css+'</style></head><body>'+p.html+'<script>'+p.js.split('<'+'/script').join('<\\/'+'script')+'</'+'script></body></html>';const blob=new Blob([file],{type:'text/html'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='ultra-goal-program.html';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);status('Standalone HTML program downloaded.');});
+ document.addEventListener('keydown',e=>{if(lab.classList.contains('hidden'))return;if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();run()}if(e.key==='Escape')close();});
+})();
 </script>
 
 </body>
