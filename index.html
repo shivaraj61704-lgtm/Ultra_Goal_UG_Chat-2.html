@@ -278,6 +278,11 @@ body{background:#000!important;background-image:radial-gradient(ellipse at 50% -
 
 .sprite-library{border:1px solid var(--line);background:var(--panel);border-radius:12px;padding:9px;margin:8px 0 12px}.sprite-library-title{font-size:11px;font-weight:750;color:var(--muted);margin:0 0 7px}.sprite-options{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}.sprite-option{min-height:38px;border:1px solid var(--line);border-radius:9px;background:var(--bg);color:var(--text);font-size:21px}.sprite-option.selected{border:2px solid var(--accent);background:var(--panel2)}
 .background-library{border:1px solid var(--line);background:var(--panel);border-radius:12px;padding:9px;margin:8px 0 12px}.background-options{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.background-option{height:38px;border:2px solid var(--line);border-radius:8px;color:#172033;font-size:10px;font-weight:700;text-shadow:0 1px 2px #fff9}.background-option.selected{outline:2px solid var(--accent);outline-offset:1px}
+
+.blocks-variable-panel{border:1px solid var(--line);border-radius:10px;padding:9px;margin:8px 0;background:var(--bg)}
+.blocks-variable-panel label{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:11px;color:var(--muted);margin:5px 0}
+.cat-variable{background:#168b83}.cat-operator{background:#5575b8}
+
 </style>
 </head>
 <body>
@@ -350,8 +355,15 @@ try{applyTheme(localStorage.getItem(THEME_KEY)||'light')}catch(e){applyTheme('li
    <div class="blocks-category">Motion</div><button class="code-block cat-motion" draggable="true" data-kind="move">Move <input aria-label="Move steps" value="10" readonly> steps</button><button class="code-block cat-motion" draggable="true" data-kind="turn">Turn ↻ <input aria-label="Turn degrees" value="15" readonly> degrees</button>
    <div class="blocks-category">Looks</div><button class="code-block cat-look" draggable="true" data-kind="say">Say <input aria-label="Say text" value="Hello!" readonly></button><button class="code-block cat-look" draggable="true" data-kind="size">Change size by <input aria-label="Size amount" value="10" readonly></button>
    <div class="blocks-category">Control</div><button class="code-block cat-control" draggable="true" data-kind="wait">Wait <input aria-label="Wait seconds" value="1" readonly> sec</button><button class="code-block cat-control" draggable="true" data-kind="repeat">Repeat <input aria-label="Repeat count" value="3" readonly> times</button>
+   <div class="blocks-category">Variables</div>
+   <button class="code-block cat-variable" draggable="true" data-kind="setvar">Set variable <input aria-label="Variable name" value="score" readonly> to <input aria-label="Variable value" value="0" readonly></button>
+   <button class="code-block cat-variable" draggable="true" data-kind="changevar">Change <input aria-label="Variable name" value="score" readonly> by <input aria-label="Change amount" value="1" readonly></button>
+   <div class="blocks-category">Logic & Operators</div>
+   <button class="code-block cat-logic" draggable="true" data-kind="ifvar">If <input aria-label="Variable name" value="score" readonly> &gt; <input aria-label="Compare value" value="5" readonly></button>
+   <button class="code-block cat-operator" draggable="true" data-kind="calculate">Calculate <input aria-label="Variable name" value="score" readonly> + <input aria-label="Number" value="1" readonly></button>
    <div class="blocks-category">Sound</div><button class="code-block cat-sound" draggable="true" data-kind="sound">🔊 Play sound <input aria-label="Sound effect" value="chime" readonly></button>
    <div class="blocks-category">Logic</div><button class="code-block cat-logic" draggable="true" data-kind="note">Add a note</button>
+   <div class="blocks-variable-panel"><div class="sprite-library-title">📊 Variables</div><div id="blocksVariablesView">score = 0</div><button type="button" class="blocks-action" id="addVariableBtn" style="margin-top:7px;width:100%">＋ New variable</button></div>
   </aside>
   <section class="blocks-workspace"><div class="blocks-workspace-top"><h3>Code workspace</h3><button class="blocks-action" id="runBlocks">▶ Run</button><button class="blocks-action" id="stopBlocks">■ Stop</button></div><div class="blocks-dropzone" id="blocksDropzone"><div class="blocks-empty" id="blocksEmpty">Drag blocks here, or click a block in the palette to add it.</div></div></section>
   <aside class="blocks-stage"><h3>Stage preview</h3><div class="sprite-library" aria-label="Sprite library"><div class="sprite-library-title">🎭 Choose your character</div><div class="sprite-options"><button type="button" class="sprite-option selected" data-sprite="🐱" aria-label="Cat">🐱</button><button type="button" class="sprite-option" data-sprite="🐶" aria-label="Dog">🐶</button><button type="button" class="sprite-option" data-sprite="🤖" aria-label="Robot">🤖</button><button type="button" class="sprite-option" data-sprite="🦊" aria-label="Fox">🦊</button><button type="button" class="sprite-option" data-sprite="🐼" aria-label="Panda">🐼</button><button type="button" class="sprite-option" data-sprite="🚀" aria-label="Rocket">🚀</button><button type="button" class="sprite-option" data-sprite="🦖" aria-label="Dinosaur">🦖</button><button type="button" class="sprite-option" data-sprite="🧙" aria-label="Wizard">🧙</button></div></div><div class="background-library" aria-label="Background library"><div class="sprite-library-title">🌄 Choose stage background</div><div class="background-options"><button type="button" class="background-option selected" data-background="sky" style="background:linear-gradient(145deg,#b9e7ff,#f8fdff)">Sky</button><button type="button" class="background-option" data-background="sunset" style="background:linear-gradient(145deg,#ffb36b,#e9a4d5)">Sunset</button><button type="button" class="background-option" data-background="forest" style="background:linear-gradient(145deg,#a8e6a1,#3d9564)">Forest</button><button type="button" class="background-option" data-background="ocean" style="background:linear-gradient(145deg,#8de2f4,#2878c7)">Ocean</button><button type="button" class="background-option" data-background="space" style="background:linear-gradient(145deg,#34245f,#080b25);color:#fff;text-shadow:none">Space</button><button type="button" class="background-option" data-background="candy" style="background:linear-gradient(145deg,#ffc4e1,#c8c2ff)">Candy</button></div></div><div><div class="stage-canvas" id="stageCanvas"><div class="stage-sprite" id="stageSprite">🐱</div></div><div class="stage-caption" id="stageCaption">Your program output appears here. This is a simple learning sandbox.</div></div><div><h3>Program output</h3><pre class="blocks-output" id="blocksOutput">Ready. Add blocks and press Run.</pre></div></aside>
@@ -363,8 +375,8 @@ try{applyTheme(localStorage.getItem(THEME_KEY)||'light')}catch(e){applyTheme('li
 (()=>{
  const overlay=$('blocksOverlay'),zone=$('blocksDropzone'),empty=$('blocksEmpty'),output=$('blocksOutput'),sprite=$('stageSprite'),caption=$('stageCaption');
  if(!overlay||!zone)return;
- const templates={start:{label:'▶ When Run clicked',cat:'event',fields:[]},move:{label:'Move',cat:'motion',fields:[['steps','10','steps']]},turn:{label:'Turn ↻',cat:'motion',fields:[['degrees','15','degrees']]},say:{label:'Say',cat:'look',fields:[['text','Hello!','']]},size:{label:'Change size by',cat:'look',fields:[['amount','10','']]},wait:{label:'Wait',cat:'control',fields:[['seconds','1','sec']]},repeat:{label:'Repeat',cat:'control',fields:[['count','3','times']]},note:{label:'Note',cat:'logic',fields:[['text','My idea','']]},sound:{label:'🔊 Play sound',cat:'sound',fields:[['effect','chime','sound']]}};
- let blocks=[],running=false,runToken=0,currentSprite='🐱',currentBackground='sky';
+ const templates={start:{label:'▶ When Run clicked',cat:'event',fields:[]},move:{label:'Move',cat:'motion',fields:[['steps','10','steps']]},turn:{label:'Turn ↻',cat:'motion',fields:[['degrees','15','degrees']]},say:{label:'Say',cat:'look',fields:[['text','Hello!','']]},size:{label:'Change size by',cat:'look',fields:[['amount','10','']]},wait:{label:'Wait',cat:'control',fields:[['seconds','1','sec']]},repeat:{label:'Repeat next block',cat:'control',fields:[['count','3','times']]},note:{label:'Note',cat:'logic',fields:[['text','My idea','']]},sound:{label:'🔊 Play sound',cat:'sound',fields:[['effect','chime','sound']]},setvar:{label:'Set variable',cat:'variable',fields:[['name','score','to'],['value','0','']]},changevar:{label:'Change variable',cat:'variable',fields:[['name','score','by'],['amount','1','']]},ifvar:{label:'If variable is greater than',cat:'logic',fields:[['name','score','>'],['value','5','']]},calculate:{label:'Calculate variable',cat:'operator',fields:[['name','score',''],['op','+','operator'],['value','1','']]}};
+ let blocks=[],running=false,runToken=0,currentSprite='🐱',currentBackground='sky',variables={score:0};
  const stageCanvas=$('stageCanvas');
  let audioContext=null;
  function playEffect(name){
@@ -383,7 +395,7 @@ try{applyTheme(localStorage.getItem(THEME_KEY)||'light')}catch(e){applyTheme('li
    const clean=name.trim();if(!clean){alert('Project ಹೆಸರು ಖಾಲಿ ಇರಬಾರದು.');return}
    const projects=readProjects(),existing=projects.findIndex(p=>p.name.toLowerCase()===clean.toLowerCase());
    if(existing>=0&&!confirm('ಈ ಹೆಸರಿನ project ಈಗಾಗಲೇ ಇದೆ. ಅದನ್ನು update ಮಾಡಬೇಕೇ?'))return;
-   const item={name:clean,sprite:currentSprite,background:currentBackground,blocks:blocks.map(b=>({kind:b.kind,values:[...b.values]})),updatedAt:new Date().toISOString()};
+   const item={name:clean,sprite:currentSprite,background:currentBackground,variables:{...variables},blocks:blocks.map(b=>({kind:b.kind,values:[...b.values]})),updatedAt:new Date().toISOString()};
    if(existing>=0)projects.splice(existing,1);projects.unshift(item);
    try{localStorage.setItem(PROJECTS_KEY,JSON.stringify(projects.slice(0,30)));output.textContent='Saved project: '+clean;caption.textContent='Project saved on this device.';alert('Project save ಆಯಿತು!')}catch(e){alert('Save ಆಗಲಿಲ್ಲ. Browser storage full ಆಗಿರಬಹುದು.')}
  }
@@ -393,7 +405,7 @@ try{applyTheme(localStorage.getItem(THEME_KEY)||'light')}catch(e){applyTheme('li
    const index=Number(answer)-1;if(!Number.isInteger(index)||index<0||index>=projects.length){alert('ಸರಿಯಾದ project number ನಮೂದಿಸಿ.');return}
    const chosen=projects[index],valid=chosen.blocks.every(b=>templates[b.kind]&&Array.isArray(b.values)&&b.values.length===templates[b.kind].fields.length);
    if(!valid){alert('ಈ project data ಸರಿಯಾಗಿಲ್ಲ ಅಥವಾ ಹಳೆಯ format ಆಗಿದೆ.');return}
-   runToken++;running=false;blocks=chosen.blocks.map((b,i)=>({id:Date.now()+i,kind:b.kind,values:b.values.map(v=>String(v))}));setSprite(chosen.sprite||'🐱');setBackground(chosen.background||'sky');render();sprite.style.transform='';caption.textContent='Loaded project: '+chosen.name;output.textContent='Loaded project: '+chosen.name+'\nPress Run to execute it.';
+   runToken++;running=false;blocks=chosen.blocks.map((b,i)=>({id:Date.now()+i,kind:b.kind,values:b.values.map(v=>String(v))}));setSprite(chosen.sprite||'🐱');setBackground(chosen.background||'sky');variables=chosen.variables&&typeof chosen.variables==='object'?{...chosen.variables}:{score:0};renderVariables();render();sprite.style.transform='';caption.textContent='Loaded project: '+chosen.name;output.textContent='Loaded project: '+chosen.name+'\nPress Run to execute it.';
  }
  const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  function add(kind){const t=templates[kind];if(!t)return;blocks.push({id:Date.now()+Math.random(),kind,values:t.fields.map(f=>f[1])});render()}
@@ -401,6 +413,11 @@ try{applyTheme(localStorage.getItem(THEME_KEY)||'light')}catch(e){applyTheme('li
  function setSprite(emoji){currentSprite=emoji;sprite.textContent=emoji;document.querySelectorAll('.sprite-option').forEach(b=>b.classList.toggle('selected',b.dataset.sprite===emoji))}
  document.querySelectorAll('.sprite-option').forEach(btn=>btn.addEventListener('click',()=>{setSprite(btn.dataset.sprite);caption.textContent='Character selected: '+btn.getAttribute('aria-label');}));
  function setBackground(name){if(!backgrounds[name])name='sky';currentBackground=name;stageCanvas.style.background=backgrounds[name];document.querySelectorAll('.background-option').forEach(b=>b.classList.toggle('selected',b.dataset.background===name));}
+ function renderVariables(){const view=$('blocksVariablesView');if(view)view.textContent=Object.entries(variables).map(([k,v])=>k+' = '+v).join('  |  ')||'No variables yet';}
+ function addVariable(){const name=(prompt('Variable name (letters, numbers, underscore):','score')||'').trim();if(!/^[A-Za-z_][A-Za-z0-9_]{0,19}$/.test(name)){if(name)alert('Use a valid variable name.');return}if(!(name in variables))variables[name]=0;renderVariables();showToast('Variable '+name+' created.')}
+ $('addVariableBtn')?.addEventListener('click',addVariable);
+ renderVariables();
+
  document.querySelectorAll('.background-option').forEach(btn=>btn.addEventListener('click',()=>{setBackground(btn.dataset.background);caption.textContent='Background selected: '+btn.textContent.trim();}));
  setBackground('sky');
  function open(){overlay.classList.add('open');$('openBlocks').setAttribute('aria-expanded','true')}
@@ -437,7 +454,49 @@ try{applyTheme(localStorage.getItem(THEME_KEY)||'light')}catch(e){applyTheme('li
  $('blocksSave').addEventListener('click',saveProject);$('blocksLoad').addEventListener('click',loadProject);
  $('blocksClear').addEventListener('click',()=>{runToken++;running=false;blocks=[];render();sprite.style.transform='';sprite.textContent=currentSprite;caption.textContent='Workspace cleared.';output.textContent='Ready. Add blocks and press Run.'});
  $('stopBlocks').addEventListener('click',()=>{runToken++;running=false;output.textContent+='\nStopped.'});
- $('runBlocks').addEventListener('click',async()=>{if(running)return;running=true;const token=++runToken;let x=0,angle=0,size=1,lines=[];sprite.textContent=currentSprite;sprite.style.transform='translate(0,0) rotate(0deg) scale(1)';caption.textContent='Running your blocks…';output.textContent='Running…';const pause=ms=>new Promise(r=>setTimeout(r,ms));for(const b of blocks){if(token!==runToken)break;const v=b.values;switch(b.kind){case'start':lines.push('▶ Program started');break;case'move':x+=Math.max(-200,Math.min(200,Number(v[0])||0));sprite.style.transform=`translate(${x}px,0) rotate(${angle}deg) scale(${size})`;lines.push('Move '+v[0]+' steps');break;case'turn':angle+=(Number(v[0])||0);sprite.style.transform=`translate(${x}px,0) rotate(${angle}deg) scale(${size})`;lines.push('Turn '+v[0]+' degrees');break;case'say':caption.textContent=String(v[0]||'');lines.push('Say: '+v[0]);break;case'size':size=Math.max(.4,Math.min(2.5,size+(Number(v[0])||0)/100));sprite.style.transform=`translate(${x}px,0) rotate(${angle}deg) scale(${size})`;lines.push('Change size by '+v[0]);break;case'wait':lines.push('Wait '+v[0]+' sec');output.textContent=lines.join('\n');await pause(Math.max(0,Math.min(3,Number(v[0])||0))*1000);break;case'repeat':lines.push('Repeat '+v[0]+' times (preview)');break;case'sound':playEffect(v[0]);lines.push('🔊 Play sound: '+v[0]);break;case'note':lines.push('Note: '+v[0]);break;}output.textContent=lines.join('\n')||'No blocks to run.';await pause(120)}running=false;if(token===runToken){caption.textContent='Program finished. Add or change blocks and run again.';if(!blocks.length)output.textContent='No blocks to run.'}});
+ $('runBlocks').addEventListener('click',async()=>{
+   if(running)return;
+   running=true;const token=++runToken;let x=0,angle=0,size=1,lines=[];
+   sprite.textContent=currentSprite;sprite.style.transform='translate(0,0) rotate(0deg) scale(1)';
+   caption.textContent='Running your blocks…';output.textContent='Running…';
+   const pause=ms=>new Promise(r=>setTimeout(r,ms));
+   const num=v=>Number.isFinite(Number(v))?Number(v):0;
+   const execute=async b=>{
+     const v=b.values;
+     switch(b.kind){
+       case 'start':lines.push('▶ Program started');break;
+       case 'move':x+=Math.max(-200,Math.min(200,num(v[0])));sprite.style.transform=`translate(${x}px,0) rotate(${angle}deg) scale(${size})`;lines.push('Move '+v[0]+' steps');break;
+       case 'turn':angle+=num(v[0]);sprite.style.transform=`translate(${x}px,0) rotate(${angle}deg) scale(${size})`;lines.push('Turn '+v[0]+' degrees');break;
+       case 'say':caption.textContent=String(v[0]||'');lines.push('Say: '+v[0]);break;
+       case 'size':size=Math.max(.4,Math.min(2.5,size+num(v[0])/100));sprite.style.transform=`translate(${x}px,0) rotate(${angle}deg) scale(${size})`;lines.push('Change size by '+v[0]);break;
+       case 'wait':lines.push('Wait '+v[0]+' sec');output.textContent=lines.join('\n');await pause(Math.max(0,Math.min(3,num(v[0])))*1000);break;
+       case 'repeat':lines.push('Repeat next block '+v[0]+' times');break;
+       case 'sound':playEffect(v[0]);lines.push('🔊 Play sound: '+v[0]);break;
+       case 'note':lines.push('Note: '+v[0]);break;
+       case 'setvar':{const key=String(v[0]||'score').trim()||'score';variables[key]=num(v[1]);lines.push(key+' = '+variables[key]);renderVariables();break}
+       case 'changevar':{const key=String(v[0]||'score').trim()||'score';variables[key]=num(variables[key])+num(v[1]);lines.push(key+' = '+variables[key]);renderVariables();break}
+       case 'calculate':{const key=String(v[0]||'score').trim()||'score',a=num(variables[key]),bval=num(v[2]);let result=a;switch(v[1]){case '+':result=a+bval;break;case '-':result=a-bval;break;case '*':result=a*bval;break;case '/':result=bval===0?a:a/bval;break}variables[key]=result;lines.push(key+' = '+result);renderVariables();break}
+       case 'ifvar':{const key=String(v[0]||'score').trim()||'score';const pass=num(variables[key])>num(v[1]);lines.push('If '+key+' > '+v[1]+': '+(pass?'true':'false'));return pass}
+     }
+     return true;
+   };
+   for(let i=0;i<blocks.length;i++){
+     if(token!==runToken)break;
+     const b=blocks[i];
+     if(b.kind==='repeat'){
+       const next=blocks[i+1];const count=Math.max(0,Math.min(20,Math.floor(num(b.values[0]))));
+       if(next){for(let r=0;r<count;r++){if(token!==runToken)break;await execute(next);output.textContent=lines.join('\n');await pause(120)}i++}
+       else lines.push('Repeat has no following block.');
+     }else if(b.kind==='ifvar'){
+       const next=blocks[i+1];const passed=await execute(b);
+       if(next){if(passed){await execute(next);i++}else{i++;lines.push('Skipped next block because condition was false.')}}
+     }else await execute(b);
+     output.textContent=lines.join('\n')||'No blocks to run.';
+     await pause(120);
+   }
+   running=false;
+   if(token===runToken){caption.textContent='Program finished. Variables are shown in the Variables panel.';renderVariables();if(!blocks.length)output.textContent='No blocks to run.'}
+ });
  render();
 })();
 
