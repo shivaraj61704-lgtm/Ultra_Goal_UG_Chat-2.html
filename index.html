@@ -337,6 +337,25 @@ function setupMicrophone(){const b=$('micBtn'),SR=window.SpeechRecognition||wind
 function loadChats(){try{const saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]');chats=Array.isArray(saved)?saved.filter(c=>c&&typeof c.id==='string'&&Array.isArray(c.messages)):[]}catch(e){chats=[]}if(chats.length)showChat(chats[0].id);else{showWelcome();renderHistory()}}
 try{applyTheme(localStorage.getItem(THEME_KEY)||'light')}catch(e){applyTheme('light')}updateProfileUI();loadChats();resizeInput();setupMicrophone();window.addEventListener('pagehide',()=>{if('speechSynthesis'in window)window.speechSynthesis.cancel()});document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();newChat()}if(e.key==='Escape'){closeProfile();closeSidebar();if(listening&&recognition)recognition.stop()}});
 
+
+</script>
+
+<div class="blocks-overlay" id="blocksOverlay" aria-label="PictoBlox-style coding workspace">
+ <div class="blocks-head"><strong>🧩 UG Blocks Studio</strong><span class="modeltag">Block coding</span><span class="spacer"></span><button type="button" id="blocksClear">Clear blocks</button><button type="button" id="closeBlocks">✕ Back to Chat</button></div>
+ <div class="blocks-layout">
+  <aside class="blocks-toolbox"><h3>Block palette</h3>
+   <div class="blocks-category">Events</div><button class="code-block cat-event" draggable="true" data-kind="start">▶ When Run clicked</button>
+   <div class="blocks-category">Motion</div><button class="code-block cat-motion" draggable="true" data-kind="move">Move <input aria-label="Move steps" value="10" readonly> steps</button><button class="code-block cat-motion" draggable="true" data-kind="turn">Turn ↻ <input aria-label="Turn degrees" value="15" readonly> degrees</button>
+   <div class="blocks-category">Looks</div><button class="code-block cat-look" draggable="true" data-kind="say">Say <input aria-label="Say text" value="Hello!" readonly></button><button class="code-block cat-look" draggable="true" data-kind="size">Change size by <input aria-label="Size amount" value="10" readonly></button>
+   <div class="blocks-category">Control</div><button class="code-block cat-control" draggable="true" data-kind="wait">Wait <input aria-label="Wait seconds" value="1" readonly> sec</button><button class="code-block cat-control" draggable="true" data-kind="repeat">Repeat <input aria-label="Repeat count" value="3" readonly> times</button>
+   <div class="blocks-category">Logic</div><button class="code-block cat-logic" draggable="true" data-kind="note">Add a note</button>
+  </aside>
+  <section class="blocks-workspace"><div class="blocks-workspace-top"><h3>Code workspace</h3><button class="blocks-action" id="runBlocks">▶ Run</button><button class="blocks-action" id="stopBlocks">■ Stop</button></div><div class="blocks-dropzone" id="blocksDropzone"><div class="blocks-empty" id="blocksEmpty">Drag blocks here, or click a block in the palette to add it.</div></div></section>
+  <aside class="blocks-stage"><h3>Stage preview</h3><div><div class="stage-canvas"><div class="stage-sprite" id="stageSprite">🐱</div></div><div class="stage-caption" id="stageCaption">Your program output appears here. This is a simple learning sandbox.</div></div><div><h3>Program output</h3><pre class="blocks-output" id="blocksOutput">Ready. Add blocks and press Run.</pre></div></aside>
+ </div>
+</div>
+
+<script>
 /* PictoBlox-inspired visual blocks: self-contained and isolated from the AI chat flow. */
 (()=>{
  const overlay=$('blocksOverlay'),zone=$('blocksDropzone'),empty=$('blocksEmpty'),output=$('blocksOutput'),sprite=$('stageSprite'),caption=$('stageCaption');
@@ -360,21 +379,6 @@ try{applyTheme(localStorage.getItem(THEME_KEY)||'light')}catch(e){applyTheme('li
 })();
 
 </script>
-
-<div class="blocks-overlay" id="blocksOverlay" aria-label="PictoBlox-style coding workspace">
- <div class="blocks-head"><strong>🧩 UG Blocks Studio</strong><span class="modeltag">Block coding</span><span class="spacer"></span><button type="button" id="blocksClear">Clear blocks</button><button type="button" id="closeBlocks">✕ Back to Chat</button></div>
- <div class="blocks-layout">
-  <aside class="blocks-toolbox"><h3>Block palette</h3>
-   <div class="blocks-category">Events</div><button class="code-block cat-event" draggable="true" data-kind="start">▶ When Run clicked</button>
-   <div class="blocks-category">Motion</div><button class="code-block cat-motion" draggable="true" data-kind="move">Move <input aria-label="Move steps" value="10" readonly> steps</button><button class="code-block cat-motion" draggable="true" data-kind="turn">Turn ↻ <input aria-label="Turn degrees" value="15" readonly> degrees</button>
-   <div class="blocks-category">Looks</div><button class="code-block cat-look" draggable="true" data-kind="say">Say <input aria-label="Say text" value="Hello!" readonly></button><button class="code-block cat-look" draggable="true" data-kind="size">Change size by <input aria-label="Size amount" value="10" readonly></button>
-   <div class="blocks-category">Control</div><button class="code-block cat-control" draggable="true" data-kind="wait">Wait <input aria-label="Wait seconds" value="1" readonly> sec</button><button class="code-block cat-control" draggable="true" data-kind="repeat">Repeat <input aria-label="Repeat count" value="3" readonly> times</button>
-   <div class="blocks-category">Logic</div><button class="code-block cat-logic" draggable="true" data-kind="note">Add a note</button>
-  </aside>
-  <section class="blocks-workspace"><div class="blocks-workspace-top"><h3>Code workspace</h3><button class="blocks-action" id="runBlocks">▶ Run</button><button class="blocks-action" id="stopBlocks">■ Stop</button></div><div class="blocks-dropzone" id="blocksDropzone"><div class="blocks-empty" id="blocksEmpty">Drag blocks here, or click a block in the palette to add it.</div></div></section>
-  <aside class="blocks-stage"><h3>Stage preview</h3><div><div class="stage-canvas"><div class="stage-sprite" id="stageSprite">🐱</div></div><div class="stage-caption" id="stageCaption">Your program output appears here. This is a simple learning sandbox.</div></div><div><h3>Program output</h3><pre class="blocks-output" id="blocksOutput">Ready. Add blocks and press Run.</pre></div></aside>
- </div>
-</div>
 
 </body>
 </html>
