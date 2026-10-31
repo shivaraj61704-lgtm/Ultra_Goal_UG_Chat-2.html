@@ -318,6 +318,56 @@ body{background:#000!important;background-image:radial-gradient(ellipse at 50% -
 @keyframes sendGlowPulse{0%,100%{filter:brightness(1);box-shadow:0 0 9px #287dff88,0 0 17px #287dff55,0 0 24px #ef354b33}50%{filter:brightness(1.12);box-shadow:0 0 13px #287dffbb,0 0 22px #ef354b77,0 0 31px #287dff55}}
 @keyframes sendGlowRotate{to{transform:rotate(360deg)}}
 @media(prefers-reduced-motion:reduce){.send,.send::before{animation:none!important}}
+
+/* More-options menu: existing Blocks and Code actions remain wired to their original handlers. */
+.tools-menu-wrap{position:relative;flex:0 0 auto}
+.more-menu-trigger{font-size:25px;line-height:1}
+.tools-menu{position:absolute;right:0;top:calc(100% + 9px);z-index:80;min-width:176px;padding:7px;background:var(--bg);border:1px solid var(--line);border-radius:14px;box-shadow:0 14px 38px #0002;display:grid;gap:4px}
+.tools-menu.hidden{display:none!important}
+.tools-menu-item{display:flex;align-items:center;gap:11px;width:100%;min-height:43px;padding:9px 12px;border:0;border-radius:10px;background:transparent;color:var(--text);text-align:left;font-size:13px;font-weight:650}
+.tools-menu-item:hover,.tools-menu-item:focus-visible{background:var(--panel2)}
+.top-actions{position:relative}
+@media(max-width:760px){
+  .topbar{min-height:56px;padding-left:10px;padding-right:10px}
+  .top-left{gap:7px}
+  .top-actions{gap:6px}
+  .premium-open-btn{font-size:11px;min-width:0;height:35px;padding:0 8px}
+  .more-menu-trigger{height:35px;min-width:35px;padding:0;font-size:25px}
+  .tools-menu{min-width:168px}
+  .chatarea{padding:14px 11px}
+  .composer-wrap{padding:7px 8px max(10px,env(safe-area-inset-bottom))}
+  .composer{padding:10px 9px 8px;border-radius:19px}
+  .composer-input-row{align-items:flex-end}
+  .composer-input-row textarea{min-height:38px}
+  .composer-bottom{align-items:center;flex-wrap:wrap}
+  .toolrow{flex:1 1 100%;order:1}
+  .send{order:0;margin-left:auto}
+  .disclaimer{padding:0 8px}
+}
+@media(max-width:430px){
+  .topbar{gap:4px;padding-left:7px;padding-right:7px}
+  .top-left{gap:4px}
+  .modelname{font-size:14px}
+  .top-actions{gap:4px}
+  .premium-open-btn{font-size:10px;padding:0 6px;height:33px}
+  #themeTop{height:33px;min-width:33px}
+  .profilebtn{height:33px;width:33px}
+  .more-menu-trigger{height:33px;min-width:33px}
+  .composer-bottom{gap:5px}
+  .toolrow{gap:1px}
+  .upload-btn,.toolbtn{padding:7px 4px;font-size:10px}
+  .composer-mic{width:36px;height:36px;flex-basis:36px}
+  .mic-language{max-width:82px}
+  .welcome h1{font-size:29px}
+  .suggestion{min-height:62px}
+}
+@media(max-width:350px){
+  .modelname{font-size:13px}
+  .premium-open-btn{max-width:64px;overflow:hidden;white-space:nowrap}
+  .upload-btn,.toolbtn{font-size:9px}
+  .composer{padding-left:8px;padding-right:8px}
+}
+
 </style>
 
 <style>
@@ -506,7 +556,18 @@ body{background:#000!important;background-image:radial-gradient(ellipse at 50% -
 <button class="newchat" id="newChat" type="button">＋ New chat <span style="margin-left:auto;color:var(--muted)">Ctrl K</span></button>
 <button class="sidebutton" id="loginSide" type="button">👤 <span id="profileLabel">Sign in / profile</span></button><button class="sidebutton" id="studentTrackerBtn" type="button">📊 Student progress tracker</button><div class="history-label">Recent chats</div><input class="history-search" id="historySearch" type="search" placeholder="Search conversations…" aria-label="Search conversations"><div class="history" id="history"></div>
 <div class="sidebottom"><button class="sidebutton" id="exportBtn" type="button">⇩ Export conversations</button><button class="sidebutton" id="clearHistoryBtn" type="button">⌫ Clear chat history</button><button class="sidebutton" id="aboutBtn" type="button">✦ About Ultra Goal</button><button class="sidebutton" id="themeSide" type="button">🌙 Dark mode</button><div class="sidefoot">UG AI Chat<br>Dream big. Build smart.</div></div></aside>
-<div class="mobile-overlay" id="overlay"></div><main class="main"><header class="topbar"><div class="top-left"><button class="menu" id="menuBtn" type="button" aria-label="Open menu">☰</button><div><span class="modelname">UG Chat</span><span class="modeltag">AI · Smart mode</span></div></div><div class="top-actions"><button class="iconbtn premium-open-btn" id="openPremium" type="button" title="Open Premium Studio" aria-label="Open Premium Studio">✦ Premium</button><button class="iconbtn blocks-open-btn" id="openBlocks" type="button" title="Open coding workspace" aria-label="Open coding workspace">🧩 Blocks</button><button class="iconbtn" id="openCodeLab" type="button" title="Edit and run programs" aria-label="Open program editor">💻 Code</button><button class="iconbtn" id="themeTop" type="button" title="Toggle theme" aria-label="Toggle theme">☾</button><button class="profilebtn" id="profileBtn" type="button" aria-label="Open profile">UG</button></div></header>
+<div class="mobile-overlay" id="overlay"></div><main class="main"><header class="topbar"><div class="top-left"><button class="menu" id="menuBtn" type="button" aria-label="Open menu">☰</button><div><span class="modelname">UG Chat</span><span class="modeltag">AI · Smart mode</span></div></div><div class="top-actions">
+<button class="iconbtn premium-open-btn" id="openPremium" type="button" title="Open Premium Studio" aria-label="Open Premium Studio">✦ Premium</button>
+<div class="tools-menu-wrap">
+  <button class="iconbtn more-menu-trigger" id="moreMenuBtn" type="button" aria-label="More options" aria-haspopup="true" aria-expanded="false" title="More options">⋮</button>
+  <div class="tools-menu hidden" id="toolsMenu" role="menu" aria-label="Workspace options">
+    <button class="tools-menu-item blocks-open-btn" id="openBlocks" type="button" role="menuitem" title="Open coding workspace">🧩 <span>Blocks</span></button>
+    <button class="tools-menu-item" id="openCodeLab" type="button" role="menuitem" title="Edit and run programs">💻 <span>Coding</span></button>
+  </div>
+</div>
+<button class="iconbtn" id="themeTop" type="button" title="Toggle theme" aria-label="Toggle theme">☾</button>
+<button class="profilebtn" id="profileBtn" type="button" aria-label="Open profile">UG</button>
+</div></header>
 <section class="chatarea" id="chatarea"><div class="welcome" id="welcome"><div class="welcome-logo">UG</div><h1>What can I help you <span>build?</span></h1><p>Your space to learn, create, and explore. Ask in easy Kannada + English, build with Python, or discover AI and robotics. 😊</p><div class="suggestions"><button class="suggestion" data-prompt="Teach me Python basics with a simple example in easy Kannada and English." type="button"><b>💻 Learn Python</b><span>Learn coding step by step</span></button><button class="suggestion" data-prompt="Explain artificial intelligence in easy Kannada and English." type="button"><b>🧠 Explore AI</b><span>Understand AI simply</span></button><button class="suggestion" data-prompt="Give me a beginner robotics project I can simulate for free." type="button"><b>🤖 Start robotics</b><span>Explore a virtual robot</span></button><button class="suggestion" data-prompt="Help me plan a useful AI startup with a zero budget." type="button"><b>🚀 Build a startup</b><span>Plan your first project</span></button></div></div><div class="messages hidden" id="messages" aria-live="polite"></div></section>
 <div class="composer-wrap"><form class="composer" id="chatForm"><div class="composer-input-row"><textarea id="prompt" rows="1" maxlength="40000" placeholder="Message Ultra Goal..." aria-label="Message"></textarea><select id="micLanguage" class="mic-language" aria-label="Voice input language" title="Choose voice input language"><option value="en-IN">English</option><option value="kn-IN">ಕನ್ನಡ</option><option value="hi-IN">हिन्दी</option><option value="ta-IN">தமிழ்</option><option value="te-IN">తెలుగు</option><option value="en-US">English (US)</option></select><button class="composer-mic" id="micBtn" type="button" title="Start voice typing" aria-label="Start voice typing">🎙️</button></div><div id="fileChip" class="file-chip hidden"><span id="fileStatus">📄 File ready</span><button type="button" id="removeFileBtn" aria-label="Remove attachment">✕</button></div><input id="fileInput" class="file-input-hidden" type="file" accept=".pdf,.txt,.md,.csv,.json,.html,.docx,.doc" aria-label="Upload a document"><div class="composer-bottom"><div class="toolrow"><button type="button" class="upload-btn" id="uploadBtn">📎 Attach</button><button type="button" class="toolbtn" id="topicBtn">✧ Learning mode</button><button type="button" class="toolbtn" id="clearInput">Clear</button><button type="button" class="toolbtn" id="stopBtn" disabled>■ Stop</button></div><button class="send" id="sendBtn" type="submit" aria-label="Send" disabled>↑</button></div></form><div class="disclaimer">AI can make mistakes. Avoid entering passwords, private information, or sensitive data.</div></div></main></div>
 <div class="modal-backdrop hidden" id="modalBackdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><div class="modal"><h2 id="modalTitle">Welcome to Ultra Goal 👋</h2><p>Set a local profile to personalize this browser. This demo does not create a secure account.</p><form id="profileForm"><label for="profileName">Display name</label><input id="profileName" maxlength="60" autocomplete="nickname" placeholder="What should we call you?"><label for="profileEmail">Email (optional, saved only on this device)</label><input id="profileEmail" maxlength="120" type="email" autocomplete="email" placeholder="you@example.com"><div class="modal-actions"><button class="secondary" type="button" id="modalCancel">Cancel</button><button class="primary" type="submit" id="modalSubmit">Save profile</button></div></form></div></div><div class="toast hidden" id="toast" role="status"></div>
@@ -609,6 +670,12 @@ async function send(textOverride,options={}){if(activeController)return;const va
 $('chatForm').addEventListener('submit',e=>{e.preventDefault();send()});
 $('openPremium').addEventListener('click',openPremiumStudio);$('closePremium').addEventListener('click',closePremiumStudio);$('premiumBackdrop').addEventListener('click',e=>{if(e.target===$('premiumBackdrop'))closePremiumStudio()});$('savePremium').addEventListener('click',()=>{savePremiumSettings();loadPremiumSettings();fillPremiumSettings();closePremiumStudio()});$('premiumReset').addEventListener('click',()=>{premiumSettings={...PREMIUM_DEFAULTS};try{localStorage.removeItem(PREMIUM_KEY)}catch(e){}fillPremiumSettings();showToast('Premium Studio settings reset.')});$('premiumFocus').addEventListener('click',()=>{document.body.classList.toggle('ug-focus-mode');premiumSettings.focus=document.body.classList.contains('ug-focus-mode');showToast(premiumSettings.focus?'Focus mode on.':'Focus mode off.')});document.querySelectorAll('[data-premium-prompt]').forEach(b=>b.addEventListener('click',()=>{textarea.value=b.dataset.premiumPrompt||'';resizeInput();closePremiumStudio();textarea.focus()}));document.addEventListener('keydown',e=>{if(e.key==='Escape')closePremiumStudio()});
 textarea.addEventListener('input',resizeInput);textarea.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing){e.preventDefault();send()}});$('historySearch').addEventListener('input',renderHistory);
+const moreMenuBtn=$('moreMenuBtn'),toolsMenu=$('toolsMenu');
+function closeToolsMenu(){toolsMenu.classList.add('hidden');moreMenuBtn.setAttribute('aria-expanded','false')}
+moreMenuBtn.addEventListener('click',e=>{e.stopPropagation();const opening=toolsMenu.classList.contains('hidden');toolsMenu.classList.toggle('hidden',!opening);moreMenuBtn.setAttribute('aria-expanded',String(opening))});
+toolsMenu.addEventListener('click',e=>{if(e.target.closest('button'))closeToolsMenu()});
+document.addEventListener('click',e=>{if(!e.target.closest('.tools-menu-wrap'))closeToolsMenu()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeToolsMenu()});
 $('newChat').addEventListener('click',newChat);$('clearInput').addEventListener('click',()=>{textarea.value='';editingMessageIndex=null;resizeInput();textarea.focus()});$('stopBtn').addEventListener('click',()=>activeController?.abort());document.querySelectorAll('[data-prompt]').forEach(b=>b.addEventListener('click',()=>{textarea.value=b.dataset.prompt||'';resizeInput();send()}));$('menuBtn').addEventListener('click',()=>{$('sidebar').classList.add('open');$('overlay').classList.add('show')});$('overlay').addEventListener('click',closeSidebar);$('themeTop').addEventListener('click',toggleTheme);$('themeSide').addEventListener('click',toggleTheme);$('topicBtn').addEventListener('click',()=>{learningMode=!learningMode;$('topicBtn').textContent=learningMode?'✧ Learning mode':'✧ General mode';textarea.placeholder=learningMode?'Ask about AI, Python or robotics...':'Message Ultra Goal...';showToast(learningMode?'Learning mode enabled.':'General mode enabled.')});$('aboutBtn').addEventListener('click',()=>{closeSidebar();alert('Ultra Goal AI Chat\n\nA learning-focused interface for maths, Python, AI, robotics, and startup ideas.\n\nYour profile and chat history are stored locally in this browser. Conversations are sent to the configured Cloudflare Worker.')});$('clearHistoryBtn').addEventListener('click',()=>{if(!confirm('Clear all saved conversations from this browser? This cannot be undone.'))return;if(activeController)activeController.abort();chats=[];activeChatId=null;editingMessageIndex=null;saveChats();renderHistory();showWelcome();closeSidebar();showToast('🧹 Chat history cleared!')});$('exportBtn').addEventListener('click',()=>{const blob=new Blob([JSON.stringify(chats,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='ultra-goal-chat-history.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);showToast('📦 Chat history export started!')});
 function loadScriptOnce(src,globalName,promise){if(window[globalName])return Promise.resolve(window[globalName]);if(promise)return promise;return new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=src;s.onload=()=>window[globalName]?resolve(window[globalName]):reject(Error('Library did not load.'));s.onerror=()=>reject(Error('Could not load document reader. Check your internet connection.'));document.head.appendChild(s)})}
 async function extractFileText(file){const name=file.name.toLowerCase();if(file.size>12*1024*1024)throw Error('Please choose a file smaller than 12 MB.');if(name.endsWith('.pdf')||file.type==='application/pdf'){pdfJsPromise=loadScriptOnce('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js','pdfjsLib',pdfJsPromise);const pdfjs=await pdfJsPromise;pdfjs.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';const pdf=await pdfjs.getDocument({data:new Uint8Array(await file.arrayBuffer())}).promise,pages=[];for(let n=1;n<=pdf.numPages;n++){const p=await pdf.getPage(n),c=await p.getTextContent();pages.push(c.items.map(i=>i.str||'').join(' '))}const result=pages.join('\n\n');if(!result.trim())throw Error('No selectable text found. This may be a scanned PDF; OCR is not included.');return result}if(name.endsWith('.docx')||file.type==='application/vnd.openxmlformats-officedocument.wordprocessingml.document'){mammothPromise=loadScriptOnce('https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.8.0/mammoth.browser.min.js','mammoth',mammothPromise);return(await(await mammothPromise).extractRawText({arrayBuffer:await file.arrayBuffer()})).value||''}if(name.endsWith('.doc'))throw Error('Old .doc files are not supported. Save as .docx or PDF.');return file.text()}
