@@ -470,6 +470,35 @@ body{background:#000!important;background-image:radial-gradient(ellipse at 50% -
 .code-block-copy:active{transform:scale(.96)}
 
 </style>
+
+<style id="ug-complete-answer-rendering-fix">
+/* Keep long AI explanations fully visible and readable. */
+#messages, .messages, .msg, .msgbody, .message-content {
+  min-width: 0 !important;
+  max-height: none !important;
+  height: auto !important;
+  overflow: visible !important;
+}
+#messages { overflow: visible !important; }
+.chatarea { overflow-y: auto !important; overflow-x: hidden !important; }
+.msgbody { flex: 1 1 auto !important; width: 100% !important; }
+.message-content {
+  display: block !important;
+  white-space: normal !important;
+  overflow-wrap: anywhere !important;
+  word-break: normal !important;
+  line-height: 1.85 !important;
+}
+.message-content p, .message-content li, .message-content blockquote {
+  max-width: 100% !important;
+  overflow-wrap: anywhere !important;
+}
+.message-content pre { max-width: 100% !important; overflow-x: auto !important; }
+@media (prefers-reduced-motion: reduce) {
+  .msg, .message-content, .message-content * { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
+</style>
+
 </head>
 <body>
 <div class="app">
