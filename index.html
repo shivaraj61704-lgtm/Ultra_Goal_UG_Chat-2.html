@@ -320,20 +320,23 @@ body{background:#000!important;background-image:radial-gradient(ellipse at 50% -
 @media(prefers-reduced-motion:reduce){.send,.send::before{animation:none!important}}
 
 /* More-options menu: existing Blocks and Code actions remain wired to their original handlers. */
-.tools-menu-wrap{position:relative;flex:0 0 auto}
-.more-menu-trigger{font-size:25px;line-height:1}
-.tools-menu{position:absolute;right:0;top:calc(100% + 9px);z-index:80;min-width:176px;padding:7px;background:var(--bg);border:1px solid var(--line);border-radius:14px;box-shadow:0 14px 38px #0002;display:grid;gap:4px}
+.tools-menu-wrap{position:static;flex:0 0 auto}
+.more-menu-trigger{font-size:12px;font-weight:700;line-height:1;min-width:58px;padding:0 10px}
+.tools-menu{position:absolute;right:18px;top:auto;bottom:7px;z-index:5;min-width:154px;padding:5px;background:var(--bg);border:1px solid var(--line);border-radius:11px;box-shadow:0 8px 22px #0002;display:grid;gap:2px}
 .tools-menu.hidden{display:none!important}
-.tools-menu-item{display:flex;align-items:center;gap:11px;width:100%;min-height:43px;padding:9px 12px;border:0;border-radius:10px;background:transparent;color:var(--text);text-align:left;font-size:13px;font-weight:650}
+.tools-menu-item{display:flex;align-items:center;gap:9px;width:100%;min-height:35px;padding:7px 9px;border:0;border-radius:8px;background:transparent;color:var(--text);text-align:left;font-size:12px;font-weight:650}
 .tools-menu-item:hover,.tools-menu-item:focus-visible{background:var(--panel2)}
-.top-actions{position:relative}
+.top-actions{position:static}
+.topbar{position:relative;z-index:20;overflow:visible;transition:min-height .15s ease}
+.topbar.menu-open{min-height:108px;align-items:flex-start;padding-top:10px;padding-bottom:48px}
 @media(max-width:760px){
   .topbar{min-height:56px;padding-left:10px;padding-right:10px}
   .top-left{gap:7px}
   .top-actions{gap:6px}
   .premium-open-btn{font-size:11px;min-width:0;height:35px;padding:0 8px}
   .more-menu-trigger{height:35px;min-width:35px;padding:0;font-size:25px}
-  .tools-menu{min-width:168px}
+  .topbar.menu-open{min-height:104px;padding-top:9px;padding-bottom:47px}
+  .tools-menu{right:10px;bottom:6px;min-width:148px}
   .chatarea{padding:14px 11px}
   .composer-wrap{padding:7px 8px max(10px,env(safe-area-inset-bottom))}
   .composer{padding:10px 9px 8px;border-radius:19px}
@@ -352,7 +355,7 @@ body{background:#000!important;background-image:radial-gradient(ellipse at 50% -
   .premium-open-btn{font-size:10px;padding:0 6px;height:33px}
   #themeTop{height:33px;min-width:33px}
   .profilebtn{height:33px;width:33px}
-  .more-menu-trigger{height:33px;min-width:33px}
+  .more-menu-trigger{height:33px;min-width:54px;font-size:11px}
   .composer-bottom{gap:5px}
   .toolrow{gap:1px}
   .upload-btn,.toolbtn{padding:7px 4px;font-size:10px}
@@ -559,7 +562,7 @@ body{background:#000!important;background-image:radial-gradient(ellipse at 50% -
 <div class="mobile-overlay" id="overlay"></div><main class="main"><header class="topbar"><div class="top-left"><button class="menu" id="menuBtn" type="button" aria-label="Open menu">☰</button><div><span class="modelname">UG Chat</span><span class="modeltag">AI · Smart mode</span></div></div><div class="top-actions">
 <button class="iconbtn premium-open-btn" id="openPremium" type="button" title="Open Premium Studio" aria-label="Open Premium Studio">✦ Premium</button>
 <div class="tools-menu-wrap">
-  <button class="iconbtn more-menu-trigger" id="moreMenuBtn" type="button" aria-label="More options" aria-haspopup="true" aria-expanded="false" title="More options">⋮</button>
+  <button class="iconbtn more-menu-trigger" id="moreMenuBtn" type="button" aria-label="More" aria-haspopup="true" aria-expanded="false" title="More">More</button>
   <div class="tools-menu hidden" id="toolsMenu" role="menu" aria-label="Workspace options">
     <button class="tools-menu-item blocks-open-btn" id="openBlocks" type="button" role="menuitem" title="Open coding workspace">🧩 <span>Blocks</span></button>
     <button class="tools-menu-item" id="openCodeLab" type="button" role="menuitem" title="Edit and run programs">💻 <span>Coding</span></button>
@@ -671,8 +674,9 @@ $('chatForm').addEventListener('submit',e=>{e.preventDefault();send()});
 $('openPremium').addEventListener('click',openPremiumStudio);$('closePremium').addEventListener('click',closePremiumStudio);$('premiumBackdrop').addEventListener('click',e=>{if(e.target===$('premiumBackdrop'))closePremiumStudio()});$('savePremium').addEventListener('click',()=>{savePremiumSettings();loadPremiumSettings();fillPremiumSettings();closePremiumStudio()});$('premiumReset').addEventListener('click',()=>{premiumSettings={...PREMIUM_DEFAULTS};try{localStorage.removeItem(PREMIUM_KEY)}catch(e){}fillPremiumSettings();showToast('Premium Studio settings reset.')});$('premiumFocus').addEventListener('click',()=>{document.body.classList.toggle('ug-focus-mode');premiumSettings.focus=document.body.classList.contains('ug-focus-mode');showToast(premiumSettings.focus?'Focus mode on.':'Focus mode off.')});document.querySelectorAll('[data-premium-prompt]').forEach(b=>b.addEventListener('click',()=>{textarea.value=b.dataset.premiumPrompt||'';resizeInput();closePremiumStudio();textarea.focus()}));document.addEventListener('keydown',e=>{if(e.key==='Escape')closePremiumStudio()});
 textarea.addEventListener('input',resizeInput);textarea.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing){e.preventDefault();send()}});$('historySearch').addEventListener('input',renderHistory);
 const moreMenuBtn=$('moreMenuBtn'),toolsMenu=$('toolsMenu');
-function closeToolsMenu(){toolsMenu.classList.add('hidden');moreMenuBtn.setAttribute('aria-expanded','false')}
-moreMenuBtn.addEventListener('click',e=>{e.stopPropagation();const opening=toolsMenu.classList.contains('hidden');toolsMenu.classList.toggle('hidden',!opening);moreMenuBtn.setAttribute('aria-expanded',String(opening))});
+const toolsTopbar=moreMenuBtn.closest('.topbar');
+function closeToolsMenu(){toolsMenu.classList.add('hidden');toolsTopbar.classList.remove('menu-open');moreMenuBtn.setAttribute('aria-expanded','false')}
+moreMenuBtn.addEventListener('click',e=>{e.stopPropagation();const opening=toolsMenu.classList.contains('hidden');toolsMenu.classList.toggle('hidden',!opening);toolsTopbar.classList.toggle('menu-open',opening);moreMenuBtn.setAttribute('aria-expanded',String(opening))});
 toolsMenu.addEventListener('click',e=>{if(e.target.closest('button'))closeToolsMenu()});
 document.addEventListener('click',e=>{if(!e.target.closest('.tools-menu-wrap'))closeToolsMenu()});
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeToolsMenu()});
@@ -1034,4 +1038,13 @@ console.log('UG Code Lab is ready.');</textarea>
 :root[data-theme="light"] .mic-language{background:#fff;color:#171717}
 @media(max-width:560px){.mic-language{max-width:88px;font-size:10px;padding:0 4px}.composer-input-row{gap:5px}.composer-mic{width:38px;height:38px;flex-basis:38px}}
 @media(prefers-reduced-motion:reduce){.composer-mic.listening{animation:none}}
+
+/* Final menu positioning: expand the header so the compact menu never covers chat messages. */
+.topbar{position:relative!important;z-index:40!important;overflow:visible!important}
+.topbar.menu-open{min-height:108px!important;padding-bottom:48px!important}
+.tools-menu{position:absolute!important;top:auto!important;bottom:7px!important;right:18px!important;z-index:10!important}
+.tools-menu.hidden{display:none!important}
+.more-menu-trigger{min-width:58px!important;font-size:12px!important;font-weight:700!important}
+@media(max-width:760px){.topbar.menu-open{min-height:104px!important;padding-bottom:47px!important}.tools-menu{right:10px!important;bottom:6px!important;min-width:148px!important}}
+@media(max-width:400px){.more-menu-trigger{min-width:54px!important;font-size:11px!important}}
 </style>
