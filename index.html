@@ -371,6 +371,31 @@ body{background:#000!important;background-image:radial-gradient(ellipse at 50% -
   .composer{padding-left:8px;padding-right:8px}
 }
 
+
+/* UG premium interaction polish and responsive Code Lab refinements */
+button:not(:disabled){transition:transform .18s ease,box-shadow .2s ease,filter .2s ease,border-color .2s ease}
+button:not(:disabled):hover{filter:brightness(1.035)}
+button:not(:disabled):active{transform:translateY(1px) scale(.975)}
+button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.primary,.send,.premium-open-btn{box-shadow:0 5px 16px color-mix(in srgb,var(--accent) 18%,transparent)}
+.primary:hover,.send:hover,.premium-open-btn:hover{box-shadow:0 8px 22px color-mix(in srgb,var(--accent) 28%,transparent);transform:translateY(-2px)}
+.suggestion,.sidebutton,.newchat,.iconbtn,.profilebtn,.toolbtn,.upload-btn{transition:transform .18s ease,box-shadow .2s ease,border-color .2s ease,background .2s ease}
+.suggestion:hover,.sidebutton:hover,.newchat:hover,.iconbtn:hover{transform:translateY(-2px);box-shadow:0 7px 20px #00000012;border-color:var(--accent)}
+.code-language-label{font-size:11px;color:var(--muted);font-weight:700;white-space:nowrap}
+.code-language-select{max-width:min(290px,42vw);min-width:150px;padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--text);font-size:12px}
+.code-editor-pane .code-editor{font-variant-ligatures:none;caret-color:var(--accent)}
+.code-preview-pane{min-height:0}
+.code-preview{min-height:280px}
+.code-lab-head{position:relative;z-index:2;gap:8px}
+.code-lab-layout{min-height:0;overflow:hidden}
+.code-pane-foot{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:8px 11px;border-top:1px solid var(--line);font-size:11px;color:var(--muted)}
+.code-console{min-height:75px}
+@media(max-width:900px){.code-lab-layout{grid-template-columns:1fr;grid-template-rows:minmax(260px,1fr) minmax(220px,.85fr);overflow:auto}.code-editor{min-height:220px}.code-preview{min-height:190px}.code-lab-head{max-height:24vh;overflow-y:auto}}
+@media(max-width:600px){.code-lab-head{padding:8px;gap:6px;align-items:center}.code-lab-head strong{font-size:13px}.code-lab-head .modeltag{display:none}.code-language-label{font-size:10px}.code-language-select{flex:1 1 100%;max-width:none;min-width:0;order:2}.code-lab-head #codeRun{margin-left:auto}.code-lab-head button{font-size:11px;padding:7px 8px}.code-lab-layout{padding:7px;gap:7px;grid-template-rows:minmax(230px,1fr) minmax(210px,.9fr)}.code-tabs{padding:6px;gap:4px}.code-tab{padding:7px 9px}.code-editor{min-height:190px;padding:11px;font-size:12px}.code-preview{min-height:170px}.code-lab-note{padding:0 10px 9px;font-size:10px}}
+@media(max-width:380px){.code-lab-head #codeDownload{display:none}.code-lab-head #codeReset{display:none}.code-language-select{font-size:11px}}
+@media(hover:none){button:not(:disabled):hover{filter:none}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+
 </style>
 
 <style>
@@ -552,6 +577,39 @@ body{background:#000!important;background-image:radial-gradient(ellipse at 50% -
 }
 </style>
 
+<style>
+
+/* UG polish: consistent tactile feedback and compact responsive controls. */
+button{transition:transform .18s ease,box-shadow .18s ease,filter .18s ease,background-color .18s ease}
+button:hover:not(:disabled){filter:brightness(1.035);box-shadow:0 5px 16px rgba(65,105,225,.16)}
+button:active:not(:disabled){transform:scale(.97)}
+button:focus-visible{outline:2px solid var(--accent);outline-offset:3px;box-shadow:0 0 0 4px rgba(65,105,225,.14)}
+@media(min-width:601px) and (max-width:1024px){
+ .code-lab-layout{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:9px;padding:10px}
+ .code-lab-head{gap:8px;padding:10px 12px}
+ .code-editor{font-size:13px}
+}
+@media(max-width:600px){
+ .code-lab-backdrop{height:100dvh;overflow:auto}
+ .code-lab-head{position:sticky;top:0;background:var(--bg);z-index:5;max-height:none;overflow:visible}
+ .code-lab-layout{display:flex;flex-direction:column;overflow:visible;min-height:0;padding:8px;gap:9px}
+ .code-editor-pane,.code-preview-pane{flex:0 0 auto;min-height:0}
+ .code-editor{min-height:210px;max-height:38dvh;font-size:13px}
+ .code-preview{min-height:190px;height:28dvh}
+ .code-console{max-height:110px}
+ .code-language-select{min-width:0;max-width:100%;font-size:12px}
+ .code-lab-head button{min-height:36px}
+}
+@media(hover:none){
+ button:hover:not(:disabled){filter:none;box-shadow:none}
+ button:active:not(:disabled){filter:brightness(.97);transform:scale(.97)}
+}
+@media(prefers-reduced-motion:reduce){
+ button{transition:none!important}
+ button:active:not(:disabled){transform:none}
+}
+
+</style>
 </head>
 <body>
 <div class="app">
@@ -768,7 +826,7 @@ loadPremiumSettings();fillPremiumSettings();try{applyTheme(localStorage.getItem(
 
 
 <div class="code-lab-backdrop hidden" id="codeLab" role="dialog" aria-modal="true" aria-label="Program editor and runner">
- <header class="code-lab-head"><strong>💻 UG Code Lab</strong><span class="modeltag">Edit · Run · Preview</span><span class="spacer"></span><button type="button" id="codeRun" class="primary">▶ Run</button><button type="button" id="codeStop">■ Stop</button><button type="button" id="codeSave">💾 Save</button><button type="button" id="codeLoad">📂 Load</button><button type="button" id="codeDownload">⇩ Download HTML</button><button type="button" id="codeReset">↺ Reset</button><button type="button" id="codeClose">✕ Close</button></header>
+ <header class="code-lab-head"><strong>💻 UG Code Lab</strong><span class="modeltag">Edit · Run · Preview</span><label class="code-language-label" for="codeLanguage">Language</label><select id="codeLanguage" class="code-language-select" aria-label="Choose programming language"><option value="web">Web (HTML + CSS + JavaScript)</option><option value="python">Python</option><option value="sql">SQL</option><option value="json">JSON</option><option value="markdown">Markdown</option><option value="javascript">JavaScript</option><option value="typescript">TypeScript</option><option value="java">Java</option><option value="c">C</option><option value="cpp">C++</option><option value="csharp">C#</option><option value="go">Go</option><option value="rust">Rust</option><option value="php">PHP</option><option value="ruby">Ruby</option><option value="swift">Swift</option><option value="kotlin">Kotlin</option><option value="bash">Bash</option></select><span class="spacer"></span><button type="button" id="codeRun" class="primary">▶ Run</button><button type="button" id="codeStop">■ Stop</button><button type="button" id="codeSave">💾 Save</button><button type="button" id="codeLoad">📂 Load</button><button type="button" id="codeDownload">⇩ Download HTML</button><button type="button" id="codeReset">↺ Reset</button><button type="button" id="codeClose">✕ Close</button></header>
  <div class="code-lab-layout">
   <section class="code-editor-pane"><nav class="code-tabs" aria-label="Code files"><button type="button" class="code-tab active" data-code-tab="html">HTML</button><button type="button" class="code-tab" data-code-tab="css">CSS</button><button type="button" class="code-tab" data-code-tab="js">JavaScript</button></nav>
    <textarea id="codeHtml" class="code-editor" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="HTML code"><main class="card"><h1>Hello, Ultra Goal! 🚀</h1><p>Edit this program, then press Run.</p><button id="helloBtn">Click me</button><p id="message"></p></main></textarea>
@@ -780,11 +838,12 @@ button { padding: 10px 16px; border: 0; border-radius: 9px; background: #4169e1;
   document.getElementById('message').textContent = 'Your program is running!';
 });
 console.log('UG Code Lab is ready.');</textarea>
+   <textarea id="codeOther" class="code-editor hidden" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Selected language source code"></textarea>
    <footer class="code-pane-foot"><span id="codeStatus">Ready. Choose a tab, edit your code and press Run.</span><span class="spacer"></span><span>Ctrl + Enter = Run</span></footer>
   </section>
   <section class="code-preview-pane"><div class="code-preview-title">Live program preview</div><iframe id="codePreview" class="code-preview" title="Your program preview" sandbox="allow-scripts allow-forms"></iframe><pre id="codeConsole" class="code-console">Console output will appear here.</pre></section>
  </div>
- <div class="code-lab-note">This editor runs HTML, CSS and JavaScript in a sandboxed preview, separate from the main Ultra Goal AI app. Save stores your code in this browser only. Do not run code from unknown sources.</div>
+ <div class="code-lab-note">Web projects run in a sandboxed preview. Python runs in your browser with Pyodide (first run needs an internet connection). SQL, JSON and Markdown have built-in preview modes. Other listed languages are editable here, but need a separately configured compiler to execute. Save stores code in this browser only. Avoid running code from unknown sources.</div>
 </div>
 
 <div class="blocks-overlay" id="blocksOverlay" aria-label="PictoBlox-style coding workspace">
@@ -993,30 +1052,149 @@ console.log('UG Code Lab is ready.');</textarea>
 (()=>{
  const $=id=>document.getElementById(id);
  const lab=$('codeLab'); if(!lab||!$('openCodeLab')) return;
- const STORE='ultraGoalCodeLabProjectV1';
- const defaults={html:'<main class="card"><h1>Hello, Ultra Goal! 🚀</h1><p>Edit this program, then press Run.</p><button id="helloBtn">Click me</button><p id="message"></p></main>',css:'body { font-family: system-ui, sans-serif; padding: 24px; background: #eef4ff; }\n.card { max-width: 520px; margin: 30px auto; padding: 24px; border-radius: 18px; background: white; box-shadow: 0 8px 28px #19345a20; }\nh1 { color: #315bd6; }\nbutton { padding: 10px 16px; border: 0; border-radius: 9px; background: #4169e1; color: white; cursor: pointer; }',js:"document.getElementById('helloBtn').addEventListener('click', () => {\n  document.getElementById('message').textContent = 'Your program is running!';\n});\nconsole.log('UG Code Lab is ready.');"};
- const fields={html:$('codeHtml'),css:$('codeCss'),js:$('codeJs')};let active='html';
+ const STORE='ultraGoalCodeLabProjectV2';
+ const defaults={
+  html:'<main class="card"><h1>Hello, Ultra Goal! 🚀</h1><p>Edit this program, then press Run.</p><button id="helloBtn">Click me</button><p id="message"></p></main>',
+  css:'body { font-family: system-ui, sans-serif; padding: 24px; background: #eef4ff; }\n.card { max-width: 520px; margin: 30px auto; padding: 24px; border-radius: 18px; background: white; box-shadow: 0 8px 28px #19345a20; }\nh1 { color: #315bd6; }\nbutton { padding: 10px 16px; border: 0; border-radius: 9px; background: #4169e1; color: white; cursor: pointer; }',
+  js:"document.getElementById('helloBtn').addEventListener('click', () => {\n  document.getElementById('message').textContent = 'Your program is running!';\n});\nconsole.log('UG Code Lab is ready.');"
+ };
+ const samples={
+  python:'print("Hello, Ultra Goal! 🚀")\nname = "Student"\nprint(f"Welcome, {name}!")\n\nfor number in range(1, 6):\n    print(number)',
+  sql:'CREATE TABLE students (id INTEGER, name TEXT);\nINSERT INTO students VALUES (1, \'Asha\'), (2, \'Ravi\');\nSELECT * FROM students;',
+  json:'{\n  "app": "Ultra Goal",\n  "features": ["Python", "Preview", "Coding"],\n  "ready": true\n}',
+  markdown:'# Hello, Ultra Goal!\n\nWrite **Markdown** here.\n\n- Easy to read\n- Live preview',
+  javascript:'console.log("Hello, Ultra Goal!");',
+  typescript:'const greeting: string = "Hello, Ultra Goal!";\nconsole.log(greeting);',
+  java:'public class Main {\n    public static void main(String[] args) {\n        System.out.println("Hello, Ultra Goal!");\n    }\n}',
+  c:'#include <stdio.h>\nint main(void) {\n    printf("Hello, Ultra Goal!\\n");\n    return 0;\n}',
+  cpp:'#include <iostream>\nint main() {\n    std::cout << "Hello, Ultra Goal!\\n";\n    return 0;\n}',
+  csharp:'using System;\nclass Program {\n    static void Main() { Console.WriteLine("Hello, Ultra Goal!"); }\n}',
+  go:'package main\nimport "fmt"\nfunc main() { fmt.Println("Hello, Ultra Goal!") }',
+  rust:'fn main() {\n    println!("Hello, Ultra Goal!");\n}',
+  php:'<?php\necho "Hello, Ultra Goal!\\n";\n?>',
+  ruby:'puts "Hello, Ultra Goal!"',
+  swift:'print("Hello, Ultra Goal!")',
+  kotlin:'fun main() {\n    println("Hello, Ultra Goal!")\n}',
+  bash:'#!/usr/bin/env bash\necho "Hello, Ultra Goal!"'
+ };
+ const ext={python:'py',sql:'sql',json:'json',markdown:'md',javascript:'js',typescript:'ts',java:'java',c:'c',cpp:'cpp',csharp:'cs',go:'go',rust:'rs',php:'php',ruby:'rb',swift:'swift',kotlin:'kt',bash:'sh'};
+ const fields={html:$('codeHtml'),css:$('codeCss'),js:$('codeJs')};
+ const other=$('codeOther'),language=$('codeLanguage'),tabs=document.querySelector('.code-tabs');
+ let active='html',pyodidePromise=null,sqlPromise=null,typescriptPromise=null,runToken=0;const languageDrafts={};
  const status=t=>{$('codeStatus').textContent=t};
- function project(){return {html:fields.html.value,css:fields.css.value,js:fields.js.value}};
- function setProject(p){Object.keys(fields).forEach(k=>fields[k].value=typeof p?.[k]==='string'?p[k]:defaults[k]);}
- function showTab(name){active=name;document.querySelectorAll('[data-code-tab]').forEach(b=>b.classList.toggle('active',b.dataset.codeTab===name));Object.entries(fields).forEach(([k,el])=>el.classList.toggle('hidden',k!==name));fields[name].focus()}
- function open(){lab.classList.remove('hidden');showTab(active);$('openCodeLab').setAttribute('aria-expanded','true');}
+ const mode=()=>language.value;
+ const isWeb=()=>mode()==='web';
+ function project(){return {mode:mode(),html:fields.html.value,css:fields.css.value,js:fields.js.value,other:other.value,drafts:{...languageDrafts,[mode()]:other.value}};}
+ function setProject(p){
+  Object.keys(fields).forEach(k=>fields[k].value=typeof p?.[k]==='string'?p[k]:defaults[k]);
+  language.value=p?.mode||'web';
+  if(![...language.options].some(o=>o.value===language.value))language.value='web';
+  language.dataset.previous=language.value;
+  Object.keys(languageDrafts).forEach(k=>delete languageDrafts[k]);if(p?.drafts&&typeof p.drafts==='object')Object.assign(languageDrafts,p.drafts);other.value=languageDrafts[mode()]??(typeof p?.other==='string'?p.other:(samples[mode()]||''));
+  updateModeUI();
+ }
+ function updateModeUI(){
+  const web=isWeb();tabs.classList.toggle('hidden',!web);
+  Object.entries(fields).forEach(([k,el])=>el.classList.toggle('hidden',!web||k!==active));
+  other.classList.toggle('hidden',web);
+  other.setAttribute('aria-label',(language.options[language.selectedIndex]?.textContent||'')+' source code');
+  $('codeDownload').textContent=web?'⇩ Download HTML':'⇩ Download '+(ext[mode()]||'code').toUpperCase();
+  $('codePreview').title=web?'Your web project preview':'Program output preview';
+  $('codeRun').textContent=mode()==='python'?'▶ Run Python':mode()==='sql'?'▶ Run SQL':'▶ Run';
+ }
+ function showTab(name){active=name;document.querySelectorAll('[data-code-tab]').forEach(b=>b.classList.toggle('active',b.dataset.codeTab===name));Object.entries(fields).forEach(([k,el])=>el.classList.toggle('hidden',!isWeb()||k!==name));if(isWeb())fields[name].focus()}
+ function open(){lab.classList.remove('hidden');updateModeUI();if(isWeb())showTab(active);else other.focus();$('openCodeLab').setAttribute('aria-expanded','true');}
  function close(){lab.classList.add('hidden');$('openCodeLab').setAttribute('aria-expanded','false');$('openCodeLab').focus()}
  function escapeScript(s){return JSON.stringify(s).replace(/</g,'\\u003c').replace(/>/g,'\\u003e').replace(/&/g,'\\u0026');}
- function run(){const p=project();const consoleBridge=`<script>(function(){const send=(type,args)=>parent.postMessage({ugCodeLab:true,type,args:Array.from(args||[]).map(x=>{try{return typeof x==='string'?x:JSON.stringify(x)}catch(e){return String(x)}})},'*');['log','info','warn','error'].forEach(k=>{const old=console[k];console[k]=function(){send(k,arguments);try{old.apply(console,arguments)}catch(e){}}});window.addEventListener('error',e=>send('error',[e.message+' at line '+e.lineno]));window.addEventListener('unhandledrejection',e=>send('error',[String(e.reason)]));})();<\/script>`;
+ function showOutput(title,body){
+  const safe=String(body??'');
+  $('codePreview').srcdoc='<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{font:14px/1.6 system-ui;padding:16px;color:#182033;overflow-wrap:anywhere}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#f3f5fa;padding:12px;border-radius:10px}</style></head><body><h3>'+title.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))+'</h3><pre>'+safe.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))+'</pre></body></html>';
+ }
+ function runWeb(){
+  const p=project();const consoleBridge=`<script>(function(){const send=(type,args)=>parent.postMessage({ugCodeLab:true,type,args:Array.from(args||[]).map(x=>{try{return typeof x==='string'?x:JSON.stringify(x)}catch(e){return String(x)}})},'*');['log','info','warn','error'].forEach(k=>{const old=console[k];console[k]=function(){send(k,arguments);try{old.apply(console,arguments)}catch(e){}}});window.addEventListener('error',e=>send('error',[e.message+' at line '+e.lineno]));window.addEventListener('unhandledrejection',e=>send('error',[String(e.reason)]));})();<\/script>`;
   const userJs=`<script>try{(new Function(${escapeScript(p.js)}))()}catch(e){parent.postMessage({ugCodeLab:true,type:'error',args:[e.name+': '+e.message]},'*')}<\/script>`;
   const doc='<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>'+p.css+'</style></head><body>'+p.html+consoleBridge+userJs+'</body></html>';
-  $('codeConsole').textContent='Running…';$('codePreview').srcdoc=doc;status('Program running in the sandbox preview.');
+  $('codeConsole').textContent='Running web project…';$('codePreview').srcdoc=doc;status('Web project running in the sandbox preview.');
+ }
+ function runStandaloneJs(code){
+  const bridge=`<script>(function(){const send=(type,args)=>parent.postMessage({ugCodeLab:true,type,args:Array.from(args||[]).map(x=>{try{return typeof x==='string'?x:JSON.stringify(x)}catch(e){return String(x)}})},'*');['log','info','warn','error'].forEach(k=>{const old=console[k];console[k]=function(){send(k,arguments);try{old.apply(console,arguments)}catch(e){}}});window.addEventListener('error',e=>send('error',[e.message+' at line '+e.lineno]));window.addEventListener('unhandledrejection',e=>send('error',[String(e.reason)]));})();<\/script>`;
+  const script=`<script>try{(new Function(${escapeScript(code)}))()}catch(e){parent.postMessage({ugCodeLab:true,type:'error',args:[e.name+': '+e.message]},'*')}<\/script>`;
+  $('codePreview').srcdoc='<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head><body style="font:14px system-ui;padding:14px">JavaScript output is shown in the console below.'+bridge+script+'</body></html>';
+  $('codeConsole').textContent='JavaScript running…';status('JavaScript running in the sandbox preview.');
+ }
+ function loadScript(src){return new Promise((resolve,reject)=>{const sc=document.createElement('script');sc.src=src;sc.onload=resolve;sc.onerror=()=>reject(Error('Could not load the language runtime. Check your internet connection and try again.'));document.head.appendChild(sc);});}
+ async function runPython(code,token){
+  try{
+   if(!pyodidePromise)pyodidePromise=(async()=>{await loadScript('https://cdn.jsdelivr.net/pyodide/v0.27.7/full/pyodide.js');return await loadPyodide({indexURL:'https://cdn.jsdelivr.net/pyodide/v0.27.7/full/'});})();
+   status('Loading Python runtime… first run may take a little time.');$('codeConsole').textContent='Preparing Python…';
+   const py=await pyodidePromise;if(token!==runToken)return;
+   let output='';py.setStdout({batched:m=>{output+=m+'\n';}});py.setStderr({batched:m=>{output+='[stderr] '+m+'\n';}});
+   status('Running Python in your browser…');await py.runPythonAsync(code);
+   if(token!==runToken)return;$('codeConsole').textContent=output.trimEnd()||'Python finished with no printed output.';showOutput('Python output',$('codeConsole').textContent);status('Python finished successfully in your browser.');
+  }catch(e){if(token!==runToken)return;$('codeConsole').textContent='Python error: '+(e.message||e);showOutput('Python error',$('codeConsole').textContent);status('Python could not run. Check the error output and internet connection.');}
+ }
+ async function runTypeScript(code,token){
+  try{
+   if(!typescriptPromise)typescriptPromise=(async()=>{await loadScript('https://cdn.jsdelivr.net/npm/typescript@5.8.3/lib/typescript.js');return window.ts;})();
+   status('Loading TypeScript compiler…');$('codeConsole').textContent='Preparing TypeScript…';
+   const ts=await typescriptPromise;if(token!==runToken)return;
+   const compiled=ts.transpileModule(code,{compilerOptions:{target:ts.ScriptTarget.ES2020,module:ts.ModuleKind.None},reportDiagnostics:true});
+   const errors=(compiled.diagnostics||[]).filter(d=>d.category===ts.DiagnosticCategory.Error);
+   if(errors.length){
+    const report=errors.map(d=>{const msg=ts.flattenDiagnosticMessageText(d.messageText,'\\n');return (d.file&&d.start!==undefined?d.file.getLineAndCharacterOfPosition(d.start).line+1+': ':'')+msg;}).join('\\n');
+    $('codeConsole').textContent='TypeScript compile error:\\n'+report;showOutput('TypeScript compile error',$('codeConsole').textContent);status('TypeScript could not compile. Review the errors.');return;
+   }
+   if(token!==runToken)return;
+   $('codeConsole').textContent='TypeScript compiled successfully. Running JavaScript output…';
+   runStandaloneJs(compiled.outputText);status('TypeScript compiled and is running in the isolated preview.');
+  }catch(e){if(token!==runToken)return;$('codeConsole').textContent='TypeScript error: '+(e.message||e);showOutput('TypeScript error',$('codeConsole').textContent);status('TypeScript compiler could not load. Check your internet connection.');}
+ }
+ async function runSql(code,token){
+  try{
+   if(!sqlPromise)sqlPromise=(async()=>{await loadScript('https://cdn.jsdelivr.net/npm/sql.js@1.13.0/dist/sql-wasm.js');return await initSqlJs({locateFile:f=>'https://cdn.jsdelivr.net/npm/sql.js@1.13.0/dist/'+f});})();
+   status('Loading SQL engine…');const SQL=await sqlPromise;if(token!==runToken)return;const db=new SQL.Database();db.run(code);const rows=[];
+   db.each('SELECT name FROM sqlite_master WHERE type="table" ORDER BY name',[],r=>rows.push(r.name));
+   let result='SQL completed successfully.';try{const statements=code.split(';').map(x=>x.trim()).filter(Boolean);const last=statements[statements.length-1]||'';if(/^select\b/i.test(last)){const res=db.exec(last);result=res.length?res.map(t=>[t.columns.join(' | '),...t.values.map(r=>r.join(' | '))].join('\n')).join('\n\n'):'Query returned no rows.';}else if(rows.length)result+='\nTables: '+rows.join(', ');}catch(e){result='SQL ran, but result display failed: '+e.message;}
+   if(token!==runToken)return;$('codeConsole').textContent=result;showOutput('SQL result',result);status('SQL executed successfully in the browser.');db.close();
+  }catch(e){if(token!==runToken)return;$('codeConsole').textContent='SQL error: '+(e.message||e);showOutput('SQL error',$('codeConsole').textContent);status('SQL could not run.');}
+ }
+ function escapeHtml(x){return x.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+ function showSourcePreview(title,code,message){
+  const safeCode=escapeHtml(code);
+  const safeMessage=escapeHtml(message);
+  $('codePreview').srcdoc='<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{font:14px/1.6 system-ui;padding:16px;color:#182033}h3{margin:0 0 8px}.note{padding:10px 12px;border-radius:10px;background:#f2f5ff;color:#34456f;margin:0 0 14px}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#111827;color:#e5e7eb;padding:14px;border-radius:12px;overflow:auto;font:12px/1.6 ui-monospace,monospace}</style></head><body><h3>'+escapeHtml(title)+'</h3><p class="note">'+safeMessage+'</p><pre><code>'+safeCode+'</code></pre></body></html>';
+ }
+ function run(){
+  const token=++runToken;const selected=mode();
+  $('codeConsole').textContent='Running…';
+  if(selected==='web'){runWeb();return;}
+  const code=other.value;
+  if(selected==='javascript'){runStandaloneJs(code);return;}
+  if(selected==='python'){runPython(code,token);return;}
+  if(selected==='typescript'){runTypeScript(code,token);return;}
+  if(selected==='sql'){runSql(code,token);return;}
+  if(selected==='json'){
+   try{const parsed=JSON.parse(code);const result=JSON.stringify(parsed,null,2);$('codeConsole').textContent='Valid JSON ✓';$('codePreview').srcdoc='<!doctype html><html><body style="font:13px/1.6 monospace;padding:14px"><pre style="white-space:pre-wrap">'+escapeHtml(result)+'</pre></body></html>';status('Valid JSON. Preview formatted successfully.');}
+   catch(e){$('codeConsole').textContent='JSON error: '+e.message;showOutput('JSON validation error',$('codeConsole').textContent);status('Invalid JSON. Check commas, quotes and brackets.');}return;
+  }
+  if(selected==='markdown'){
+   const html=escapeHtml(code).replace(/^### (.*)$/gm,'<h3>$1</h3>').replace(/^## (.*)$/gm,'<h2>$1</h2>').replace(/^# (.*)$/gm,'<h1>$1</h1>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\*(.*?)\*/g,'<em>$1</em>').replace(/`([^`]+)`/g,'<code>$1</code>').replace(/^- (.*)$/gm,'• $1').replace(/\n/g,'<br>');
+   $('codePreview').srcdoc='<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{font:15px/1.7 system-ui;padding:18px;color:#182033}code{background:#eef;padding:2px 5px;border-radius:4px}</style></head><body>'+html+'</body></html>';$('codeConsole').textContent='Markdown preview updated.';status('Markdown preview ready.');return;
+  }
+  const labels={typescript:'TypeScript editing is available; a TypeScript compiler is not bundled in this offline file.',java:'Java source editor is ready; a Java compiler is not bundled in this offline file.',c:'C source editor is ready; a C compiler is not bundled in this offline file.',cpp:'C++ source editor is ready; a C++ compiler is not bundled in this offline file.',csharp:'C# source editor is ready; a C# compiler is not bundled in this offline file.',go:'Go source editor is ready; a Go compiler is not bundled in this offline file.',rust:'Rust source editor is ready; a Rust compiler is not bundled in this offline file.',php:'PHP source editor is ready; a PHP runtime is not bundled in this offline file.',ruby:'Ruby source editor is ready; a Ruby runtime is not bundled in this offline file.',swift:'Swift source editor is ready; a Swift compiler is not bundled in this offline file.',kotlin:'Kotlin source editor is ready; a Kotlin compiler is not bundled in this offline file.',bash:'Bash source editor is ready; a shell runtime is not bundled in this offline file.'};
+  $('codeConsole').textContent=labels[selected]+' Your source code is shown in the preview; it has not been executed.';showSourcePreview((language.options[language.selectedIndex]?.textContent||selected)+' source preview',code,labels[selected]+' This mode previews your source safely; it does not claim to execute it.');status('Source preview ready for '+selected+'. Execution needs a compatible compiler or runtime.');
  }
  window.addEventListener('message',e=>{if(e.source!==$('codePreview').contentWindow||!e.data||e.data.ugCodeLab!==true)return;const line='['+e.data.type+'] '+(e.data.args||[]).join(' ');const box=$('codeConsole');box.textContent=(box.textContent==='Running…'?'':box.textContent+'\n')+line;box.scrollTop=box.scrollHeight;if(e.data.type==='error')status('Program reported an error. Check the console below the preview.');});
  $('openCodeLab').addEventListener('click',open);$('codeClose').addEventListener('click',close);$('codeRun').addEventListener('click',run);
- $('codeStop').addEventListener('click',()=>{$('codePreview').srcdoc='<!doctype html><title>Stopped</title><p style="font:16px system-ui;padding:20px">Program stopped.</p>';$('codeConsole').textContent='Program stopped.';status('Stopped.');});
+ $('codeStop').addEventListener('click',()=>{runToken++;$('codePreview').srcdoc='<!doctype html><title>Stopped</title><p style="font:16px system-ui;padding:20px">Program stopped.</p>';$('codeConsole').textContent='Program stopped.';status('Stopped.');});
  document.querySelectorAll('[data-code-tab]').forEach(b=>b.addEventListener('click',()=>showTab(b.dataset.codeTab)));
+ language.addEventListener('change',()=>{const previous=language.dataset.previous||'web';if(previous!=='web')languageDrafts[previous]=other.value;language.dataset.previous=mode();if(!isWeb())other.value=languageDrafts[mode()]??(samples[mode()]||'');updateModeUI();if(isWeb())showTab(active);else{other.focus();status((language.options[language.selectedIndex]?.textContent||'Language')+' editor ready.');}});
  $('codeSave').addEventListener('click',()=>{try{localStorage.setItem(STORE,JSON.stringify(project()));status('Project saved on this device.');if(typeof showToast==='function')showToast('Code project saved on this device.')}catch(e){status('Could not save project: browser storage is unavailable.')}});
- $('codeLoad').addEventListener('click',()=>{try{const p=JSON.parse(localStorage.getItem(STORE)||'null');if(!p)throw Error('No saved project found.');setProject(p);status('Saved project loaded.')}catch(e){status(e.message||'Could not load project.')}});
- $('codeReset').addEventListener('click',()=>{if(!confirm('Reset all three editor tabs to the starter example?'))return;setProject(defaults);$('codeConsole').textContent='Console output will appear here.';status('Starter example restored.');});
- $('codeDownload').addEventListener('click',()=>{const p=project();const file='<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>'+p.css+'</style></head><body>'+p.html+'<script>'+p.js.split('<'+'/script').join('<\\/'+'script')+'</'+'script></body></html>';const blob=new Blob([file],{type:'text/html'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='ultra-goal-program.html';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);status('Standalone HTML program downloaded.');});
+ $('codeLoad').addEventListener('click',()=>{try{let p=JSON.parse(localStorage.getItem(STORE)||'null');if(!p){p=JSON.parse(localStorage.getItem('ultraGoalCodeLabProjectV1')||'null');if(p)p.mode='web';}if(!p)throw Error('No saved project found.');setProject(p);status('Saved project loaded.');}catch(e){status(e.message||'Could not load project.')}});
+ $('codeReset').addEventListener('click',()=>{if(!confirm('Reset the current editor to its starter example?'))return;if(isWeb()){Object.keys(fields).forEach(k=>fields[k].value=defaults[k]);}else other.value=samples[mode()]||'';$('codeConsole').textContent='Console output will appear here.';status('Starter example restored.');});
+ $('codeDownload').addEventListener('click',()=>{let content,name;if(isWeb()){const p=project();content='<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>'+p.css+'</style></head><body>'+p.html+'<script>'+p.js.split('<'+'/script').join('<\\/'+'script')+'</'+'script></body></html>';name='ultra-goal-program.html';}else{content=other.value;name='ultra-goal-program.'+(ext[mode()]||'txt');}const blob=new Blob([content],{type:'text/plain;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);status('Source file downloaded: '+name);});
  document.addEventListener('keydown',e=>{if(lab.classList.contains('hidden'))return;if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();run()}if(e.key==='Escape')close();});
+ language.dataset.previous=mode();updateModeUI();
 })();
 </script>
 
