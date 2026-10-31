@@ -311,70 +311,13 @@ body{background:#000!important;background-image:radial-gradient(ellipse at 50% -
 .tracker-note{font-size:11px;color:var(--muted);line-height:1.55;margin-top:10px}
 @media(max-width:700px){.tracker-panel{height:96dvh;padding:14px;border-radius:15px}.tracker-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.tracker-columns{grid-template-columns:1fr}.tracker-fields{grid-template-columns:1fr}.tracker-fields .wide{grid-column:auto}.tracker-head h2{font-size:19px}}
 
-
-/* ===== Ultra Goal premium interaction layer (additive; preserves existing features) ===== */
-:root{
- --ug-ease:cubic-bezier(.2,.75,.25,1);
- --ug-glow:0 12px 34px color-mix(in srgb,var(--accent) 13%,transparent);
-}
-button,.sidebutton,.newchat,.iconbtn,.suggestion,.toolbtn,.upload-btn,.send,
-.tracker-card,.tracker-stat,.premium-field,.modal,.tracker-panel,.premium-panel,
-.code-panel,.block-panel{
- transition:transform .18s var(--ug-ease),box-shadow .2s var(--ug-ease),
- background-color .2s ease,border-color .2s ease,filter .2s ease,opacity .2s ease;
-}
-button:not(:disabled):hover,.sidebutton:hover,.newchat:hover,.iconbtn:hover,
-.suggestion:hover,.toolbtn:hover,.upload-btn:hover{
- transform:translateY(-2px);
- box-shadow:var(--ug-glow);
- border-color:color-mix(in srgb,var(--accent) 42%,var(--line));
-}
-button:not(:disabled):active,.sidebutton:active,.newchat:active,.iconbtn:active,
-.suggestion:active,.toolbtn:active,.upload-btn:active{
- transform:translateY(0) scale(.975);
- filter:brightness(.97);
-}
-button:disabled{transform:none!important;box-shadow:none!important}
-button{position:relative;isolation:isolate; -webkit-tap-highlight-color:transparent}
-button:focus-visible{box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 18%,transparent)}
-.logo,.welcome-logo,.mini-logo,.profilebtn{
- box-shadow:0 5px 18px color-mix(in srgb,var(--accent) 22%,transparent);
-}
-.logo,.welcome-logo{animation:ug-float 5s ease-in-out infinite}
-.welcome h1{animation:ug-rise .55s var(--ug-ease) both}
-.welcome>p{animation:ug-rise .65s var(--ug-ease) both}
-.suggestion{animation:ug-rise .55s var(--ug-ease) both}
-.suggestion:nth-child(2){animation-delay:.05s}.suggestion:nth-child(3){animation-delay:.1s}.suggestion:nth-child(4){animation-delay:.15s}
-.topbar,.composer{backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
-.history-item{transition:background .18s ease,transform .18s var(--ug-ease),border-color .18s ease}
-.history-item:hover{transform:translateX(3px)}
-.messages>*{animation:ug-message-in .24s var(--ug-ease) both}
-.modal,.tracker-panel,.premium-panel,.code-panel,.block-panel{
- animation:ug-panel-in .24s var(--ug-ease) both;
-}
-.modal-backdrop,.tracker-backdrop,.premium-backdrop{
- animation:ug-fade-in .18s ease both;
-}
-.tracker-card,.tracker-stat{will-change:transform}
-.tracker-card:hover{transform:translateY(-2px);box-shadow:var(--ug-glow)}
-input,textarea,select{transition:border-color .18s ease,box-shadow .18s ease,background-color .18s ease}
-input:focus,textarea:focus,select:focus{
- border-color:var(--accent)!important;
- box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 15%,transparent);
-}
-.send:not(:disabled){box-shadow:0 5px 18px color-mix(in srgb,var(--accent) 28%,transparent)}
-.send:not(:disabled):hover{transform:translateY(-2px) scale(1.04)}
-.toast{animation:ug-toast-in .22s var(--ug-ease) both}
-@keyframes ug-rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-@keyframes ug-message-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-@keyframes ug-panel-in{from{opacity:0;transform:translateY(12px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
-@keyframes ug-fade-in{from{opacity:0}to{opacity:1}}
-@keyframes ug-toast-in{from{opacity:0;transform:translate(-50%,10px)}to{opacity:1;transform:translate(-50%,0)}}
-@keyframes ug-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
-@media(hover:none){button:not(:disabled):hover,.sidebutton:hover,.newchat:hover,.iconbtn:hover,.suggestion:hover{transform:none;box-shadow:none}}
-@media(prefers-reduced-motion:reduce){
- *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
-}
+/* Send button: subtle blue + red ambient glow */
+.send{position:relative;isolation:isolate;box-shadow:0 0 10px #287dff99,0 0 19px #287dff66,0 0 27px #ef354b44!important;animation:sendGlowPulse 2.8s ease-in-out infinite}
+.send::before{content:"";position:absolute;inset:-5px;border-radius:50%;z-index:-1;pointer-events:none;background:conic-gradient(from 0deg,#287dff,#ef354b,#287dff);filter:blur(10px);opacity:.48;animation:sendGlowRotate 5s linear infinite}
+.send:hover:not(:disabled){box-shadow:0 0 13px #287dffcc,0 0 25px #ef354b99,0 0 34px #287dff66!important}
+@keyframes sendGlowPulse{0%,100%{filter:brightness(1);box-shadow:0 0 9px #287dff88,0 0 17px #287dff55,0 0 24px #ef354b33}50%{filter:brightness(1.12);box-shadow:0 0 13px #287dffbb,0 0 22px #ef354b77,0 0 31px #287dff55}}
+@keyframes sendGlowRotate{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){.send,.send::before{animation:none!important}}
 </style>
 
 <style>
@@ -392,6 +335,129 @@ input:focus,textarea:focus,select:focus{
 @media(max-width:760px){.code-lab-layout{grid-template-columns:1fr;grid-template-rows:minmax(270px,1fr) minmax(250px,1fr);overflow:auto}.code-lab-head{padding:9px}.code-lab-head button{padding:7px 8px}.code-editor{min-height:220px}.code-preview{min-height:210px}}
 </style>
 
+
+<style>
+/* One shared red + blue gradient outline around the complete composer:
+   message field, attachment controls, microphone and send button. */
+#chatForm.composer{
+  position:relative!important;
+  border:2px solid transparent!important;
+  background:
+    linear-gradient(#050505,#050505) padding-box,
+    linear-gradient(115deg,#1677ff 0%,#456dff 25%,#a34dff 50%,#ff3158 76%,#1677ff 100%) border-box!important;
+  background-size:100% 100%,220% 220%!important;
+  background-position:0 0,0% 50%!important;
+  box-shadow:
+    0 0 0 1px #287dff22,
+    0 0 14px #287dff55,
+    0 0 24px #ef354b33,
+    0 12px 45px #000!important;
+  animation:composerRGBOutline 7s ease-in-out infinite!important;
+}
+:root[data-theme="light"] #chatForm.composer{
+  background:
+    linear-gradient(#fff,#fff) padding-box,
+    linear-gradient(115deg,#1677ff 0%,#456dff 25%,#a34dff 50%,#ff3158 76%,#1677ff 100%) border-box!important;
+  box-shadow:0 0 0 1px #287dff18,0 0 13px #287dff33,0 0 22px #ef354b22,0 8px 28px #0000000d!important;
+}
+#chatForm.composer:focus-within{
+  box-shadow:0 0 0 2px #287dff22,0 0 18px #287dff77,0 0 30px #ef354b55,0 12px 45px #000!important;
+}
+@keyframes composerRGBOutline{
+  0%,100%{background-position:0 0,0% 50%}
+  50%{background-position:0 0,100% 50%}
+}
+@media(prefers-reduced-motion:reduce){#chatForm.composer{animation:none!important}}
+</style>
+
+<style>
+/* Premium white send button with a crisp arrow and animated RGB halo. */
+#sendBtn.send{
+  position:relative!important;isolation:isolate!important;overflow:visible!important;
+  background:linear-gradient(145deg,#ffffff 0%,#f4f7ff 55%,#e9efff 100%)!important;
+  color:#101827!important;-webkit-text-fill-color:#101827!important;
+  border:1px solid rgba(255,255,255,.95)!important;
+  box-shadow:0 4px 14px rgba(255,255,255,.18),0 0 18px rgba(40,125,255,.42),0 0 25px rgba(239,53,75,.22)!important;
+  animation:whiteSendFloat 2.2s ease-in-out infinite!important;
+  transition:transform .2s ease,box-shadow .2s ease,filter .2s ease!important;
+}
+#sendBtn.send::before{
+  content:"";position:absolute;z-index:-1;inset:-4px;border-radius:50%;padding:2px;
+  background:conic-gradient(from 0deg,#1677ff 0%,#73c7ff 25%,#ef354b 52%,#ff8290 72%,#1677ff 100%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;
+  filter:drop-shadow(0 0 5px rgba(40,125,255,.65)) drop-shadow(0 0 7px rgba(239,53,75,.4));
+  animation:whiteSendRing 3.2s linear infinite;pointer-events:none;
+}
+#sendBtn.send::after{content:"";position:absolute;inset:-9px;border-radius:50%;z-index:-2;
+  background:conic-gradient(from 180deg,transparent 0 20%,rgba(40,125,255,.42),transparent 45% 65%,rgba(239,53,75,.38),transparent 85%);
+  filter:blur(9px);opacity:.7;animation:whiteSendRing 5s linear infinite;pointer-events:none}
+#sendBtn.send:hover:not(:disabled){transform:translateY(-3px) scale(1.09)!important;filter:brightness(1.04);
+  box-shadow:0 7px 20px rgba(255,255,255,.24),0 0 24px rgba(40,125,255,.7),0 0 32px rgba(239,53,75,.4)!important}
+#sendBtn.send:active:not(:disabled){transform:scale(.92)!important}
+#sendBtn.send:disabled{animation:none!important;opacity:.55}
+@keyframes whiteSendFloat{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-2px) scale(1.045)}}
+@keyframes whiteSendRing{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){#sendBtn.send,#sendBtn.send::before,#sendBtn.send::after{animation:none!important}}
+</style>
+
+<style id="premium-chat-message-effects">
+/* Premium chat message motion and response styling */
+@keyframes chatMessageEnter{
+  0%{opacity:0;transform:translate3d(0,14px,0) scale(.985);filter:blur(3px)}
+  70%{opacity:1;filter:blur(0)}
+  100%{opacity:1;transform:translate3d(0,0,0) scale(1);filter:blur(0)}
+}
+@keyframes aiAccentSweep{
+  0%,100%{background-position:0% 50%;opacity:.55}
+  50%{background-position:100% 50%;opacity:1}
+}
+.messages>.msg{
+  animation:chatMessageEnter .48s cubic-bezier(.2,.75,.25,1) both;
+  transform-origin:50% 100%;
+}
+.messages>.msg.user{animation-duration:.34s}
+.messages>.msg:not(.user) .msgbody{
+  position:relative;
+  padding:2px 0;
+}
+.messages>.msg:not(.user) .message-content{
+  animation:chatMessageEnter .55s ease-out both;
+}
+.messages>.msg.user .userbubble{
+  transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease;
+}
+.messages>.msg.user .userbubble:hover{
+  transform:translateY(-1px);
+  box-shadow:0 7px 22px #287dff18;
+  border-color:#477fff66;
+}
+.message-content h1,.message-content h2,.message-content h3{
+  text-wrap:balance;
+}
+.message-content pre{
+  position:relative;
+  transition:border-color .22s ease,box-shadow .22s ease,transform .22s ease;
+  box-shadow:0 5px 18px #00000012;
+}
+.message-content pre:hover{
+  border-color:#4385ff88;
+  box-shadow:0 8px 25px #287dff20;
+  transform:translateY(-1px);
+}
+.message-content blockquote{
+  border-image:linear-gradient(180deg,#287dff,#ef354b) 1;
+  background:linear-gradient(90deg,#287dff0c,transparent 85%);
+  border-radius:0 10px 10px 0;
+}
+@media(prefers-reduced-motion:reduce){
+  .messages>.msg,.messages>.msg:not(.user) .message-content{
+    animation:none!important;filter:none!important;
+  }
+  .messages>.msg.user .userbubble,.message-content pre{transition:none!important}
+}
+</style>
+
 </head>
 <body>
 <div class="app">
@@ -401,7 +467,7 @@ input:focus,textarea:focus,select:focus{
 <div class="sidebottom"><button class="sidebutton" id="exportBtn" type="button">⇩ Export conversations</button><button class="sidebutton" id="clearHistoryBtn" type="button">⌫ Clear chat history</button><button class="sidebutton" id="aboutBtn" type="button">✦ About Ultra Goal</button><button class="sidebutton" id="themeSide" type="button">🌙 Dark mode</button><div class="sidefoot">UG AI Chat<br>Dream big. Build smart.</div></div></aside>
 <div class="mobile-overlay" id="overlay"></div><main class="main"><header class="topbar"><div class="top-left"><button class="menu" id="menuBtn" type="button" aria-label="Open menu">☰</button><div><span class="modelname">UG Chat</span><span class="modeltag">AI · Smart mode</span></div></div><div class="top-actions"><button class="iconbtn premium-open-btn" id="openPremium" type="button" title="Open Premium Studio" aria-label="Open Premium Studio">✦ Premium</button><button class="iconbtn blocks-open-btn" id="openBlocks" type="button" title="Open coding workspace" aria-label="Open coding workspace">🧩 Blocks</button><button class="iconbtn" id="openCodeLab" type="button" title="Edit and run programs" aria-label="Open program editor">💻 Code</button><button class="iconbtn" id="themeTop" type="button" title="Toggle theme" aria-label="Toggle theme">☾</button><button class="profilebtn" id="profileBtn" type="button" aria-label="Open profile">UG</button></div></header>
 <section class="chatarea" id="chatarea"><div class="welcome" id="welcome"><div class="welcome-logo">UG</div><h1>What can I help you <span>build?</span></h1><p>Your space to learn, create, and explore. Ask in easy Kannada + English, build with Python, or discover AI and robotics. 😊</p><div class="suggestions"><button class="suggestion" data-prompt="Teach me Python basics with a simple example in easy Kannada and English." type="button"><b>💻 Learn Python</b><span>Learn coding step by step</span></button><button class="suggestion" data-prompt="Explain artificial intelligence in easy Kannada and English." type="button"><b>🧠 Explore AI</b><span>Understand AI simply</span></button><button class="suggestion" data-prompt="Give me a beginner robotics project I can simulate for free." type="button"><b>🤖 Start robotics</b><span>Explore a virtual robot</span></button><button class="suggestion" data-prompt="Help me plan a useful AI startup with a zero budget." type="button"><b>🚀 Build a startup</b><span>Plan your first project</span></button></div></div><div class="messages hidden" id="messages" aria-live="polite"></div></section>
-<div class="composer-wrap"><form class="composer" id="chatForm"><div class="composer-input-row"><textarea id="prompt" rows="1" maxlength="40000" placeholder="Message Ultra Goal..." aria-label="Message Ultra Goal"></textarea><button class="composer-mic" id="micBtn" type="button" title="Voice input" aria-label="Start voice input">🎙️</button></div><div id="fileChip" class="file-chip hidden"><span id="fileStatus">📄 File ready</span><button type="button" id="removeFileBtn" aria-label="Remove attachment">✕</button></div><input id="fileInput" class="file-input-hidden" type="file" accept=".pdf,.txt,.md,.csv,.json,.html,.docx,.doc" aria-label="Upload a document"><div class="composer-bottom"><div class="toolrow"><button type="button" class="upload-btn" id="uploadBtn">📎 Attach</button><button type="button" class="toolbtn" id="topicBtn">✧ Learning mode</button><button type="button" class="toolbtn" id="clearInput">Clear</button><button type="button" class="toolbtn" id="stopBtn" disabled>■ Stop</button></div><button class="send" id="sendBtn" type="submit" aria-label="Send" disabled>↑</button></div></form><div class="disclaimer">AI can make mistakes. Avoid entering passwords, private information, or sensitive data.</div></div></main></div>
+<div class="composer-wrap"><form class="composer" id="chatForm"><div class="composer-input-row"><textarea id="prompt" rows="1" maxlength="40000" placeholder="Message Ultra Goal..." aria-label="Message"></textarea><button class="composer-mic" id="micBtn" type="button" title="Voice input" aria-label="Start voice input">🎙️</button></div><div id="fileChip" class="file-chip hidden"><span id="fileStatus">📄 File ready</span><button type="button" id="removeFileBtn" aria-label="Remove attachment">✕</button></div><input id="fileInput" class="file-input-hidden" type="file" accept=".pdf,.txt,.md,.csv,.json,.html,.docx,.doc" aria-label="Upload a document"><div class="composer-bottom"><div class="toolrow"><button type="button" class="upload-btn" id="uploadBtn">📎 Attach</button><button type="button" class="toolbtn" id="topicBtn">✧ Learning mode</button><button type="button" class="toolbtn" id="clearInput">Clear</button><button type="button" class="toolbtn" id="stopBtn" disabled>■ Stop</button></div><button class="send" id="sendBtn" type="submit" aria-label="Send" disabled>↑</button></div></form><div class="disclaimer">AI can make mistakes. Avoid entering passwords, private information, or sensitive data.</div></div></main></div>
 <div class="modal-backdrop hidden" id="modalBackdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><div class="modal"><h2 id="modalTitle">Welcome to Ultra Goal 👋</h2><p>Set a local profile to personalize this browser. This demo does not create a secure account.</p><form id="profileForm"><label for="profileName">Display name</label><input id="profileName" maxlength="60" autocomplete="nickname" placeholder="What should we call you?"><label for="profileEmail">Email (optional, saved only on this device)</label><input id="profileEmail" maxlength="120" type="email" autocomplete="email" placeholder="you@example.com"><div class="modal-actions"><button class="secondary" type="button" id="modalCancel">Cancel</button><button class="primary" type="submit" id="modalSubmit">Save profile</button></div></form></div></div><div class="toast hidden" id="toast" role="status"></div>
 <div class="tracker-backdrop hidden" id="trackerBackdrop" role="dialog" aria-modal="true" aria-labelledby="trackerTitle">
  <section class="tracker-panel">
@@ -779,55 +845,7 @@ console.log('UG Code Lab is ready.');</textarea>
  function escapeScript(s){return JSON.stringify(s).replace(/</g,'\\u003c').replace(/>/g,'\\u003e').replace(/&/g,'\\u0026');}
  function run(){const p=project();const consoleBridge=`<script>(function(){const send=(type,args)=>parent.postMessage({ugCodeLab:true,type,args:Array.from(args||[]).map(x=>{try{return typeof x==='string'?x:JSON.stringify(x)}catch(e){return String(x)}})},'*');['log','info','warn','error'].forEach(k=>{const old=console[k];console[k]=function(){send(k,arguments);try{old.apply(console,arguments)}catch(e){}}});window.addEventListener('error',e=>send('error',[e.message+' at line '+e.lineno]));window.addEventListener('unhandledrejection',e=>send('error',[String(e.reason)]));})();<\/script>`;
   const userJs=`<script>try{(new Function(${escapeScript(p.js)}))()}catch(e){parent.postMessage({ugCodeLab:true,type:'error',args:[e.name+': '+e.message]},'*')}<\/script>`;
-  const doc='<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>'+p.css+'</style></head><body>'+p.html+consoleBridge+userJs+'
-<script>
-/* Ultra Goal premium micro-interactions. Additive only; no existing handlers are replaced. */
-(()=>{
- 'use strict';
- const reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
- // Give dynamically opened workspace panels and newly added chat content a subtle entrance.
- if(!reduce && 'MutationObserver' in window){
-   const observer=new MutationObserver(records=>{
-     for(const record of records){
-       for(const node of record.addedNodes){
-         if(!(node instanceof HTMLElement)) continue;
-         if(node.matches('.modal,.tracker-panel,.premium-panel,.code-panel,.block-panel')){
-           node.style.animation='none'; void node.offsetWidth; node.style.animation='';
-         }
-         if(node.matches('.messages>*')){
-           node.style.animation='none'; void node.offsetWidth; node.style.animation='';
-         }
-       }
-     }
-   });
-   observer.observe(document.body,{childList:true,subtree:true});
- }
- // Fast, tiny press feedback that works for current and future buttons.
- document.addEventListener('pointerdown',event=>{
-   const button=event.target.closest('button');
-   if(!button||button.disabled||reduce)return;
-   button.classList.remove('ug-pressed');
-   requestAnimationFrame(()=>button.classList.add('ug-pressed'));
- },{passive:true});
- document.addEventListener('pointerup',event=>{
-   const button=event.target.closest('button');
-   if(button) button.classList.remove('ug-pressed');
- },{passive:true});
- document.addEventListener('pointercancel',event=>{
-   const button=event.target.closest('button');
-   if(button) button.classList.remove('ug-pressed');
- },{passive:true});
- // Keyboard shortcut: focus the message box without interfering with existing shortcuts.
- document.addEventListener('keydown',event=>{
-   if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==='j'){
-     const prompt=document.getElementById('prompt');
-     if(prompt && !event.repeat){event.preventDefault();prompt.focus();}
-   }
- });
-})();
-</script>
-
-</body></html>';
+  const doc='<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>'+p.css+'</style></head><body>'+p.html+consoleBridge+userJs+'</body></html>';
   $('codeConsole').textContent='Running…';$('codePreview').srcdoc=doc;status('Program running in the sandbox preview.');
  }
  window.addEventListener('message',e=>{if(e.source!==$('codePreview').contentWindow||!e.data||e.data.ugCodeLab!==true)return;const line='['+e.data.type+'] '+(e.data.args||[]).join(' ');const box=$('codeConsole');box.textContent=(box.textContent==='Running…'?'':box.textContent+'\n')+line;box.scrollTop=box.scrollHeight;if(e.data.type==='error')status('Program reported an error. Check the console below the preview.');});
@@ -837,106 +855,15 @@ console.log('UG Code Lab is ready.');</textarea>
  $('codeSave').addEventListener('click',()=>{try{localStorage.setItem(STORE,JSON.stringify(project()));status('Project saved on this device.');if(typeof showToast==='function')showToast('Code project saved on this device.')}catch(e){status('Could not save project: browser storage is unavailable.')}});
  $('codeLoad').addEventListener('click',()=>{try{const p=JSON.parse(localStorage.getItem(STORE)||'null');if(!p)throw Error('No saved project found.');setProject(p);status('Saved project loaded.')}catch(e){status(e.message||'Could not load project.')}});
  $('codeReset').addEventListener('click',()=>{if(!confirm('Reset all three editor tabs to the starter example?'))return;setProject(defaults);$('codeConsole').textContent='Console output will appear here.';status('Starter example restored.');});
- $('codeDownload').addEventListener('click',()=>{const p=project();const file='<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>'+p.css+'</style></head><body>'+p.html+'<script>'+p.js.split('<'+'/script').join('<\\/'+'script')+'</'+'script>
-<script>
-/* Ultra Goal premium micro-interactions. Additive only; no existing handlers are replaced. */
-(()=>{
- 'use strict';
- const reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
- // Give dynamically opened workspace panels and newly added chat content a subtle entrance.
- if(!reduce && 'MutationObserver' in window){
-   const observer=new MutationObserver(records=>{
-     for(const record of records){
-       for(const node of record.addedNodes){
-         if(!(node instanceof HTMLElement)) continue;
-         if(node.matches('.modal,.tracker-panel,.premium-panel,.code-panel,.block-panel')){
-           node.style.animation='none'; void node.offsetWidth; node.style.animation='';
-         }
-         if(node.matches('.messages>*')){
-           node.style.animation='none'; void node.offsetWidth; node.style.animation='';
-         }
-       }
-     }
-   });
-   observer.observe(document.body,{childList:true,subtree:true});
- }
- // Fast, tiny press feedback that works for current and future buttons.
- document.addEventListener('pointerdown',event=>{
-   const button=event.target.closest('button');
-   if(!button||button.disabled||reduce)return;
-   button.classList.remove('ug-pressed');
-   requestAnimationFrame(()=>button.classList.add('ug-pressed'));
- },{passive:true});
- document.addEventListener('pointerup',event=>{
-   const button=event.target.closest('button');
-   if(button) button.classList.remove('ug-pressed');
- },{passive:true});
- document.addEventListener('pointercancel',event=>{
-   const button=event.target.closest('button');
-   if(button) button.classList.remove('ug-pressed');
- },{passive:true});
- // Keyboard shortcut: focus the message box without interfering with existing shortcuts.
- document.addEventListener('keydown',event=>{
-   if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==='j'){
-     const prompt=document.getElementById('prompt');
-     if(prompt && !event.repeat){event.preventDefault();prompt.focus();}
-   }
- });
-})();
-</script>
-
-</body></html>';const blob=new Blob([file],{type:'text/html'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='ultra-goal-program.html';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);status('Standalone HTML program downloaded.');});
+ $('codeDownload').addEventListener('click',()=>{const p=project();const file='<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>'+p.css+'</style></head><body>'+p.html+'<script>'+p.js.split('<'+'/script').join('<\\/'+'script')+'</'+'script></body></html>';const blob=new Blob([file],{type:'text/html'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='ultra-goal-program.html';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);status('Standalone HTML program downloaded.');});
  document.addEventListener('keydown',e=>{if(lab.classList.contains('hidden'))return;if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();run()}if(e.key==='Escape')close();});
-})();
-</script>
-
-
-<script>
-/* Ultra Goal premium micro-interactions. Additive only; no existing handlers are replaced. */
-(()=>{
- 'use strict';
- const reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
- // Give dynamically opened workspace panels and newly added chat content a subtle entrance.
- if(!reduce && 'MutationObserver' in window){
-   const observer=new MutationObserver(records=>{
-     for(const record of records){
-       for(const node of record.addedNodes){
-         if(!(node instanceof HTMLElement)) continue;
-         if(node.matches('.modal,.tracker-panel,.premium-panel,.code-panel,.block-panel')){
-           node.style.animation='none'; void node.offsetWidth; node.style.animation='';
-         }
-         if(node.matches('.messages>*')){
-           node.style.animation='none'; void node.offsetWidth; node.style.animation='';
-         }
-       }
-     }
-   });
-   observer.observe(document.body,{childList:true,subtree:true});
- }
- // Fast, tiny press feedback that works for current and future buttons.
- document.addEventListener('pointerdown',event=>{
-   const button=event.target.closest('button');
-   if(!button||button.disabled||reduce)return;
-   button.classList.remove('ug-pressed');
-   requestAnimationFrame(()=>button.classList.add('ug-pressed'));
- },{passive:true});
- document.addEventListener('pointerup',event=>{
-   const button=event.target.closest('button');
-   if(button) button.classList.remove('ug-pressed');
- },{passive:true});
- document.addEventListener('pointercancel',event=>{
-   const button=event.target.closest('button');
-   if(button) button.classList.remove('ug-pressed');
- },{passive:true});
- // Keyboard shortcut: focus the message box without interfering with existing shortcuts.
- document.addEventListener('keydown',event=>{
-   if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==='j'){
-     const prompt=document.getElementById('prompt');
-     if(prompt && !event.repeat){event.preventDefault();prompt.focus();}
-   }
- });
 })();
 </script>
 
 </body>
 </html>
+<style>
+/* Remove the message composer outline only; keep its existing layout and controls. */
+.composer{border-color:transparent!important;outline:none!important}
+.composer:focus-within{border-color:transparent!important;outline:none!important;box-shadow:var(--shadow)!important}
+</style>
