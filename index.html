@@ -843,7 +843,7 @@ console.log('UG Code Lab is ready.');</textarea>
   </section>
   <section class="code-preview-pane"><div class="code-preview-title">Live program preview</div><iframe id="codePreview" class="code-preview" title="Your program preview" sandbox="allow-scripts allow-forms"></iframe><pre id="codeConsole" class="code-console">Console output will appear here.</pre></section>
  </div>
- <div class="code-lab-note">Web projects run in a sandboxed preview. Python runs in your browser with Pyodide (first run needs an internet connection). SQL, JSON and Markdown have built-in preview modes. Other listed languages are editable here, but need a separately configured compiler to execute. Save stores code in this browser only. Avoid running code from unknown sources.</div>
+ <div class="code-lab-note">Your coding workspace is UG Code Lab. Run Web projects, Python (including input()), JavaScript, TypeScript, and SQL here; JSON and Markdown have built-in previews. Other language modes let you edit and preview source here, while their execution support is being added. No need to leave UG Code Lab. Projects are saved on this device.</div>
 </div>
 
 <div class="blocks-overlay" id="blocksOverlay" aria-label="PictoBlox-style coding workspace">
@@ -1059,7 +1059,7 @@ console.log('UG Code Lab is ready.');</textarea>
   js:"document.getElementById('helloBtn').addEventListener('click', () => {\n  document.getElementById('message').textContent = 'Your program is running!';\n});\nconsole.log('UG Code Lab is ready.');"
  };
  const samples={
-  python:'print("Hello, Ultra Goal! 🚀")\nname = "Student"\nprint(f"Welcome, {name}!")\n\nfor number in range(1, 6):\n    print(number)',
+  python:'# Try input() right here in UG Code Lab!\nname = input("What is your name? ")\nprint(f"Hello, {name}! Welcome to Ultra Goal.")\n\nage = input("How old are you? ")\nprint("Next year you will be", int(age) + 1)',
   sql:'CREATE TABLE students (id INTEGER, name TEXT);\nINSERT INTO students VALUES (1, \'Asha\'), (2, \'Ravi\');\nSELECT * FROM students;',
   json:'{\n  "app": "Ultra Goal",\n  "features": ["Python", "Preview", "Coding"],\n  "ready": true\n}',
   markdown:'# Hello, Ultra Goal!\n\nWrite **Markdown** here.\n\n- Easy to read\n- Live preview',
@@ -1128,10 +1128,21 @@ console.log('UG Code Lab is ready.');</textarea>
    if(!pyodidePromise)pyodidePromise=(async()=>{await loadScript('https://cdn.jsdelivr.net/pyodide/v0.27.7/full/pyodide.js');return await loadPyodide({indexURL:'https://cdn.jsdelivr.net/pyodide/v0.27.7/full/'});})();
    status('Loading Python runtime… first run may take a little time.');$('codeConsole').textContent='Preparing Python…';
    const py=await pyodidePromise;if(token!==runToken)return;
-   let output='';py.setStdout({batched:m=>{output+=m+'\n';}});py.setStderr({batched:m=>{output+='[stderr] '+m+'\n';}});
-   status('Running Python in your browser…');await py.runPythonAsync(code);
+   let output='',stdinBytes=[];
+   py.setStdout({batched:m=>{output+=m+'\n';}});py.setStderr({batched:m=>{output+='[stderr] '+m+'\n';}});
+   // Support Python input() inside UG Code Lab. Each input() opens the browser's
+   // native, mobile-friendly text prompt and feeds the answer to Python stdin.
+   py.setStdin({isatty:true,stdin:()=>{
+    if(!stdinBytes.length){
+     const answer=window.prompt('UG Code Lab · Python input\\nType a value for input():','');
+     if(answer===null)return -1;
+     stdinBytes=Array.from(new TextEncoder().encode(answer+'\\n'));
+    }
+    return stdinBytes.shift();
+   }});
+   status('Running Python inside UG Code Lab…');await py.runPythonAsync(code);
    if(token!==runToken)return;$('codeConsole').textContent=output.trimEnd()||'Python finished with no printed output.';showOutput('Python output',$('codeConsole').textContent);status('Python finished successfully in your browser.');
-  }catch(e){if(token!==runToken)return;$('codeConsole').textContent='Python error: '+(e.message||e);showOutput('Python error',$('codeConsole').textContent);status('Python could not run. Check the error output and internet connection.');}
+  }catch(e){if(token!==runToken)return;const detail=e.message||String(e);const cancelled=/EOFError|input.*cancel/i.test(detail);$('codeConsole').textContent=cancelled?'Python input was cancelled. Press Run and enter a value when UG Code Lab asks for input.':'Python error: '+detail;showOutput(cancelled?'Input cancelled':'Python error',$('codeConsole').textContent);status(cancelled?'Input cancelled in UG Code Lab. Run again to enter a value.':'Python could not run inside UG Code Lab. Check the error output and connection.');}
  }
  async function runTypeScript(code,token){
   try{
@@ -1181,8 +1192,8 @@ console.log('UG Code Lab is ready.');</textarea>
    const html=escapeHtml(code).replace(/^### (.*)$/gm,'<h3>$1</h3>').replace(/^## (.*)$/gm,'<h2>$1</h2>').replace(/^# (.*)$/gm,'<h1>$1</h1>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\*(.*?)\*/g,'<em>$1</em>').replace(/`([^`]+)`/g,'<code>$1</code>').replace(/^- (.*)$/gm,'• $1').replace(/\n/g,'<br>');
    $('codePreview').srcdoc='<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><style>body{font:15px/1.7 system-ui;padding:18px;color:#182033}code{background:#eef;padding:2px 5px;border-radius:4px}</style></head><body>'+html+'</body></html>';$('codeConsole').textContent='Markdown preview updated.';status('Markdown preview ready.');return;
   }
-  const labels={typescript:'TypeScript editing is available; a TypeScript compiler is not bundled in this offline file.',java:'Java source editor is ready; a Java compiler is not bundled in this offline file.',c:'C source editor is ready; a C compiler is not bundled in this offline file.',cpp:'C++ source editor is ready; a C++ compiler is not bundled in this offline file.',csharp:'C# source editor is ready; a C# compiler is not bundled in this offline file.',go:'Go source editor is ready; a Go compiler is not bundled in this offline file.',rust:'Rust source editor is ready; a Rust compiler is not bundled in this offline file.',php:'PHP source editor is ready; a PHP runtime is not bundled in this offline file.',ruby:'Ruby source editor is ready; a Ruby runtime is not bundled in this offline file.',swift:'Swift source editor is ready; a Swift compiler is not bundled in this offline file.',kotlin:'Kotlin source editor is ready; a Kotlin compiler is not bundled in this offline file.',bash:'Bash source editor is ready; a shell runtime is not bundled in this offline file.'};
-  $('codeConsole').textContent=labels[selected]+' Your source code is shown in the preview; it has not been executed.';showSourcePreview((language.options[language.selectedIndex]?.textContent||selected)+' source preview',code,labels[selected]+' This mode previews your source safely; it does not claim to execute it.');status('Source preview ready for '+selected+'. Execution needs a compatible compiler or runtime.');
+  const labels={typescript:'TypeScript source preview is available inside UG Code Lab.',java:'Java source editor and preview are available inside UG Code Lab.',c:'C source editor and preview are available inside UG Code Lab.',cpp:'C++ source editor and preview are available inside UG Code Lab.',csharp:'C# source editor and preview are available inside UG Code Lab.',go:'Go source editor and preview are available inside UG Code Lab.',rust:'Rust source editor and preview are available inside UG Code Lab.',php:'PHP source editor and preview are available inside UG Code Lab.',ruby:'Ruby source editor and preview are available inside UG Code Lab.',swift:'Swift source editor and preview are available inside UG Code Lab.',kotlin:'Kotlin source editor and preview are available inside UG Code Lab.',bash:'Bash source editor and preview are available inside UG Code Lab.'};
+  $('codeConsole').textContent=labels[selected]+' Your source code is shown in the preview; it has not been executed.';showSourcePreview((language.options[language.selectedIndex]?.textContent||selected)+' source preview',code,labels[selected]+' This mode previews your source safely; it does not claim to execute it.');status('Source preview ready for '+selected+'. Keep editing and previewing your code in UG Code Lab.');
  }
  window.addEventListener('message',e=>{if(e.source!==$('codePreview').contentWindow||!e.data||e.data.ugCodeLab!==true)return;const line='['+e.data.type+'] '+(e.data.args||[]).join(' ');const box=$('codeConsole');box.textContent=(box.textContent==='Running…'?'':box.textContent+'\n')+line;box.scrollTop=box.scrollHeight;if(e.data.type==='error')status('Program reported an error. Check the console below the preview.');});
  $('openCodeLab').addEventListener('click',open);$('codeClose').addEventListener('click',close);$('codeRun').addEventListener('click',run);
